@@ -11,7 +11,7 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Navigate to="SignIn" />} />
           <Route path="/SignIn" element={<SignIn />} />
-          <Route path="/QuestionEditor" element={<QuestionEditor />}></Route>
+          <Route path="/QuestionEditor/*" element={<QuestionEditor />}></Route>
           {/* TODO: add route for your page here */}
         </Routes>
 
