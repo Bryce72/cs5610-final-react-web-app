@@ -40,6 +40,8 @@ export default function QuestionBasicsEditor() {
             <textarea id="question-text" className="form-control">
                 # TODO turn this into a WYSIWYG editor (aka add controls for font, style, etc)
             </textarea>
+
+            <h5>Answers:</h5>
         </div>
     );
 }
@@ -53,6 +55,7 @@ export default function QuestionBasicsEditor() {
 function mapToOption(questionType: { name: any; path: any; instructions: string; }, currPath: string) {
     console.log(`current path = ${currPath}\n\tlooking for question type: ${questionType.path}`)
 
+    // FIXME: this used to change the url but now it doesn't...
     if (currPath.includes(questionType.path)) {
         return (
             <option selected>
