@@ -1,4 +1,4 @@
-import { useLocation } from "react-router-dom";
+import { useLocation, Link } from "react-router-dom";
 
 // NOTE: maybe create a class for question types..? or maybe this gets put in the database or in it's own json file
 const questionTypes = [
@@ -17,7 +17,7 @@ export default function QuestionBasicsEditor() {
                 {/* TODO: get question title from database */}
                 <input id="question-title" type="text" title="Question Title" placeholder="Question Title Here" className="form-control" />
 
-                {/* TODO: get question type form database */}
+                {/* TODO: url changes when selecting different options */}
                 <select className="bootstrap-select" title="Question Type">
                     {questionTypes.map((qType) => mapToOption(qType, pathname))}
                 </select>
@@ -54,9 +54,19 @@ function mapToOption(questionType: { name: any; path: any; instructions: string;
     console.log(`current path = ${currPath}\n\tlooking for question type: ${questionType.path}`)
 
     if (currPath.includes(questionType.path)) {
-        return (<option selected>{questionType.name}</option>)
+        return (
+            <option selected>
+                <Link to={`QuestionEditor/${questionType.path}`} >
+                    {questionType.name}
+                </Link>
+            </option >)
     }
-    return (<option>{questionType.name}</option>);
+    return (
+        <option>
+            <Link to={`QuestionEditor/${questionType.path}`} >
+                {questionType.name}
+            </Link>
+        </option>);
 }
 
 /**

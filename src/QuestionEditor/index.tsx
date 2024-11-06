@@ -7,7 +7,7 @@ export default function QuestionEditor() {
     return (
         <div id="question-editor" >
             <div id="question-editor-main" >
-                {/* TODO: actually create new question and open multiple choice question editor */}
+                {/* TODO: actually create new question and then open the editor for a new question */}
                 <button id="question-editor-new-question" className="btn btn-light border-secondary mx-2">+ New Question</button>
             </div>
 
