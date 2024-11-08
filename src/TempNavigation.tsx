@@ -7,6 +7,7 @@ export default function TempNavigation() {
         { name: "Sign In Page", path: "/SignIn" },
         { name: "Questions Editor Page", path: "/QuestionEditor" },
         { name: "Quizzes Page", path: "/Quizzes" },
+        { name: "Quizzes Detail Page", path: "/QuizDetails" },
     ]
 
     const { pathname } = useLocation()

@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 
+
 export default function QuizDetails() {
+
   const [quizTitle, setQuizTitle] = useState("Q1 - HTML");
   const [quizType, setQuizType] = useState("Graded Quiz");
   const [points, setPoints] = useState(29);
