@@ -3,7 +3,7 @@ import SignIn from "./SignIn";
 import { HashRouter, Route, Routes, Navigate } from "react-router-dom";
 import TempNavigation from "./TempNavigation";
 import { Provider } from "react-redux";
-import {store} from "store";
+import store from "./store"
 
 export default function App() {
   return (
