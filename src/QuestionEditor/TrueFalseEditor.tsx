@@ -6,9 +6,9 @@ export default function TrueFalseEditor() {
     return (
         <div id="question-editor-true-false" className="d-flex flex-column">
 
-            <div className="mb-2" onClick={e => setAnswer(true)}>
+            <div className="my-3" onClick={e => setAnswer(true)}>
                 <FaArrowRight className="fs-2 text-primary" visibility={answerBool ? "" : "hidden"} />
-                <span className={`fs-5 fw-bold ms-2 ${answerBool ? "text-success" : ""}`}>
+                <span className={`fs-4 fw-bold ms-2 ${answerBool ? "text-success" : ""}`}>
                     True
                 </span>
             </div>
@@ -16,7 +16,7 @@ export default function TrueFalseEditor() {
 
             <div onClick={e => setAnswer(false)}>
                 <FaArrowRight className="fs-2 text-primary" visibility={answerBool ? "hidden" : ""} />
-                <span className={`fs-5 fw-bold ms-2 ${answerBool ? "" : "text-danger"}`}>
+                <span className={`fs-4 fw-bold ms-2 ${answerBool ? "" : "text-danger"}`}>
                     False
                 </span>
             </div>

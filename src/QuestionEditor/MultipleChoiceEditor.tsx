@@ -1,28 +1,37 @@
 import { useState } from 'react';
-import { FaTrashAlt } from 'react-icons/fa';
+import { FaRegTrashAlt } from 'react-icons/fa';
+import { FaRegEdit } from 'react-icons/fa';
 
 export default function MultipleChoiceEditor() {
-    // TODO: need to get id number for each answer choice, also maybe a pivot table?
-    //then can use that to add edit/delete functionality
     const [answerChoices, answerChoiceSetter] = useState<string[]>([]);
 
     return (
-        <div id="question-editor-multiple-choice">
-            {answerChoices.map((choice) => answerChoice(choice))}
+        <div id="question-editor-multiple-choice" className='mt-3 ps-5 pb-5'>
+            {
+                answerChoices.map(
+                    (choice) => <div className='d-flex mb-5'>{answerChoice(choice)}</div>)
+            }
 
-            <button className='btn float-end text-danger fs-5 m-1' onClick={(e) => {
-                answerChoiceSetter([...answerChoices, ""]);
-            }}>+ Add Another Answer</button>
-        </div>
+            <button
+                className='btn float-end text-danger fs-5 border-light-subtle'
+                onClick={(e) => {
+                    answerChoiceSetter([...answerChoices, ""]);
+                }}
+            >
+                + Add Another Answer
+            </button>
+        </div >
     );
 }
 
 function answerChoice(answerValue: string) {
     return (
-        <div className="d-flex<FaTrashAlt />">
-            <span className="float-start">Possible Answer:</span>
+        <div className="d-flex align-items-center">
+            <span className="">Possible Answer</span>
             <input className="form-control" defaultValue={answerValue} />
-            <FaTrashAlt className='fs-4' />
+
+            <FaRegEdit className='fs-2 ms-5' />
+            <FaRegTrashAlt className='fs-2 mx-2' />
         </div>
     );
 }
