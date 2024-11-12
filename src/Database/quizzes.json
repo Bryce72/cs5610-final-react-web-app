@@ -1,0 +1,32 @@
+[
+  {
+    "id": "Q101",
+    "course_id": "C201",
+    "title": "Test Quiz 1",
+    "description": "the description of the quiz",
+    "is_published": true,
+    "available_from": "2021-01-01",
+    "available_until": "2021-12-31",
+    "created_at": "2021-01-01"
+  },
+  {
+    "id": "Q102",
+    "course_id": "C201",
+    "title": "Test Quiz 2",
+    "description": "the description of the quiz",
+    "is_published": true,
+    "available_from": "2021-01-01",
+    "available_until": "2021-12-31",
+    "created_at": "2021-01-01"
+  },
+  {
+    "id": "Q103",
+    "course_id": "C201",
+    "title": "Test Quiz 3",
+    "description": "the description of the quiz",
+    "is_published": true,
+    "available_from": "2021-01-01",
+    "available_until": "2021-12-31",
+    "created_at": "2021-01-01"
+  }
+]
