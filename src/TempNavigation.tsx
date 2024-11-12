@@ -23,9 +23,7 @@ export default function TempNavigation() {
                     </button>
                 </Link>
             ))}
-
             <hr />
-
         </div>
     );
 }

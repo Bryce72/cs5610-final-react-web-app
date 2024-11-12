@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { quizzes } from "../Database";
+import quizzes from "../Database/quizzes.json";
 
 const initialState = {
   quizzes: quizzes,
@@ -24,6 +24,18 @@ const quizzesSlice = createSlice({
           quiz.available_from || new Date().toISOString().split("T")[0],
         available_until: quiz.available_until || null,
         created_at: new Date().toISOString().split("T")[0],
+        due_date: quiz.due_date || null,
+
+        // Additional fields based on your JSON structure
+        type: quiz.type || "hello",
+        points: quiz.points || 0,
+        assignment_group: quiz.assignment_group || "Assignments",
+        shuffle: quiz.shuffle || false,
+        multiple_attempts: quiz.multiple_attempts || false,
+        time_limit: quiz.time_limit || null,
+        show_correct_answers: quiz.show_correct_answers || false,
+        one_question_at_a_time: quiz.one_question_at_a_time || false,
+        assign_to: quiz.assign_to || [],
       };
       state.quizzes = [...state.quizzes, newQuiz] as any;
     },
@@ -34,7 +46,7 @@ const quizzesSlice = createSlice({
 
     updateQuiz: (state, { payload: updatedQuiz }) => {
       state.quizzes = state.quizzes.map((quiz: any) =>
-        quiz.id === updatedQuiz.id ? updatedQuiz : quiz
+        quiz.id === updatedQuiz.id ? { ...quiz, ...updatedQuiz } : quiz
       );
     },
 

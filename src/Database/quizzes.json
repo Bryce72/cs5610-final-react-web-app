@@ -5,28 +5,19 @@
     "title": "Test Quiz 1",
     "description": "the description of the quiz",
     "is_published": true,
-    "available_from": "2021-01-01",
-    "available_until": "2021-12-31",
-    "created_at": "2021-01-01"
-  },
-  {
-    "id": "Q102",
-    "course_id": "C201",
-    "title": "Test Quiz 2",
-    "description": "the description of the quiz",
-    "is_published": true,
-    "available_from": "2021-01-01",
-    "available_until": "2021-12-31",
-    "created_at": "2021-01-01"
-  },
-  {
-    "id": "Q103",
-    "course_id": "C201",
-    "title": "Test Quiz 3",
-    "description": "the description of the quiz",
-    "is_published": true,
-    "available_from": "2021-01-01",
-    "available_until": "2021-12-31",
-    "created_at": "2021-01-01"
+    "available_from": "01/01/2021, 12:00 AM",
+    "available_until": "12/25/2021, 11:59 PM",
+    "created_at": "01/01/2021, 12:00 AM",
+    "due_date": "12/31/2021, 11:59 PM",
+
+    "type": "Practice Quiz",
+    "points": 10,
+    "assignment_group": "QUIZZES",
+    "shuffle": true,
+    "multiple_attempts": true,
+    "time_limit": 20,
+    "show_correct_answers": true,
+    "one_question_at_a_time": true,
+    "assign_to": "everyone"
   }
 ]

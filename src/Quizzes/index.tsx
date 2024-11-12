@@ -1,40 +1,50 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { setQuizzes, addQuiz } from "./reducer"; // Import necessary actions
-import quizzesData from "../Database/quizzes.json"; // Import quizzes data
+import { setQuizzes } from "./reducer"; // Import necessary actions
+// import quizzesData from "../Database/quizzes.json"; // Import quizzes data
 import "bootstrap/dist/css/bootstrap.min.css";
 import "react-quill/dist/quill.snow.css"; // Import styles for the editor
 import Select from "react-select"; // Import React Select
 import ReactQuill from "react-quill";
 
+
+const formatDateForInput = (dateString: any) => {
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) return ""; // Return an empty string if the date is invalid
+    return date.toISOString().slice(0, 16); // Convert to 'YYYY-MM-DDTHH:MM' format
+};
+
 export default function Quizzes() {
     const dispatch = useDispatch();
 
-    // Load quizzes from JSON data into Redux store on mount
-    useEffect(() => {
-        dispatch(setQuizzes(quizzesData));
-    }, [dispatch]);
+    // // Load quizzes into Redux store on component mount
+    // useEffect(() => {
+    //     dispatch(setQuizzes(quizzesData));
+    // }, [dispatch]);
 
-    // Access quizzes from Redux store
-    const quizzes = useSelector((state: any) => state.quizzes.quizzes);
+    const test = useSelector((state: any) => {
+        return state.quizzesReducer;
+    });
+
+    const quizzes = test.quizzes;
 
     // Select a quiz to display. Here, we take the first quiz as an example.
     const quiz = quizzes[0];
 
-    // Local states for form fields
+    // Local states for form fields based on the first quiz in the list
     const [quizTitle, setQuizTitle] = useState(quiz?.title || "");
     const [quizInstructions, setQuizInstructions] = useState(quiz?.description || "");
-    const [quizType, setQuizType] = useState("Graded Quiz");
-    const [assignmentGroup, setAssignmentGroup] = useState("ASSIGNMENTS");
-    const [shuffleAnswers, setShuffleAnswers] = useState(false);
-    const [timeLimitEnabled, setTimeLimitEnabled] = useState(false);
-    const [timeLimit, setTimeLimit] = useState("");
-    const [allowMultipleAttempts, setAllowMultipleAttempts] = useState(false);
-    const [assignedTo, setAssignedTo] = useState<{ value: string; label: string }[]>([]);
+    const [quizType, setQuizType] = useState(quiz?.type || "hello?");
+    const [assignmentGroup, setAssignmentGroup] = useState(quiz?.assignment_group || "ASSIGNMENTS");
+    const [shuffleAnswers, setShuffleAnswers] = useState(quiz?.shuffle || false);
+    const [timeLimitEnabled, setTimeLimitEnabled] = useState(Boolean(quiz?.time_limit));
+    const [timeLimit, setTimeLimit] = useState(quiz?.time_limit?.toString() || "");
+    const [allowMultipleAttempts, setAllowMultipleAttempts] = useState(quiz?.multiple_attempts || false);
     const [wordCount, setWordCount] = useState(0);
     const [activeTab, setActiveTab] = useState("details");
-    const [points, setPoints] = useState(0); // Placeholder for points
+    const [points, setPoints] = useState(quiz.points || 0);
     const [publishStatus, setPublishStatus] = useState(quiz?.is_published ? "Published" : "Not Published");
+    const [assignedTo, setAssignedTo] = useState(quiz.assign_to || []);
 
     // Options for the "Assign to" field
     const assignOptions = [
@@ -122,7 +132,7 @@ export default function Quizzes() {
                                 value={quizInstructions}
                                 onChange={handleInstructionsChange}
                                 placeholder="Type instructions here..."
-                                style={{ height: "200px" }} // Set height of the text editor
+                                style={{ height: "200px" }}
                             />
                             <div className="d-flex justify-content-between mt-2">
                                 <span className="text-muted">{wordCount} words</span>
@@ -135,7 +145,7 @@ export default function Quizzes() {
                                 <label className="form-label">Quiz Type</label>
                                 <select
                                     className="form-select"
-                                    value={quizType}
+                                    defaultValue={quizType}
                                     onChange={(e) => setQuizType(e.target.value)}
                                 >
                                     <option value="Graded Quiz">Graded Quiz</option>
@@ -148,7 +158,7 @@ export default function Quizzes() {
                                 <label className="form-label">Assignment Group</label>
                                 <select
                                     className="form-select"
-                                    value={assignmentGroup}
+                                    defaultValue={assignmentGroup}
                                     onChange={(e) => setAssignmentGroup(e.target.value)}
                                 >
                                     <option value="ASSIGNMENTS">ASSIGNMENTS</option>
@@ -183,7 +193,7 @@ export default function Quizzes() {
                                     type="number"
                                     className="form-control"
                                     style={{ width: "100px" }}
-                                    value={timeLimit}
+                                    defaultValue={timeLimit}
                                     onChange={(e) => setTimeLimit(e.target.value)}
                                     placeholder="Minutes"
                                     disabled={!timeLimitEnabled}
@@ -209,7 +219,7 @@ export default function Quizzes() {
                                 <Select
                                     isMulti
                                     options={assignOptions}
-                                    value={assignedTo}
+                                    defaultInputValue={assignedTo}
                                     onChange={(selectedOptions) =>
                                         setAssignedTo(selectedOptions as { value: string; label: string }[])
                                     }
@@ -217,16 +227,16 @@ export default function Quizzes() {
                                     className="mb-3"
                                 />
                                 <label className="form-label">Due</label>
-                                <input type="datetime-local" className="form-control mb-3" />
+                                <input type="datetime-local" className="form-control mb-3" defaultValue={formatDateForInput(quiz?.due_date)} />
 
                                 <div className="row">
                                     <div className="col-md-6">
                                         <label className="form-label">Available from</label>
-                                        <input type="datetime-local" className="form-control" />
+                                        <input type="datetime-local" className="form-control" defaultValue={formatDateForInput(quiz?.available_from)} />
                                     </div>
                                     <div className="col-md-6">
                                         <label className="form-label">Until</label>
-                                        <input type="datetime-local" className="form-control" />
+                                        <input type="datetime-local" className="form-control" defaultValue={formatDateForInput(quiz?.available_until)} />
                                     </div>
                                 </div>
 
