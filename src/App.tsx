@@ -1,11 +1,12 @@
 import QuestionEditor from "./QuestionEditor";
-import SignIn from "./SignIn";
+import SignIn from "./Account";
 import Quizzes from "./Quizzes";
 import QuizDetails from "./QuizDetails";
 import { HashRouter, Route, Routes, Navigate } from "react-router-dom";
 import TempNavigation from "./TempNavigation";
 import { Provider } from "react-redux";
 import store from "./store";
+import Account from "./Account";
 
 
 
@@ -18,7 +19,7 @@ export default function App() {
 
           <Routes>
             <Route path="/" element={<Navigate to="SignIn" />} />
-            <Route path="/SignIn" element={<SignIn />} />
+            <Route path="/SignIn" element={<Account />} />
             <Route path="/QuestionEditor/*" element={<QuestionEditor />}></Route>
             {/* TODO: add route for your page here */}
             <Route path="/Quizzes" element={<Quizzes />} />
