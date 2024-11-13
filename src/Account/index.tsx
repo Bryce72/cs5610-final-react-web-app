@@ -20,8 +20,8 @@ export default function Account() {
                         <Routes>
                             <Route path="/" element={<Navigate to="/signin" />} />
                             <Route path="/signin" element={<Signin />} />
-                            <Route path="/Profile" element={<Profile />} />
-                            <Route path="/Signup" element={<Signup />} />
+                            <Route path="/profile" element={<Profile />} />
+                            <Route path="/signup" element={<Signup />} />
                         </Routes>
                     </td>
                 </tr>

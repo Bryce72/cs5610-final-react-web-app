@@ -4,7 +4,7 @@ export default function Signin(){
         <h3>Sign in</h3>
         <input id="wd-username" placeholder="username" /> <br />
         <input id="wd-password" placeholder="password" type="password" /> <br />
-        <Link id="wd-signin-btn" to="/Signin">Sign in</Link> <br />
-        <Link id="wd-signup-link" to="/Signup">Sign up</Link>
+        <Link id="wd-signin-btn" to="/account/signin">Sign in</Link> <br />
+        <Link id="wd-signup-link" to="/account/signup">Sign up</Link>
     </div>
 );}
