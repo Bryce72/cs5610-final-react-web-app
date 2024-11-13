@@ -1,109 +1,107 @@
-import React, { useState } from "react";
-import "bootstrap/dist/css/bootstrap.min.css";
-
+import React, { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { Button, Badge, Table } from "react-bootstrap";
+import { loadQuizzes } from "./quizDetailReducer";
 
 export default function QuizDetails() {
+  const dispatch = useDispatch();
 
-  const [quizTitle, setQuizTitle] = useState("Q1 - HTML");
-  const [quizType, setQuizType] = useState("Graded Quiz");
-  const [points, setPoints] = useState(29);
-  const [assignmentGroup, setAssignmentGroup] = useState("QUIZZES");
-  const [shuffleAnswers, setShuffleAnswers] = useState("No");
-  const [timeLimit, setTimeLimit] = useState("30 Minutes");
-  const [multipleAttempts, setMultipleAttempts] = useState("No");
-  const [viewResponses, setViewResponses] = useState("Always");
-  const [showCorrectAnswers, setShowCorrectAnswers] = useState("Immediately");
-  const [oneQuestionAtATime, setOneQuestionAtATime] = useState("Yes");
-  const [lockDownBrowser, setLockDownBrowser] = useState("No");
-  const [viewQuizResults, setViewQuizResults] = useState("No");
-  const [webcamRequired, setWebcamRequired] = useState("No");
-  const [lockQuestions, setLockQuestions] = useState("No");
+  // Load the quizzes from Redux state
+  const quizzes = useSelector((state: any) => state.quizDetail || []);
 
-  const dueDate = "Sep 21 at 1pm";
-  const availableFrom = "Sep 21 at 11:40am";
-  const untilDate = "Sep 21 at 1pm";
+  // Fetch quizzes on component mount
+  useEffect(() => {
+    (dispatch as any)(loadQuizzes()); // Dispatch loadQuizzes instead of setQuizzes
+  }, [dispatch]);
+
+  console.log("Quizzes in Redux state:", quizzes);
+
+  // For demonstration, let's display only the first quiz
+  const quiz = quizzes.length > 0 ? quizzes[0] : null;
+
+  if (!quiz) {
+    return <p>Loading...</p>;
+  }
 
   return (
     <div className="container mt-4">
+      <h3>{quiz.name || "Quiz Title"}</h3>
       <div className="d-flex justify-content-between align-items-center mb-3">
-        <h3>{quizTitle}</h3>
-        <div className="d-flex align-items-center">
-          <span className="badge bg-success me-2">Published</span>
-          <button className="btn btn-secondary me-2">Preview</button>
-          <button className="btn btn-primary">Edit</button>
+        <Badge bg="success" className="me-2">
+          Published
+        </Badge>
+        <div>
+          <Button variant="secondary" className="me-2">
+            Preview
+          </Button>
+          <Button variant="primary">Edit</Button>
         </div>
       </div>
 
       <hr />
 
+      {/* Display quiz properties */}
       <div>
         <p>
-          <strong>Quiz Type:</strong> {quizType}
+          <strong>Quiz Type:</strong> {quiz.quiz_type || "Graded Quiz"}
         </p>
         <p>
-          <strong>Points:</strong> {points}
+          <strong>Points:</strong> {quiz.total_points || 0}
         </p>
         <p>
-          <strong>Assignment Group:</strong> {assignmentGroup}
+          <strong>Assignment Group:</strong>{" "}
+          {quiz.assignment_group || "Quizzes"}
         </p>
         <p>
-          <strong>Shuffle Answers:</strong> {shuffleAnswers}
+          <strong>Shuffle Answers:</strong>{" "}
+          {quiz.shuffle_answers ? "Yes" : "No"}
         </p>
         <p>
-          <strong>Time Limit:</strong> {timeLimit}
+          <strong>Time Limit:</strong> {quiz.time_limit_minutes} Minutes
         </p>
         <p>
-          <strong>Multiple Attempts:</strong> {multipleAttempts}
+          <strong>Multiple Attempts:</strong>{" "}
+          {quiz.multi_attempts ? "Yes" : "No"}
         </p>
         <p>
-          <strong>View Responses:</strong> {viewResponses}
+          <strong>Show Correct Answers:</strong> {quiz.show_answer || "No"}
         </p>
         <p>
-          <strong>Show Correct Answers:</strong> {showCorrectAnswers}
+          <strong>Access Code:</strong> {quiz.passcode || "None"}
         </p>
         <p>
-          <strong>One Question at a Time:</strong> {oneQuestionAtATime}
+          <strong>One Question at a Time:</strong>{" "}
+          {quiz.questions_one_by_one ? "Yes" : "No"}
         </p>
         <p>
-          <strong>Require Respondus LockDown Browser:</strong> {lockDownBrowser}
+          <strong>Webcam Required:</strong>{" "}
+          {quiz.webcam_required ? "Yes" : "No"}
         </p>
         <p>
-          <strong>Required to View Quiz Results:</strong> {viewQuizResults}
-        </p>
-        <p>
-          <strong>Webcam Required:</strong> {webcamRequired}
-        </p>
-        <p>
-          <strong>Lock Questions After Answering:</strong> {lockQuestions}
+          <strong>Lock Questions After Answering:</strong>{" "}
+          {quiz.lock_questions ? "Yes" : "No"}
         </p>
       </div>
 
       <hr />
 
-      <div className="table-responsive">
-        <table className="table table-bordered">
-          <thead>
-            <tr>
-              <th>Due</th>
-              <th>For</th>
-              <th>Available from</th>
-              <th>Until</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>{dueDate}</td>
-              <td>Everyone</td>
-              <td>{availableFrom}</td>
-              <td>{untilDate}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <div className="text-center mt-4">
-        <button className="btn btn-danger">Preview</button>
-      </div>
+      {/* Table for dates */}
+      <Table bordered>
+        <thead>
+          <tr>
+            <th>Due</th>
+            <th>Available from</th>
+            <th>Until</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>{new Date(quiz.due).toLocaleString()}</td>
+            <td>{new Date(quiz.available_from).toLocaleString()}</td>
+            <td>{new Date(quiz.available_until).toLocaleString()}</td>
+          </tr>
+        </tbody>
+      </Table>
     </div>
   );
 }
