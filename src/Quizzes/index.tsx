@@ -17,11 +17,6 @@ const formatDateForInput = (dateString: any) => {
 export default function Quizzes() {
     const dispatch = useDispatch();
 
-    // // Load quizzes into Redux store on component mount
-    // useEffect(() => {
-    //     dispatch(setQuizzes(quizzesData));
-    // }, [dispatch]);
-
     const test = useSelector((state: any) => {
         return state.quizzesReducer;
     });
