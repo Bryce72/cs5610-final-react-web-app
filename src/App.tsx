@@ -1,5 +1,4 @@
 import QuestionEditor from "./QuestionEditor";
-import SignIn from "./Account";
 import Quizzes from "./Quizzes";
 import QuizDetails from "./QuizDetails";
 import { HashRouter, Route, Routes, Navigate } from "react-router-dom";
@@ -18,8 +17,8 @@ export default function App() {
           <TempNavigation />
 
           <Routes>
-            <Route path="/" element={<Navigate to="SignIn" />} />
-            <Route path="/SignIn" element={<Account />} />
+            <Route path="/" element={<Navigate to="account/signin" />} />
+            <Route path="/account/*" element={<Account />} />
             <Route path="/QuestionEditor/*" element={<QuestionEditor />}></Route>
             {/* TODO: add route for your page here */}
             <Route path="/Quizzes" element={<Quizzes />} />
