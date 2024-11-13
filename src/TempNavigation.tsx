@@ -5,7 +5,9 @@ export default function TempNavigation() {
     // TODO: add your page to this list
     const pages = [
         { name: "Sign In Page", path: "/SignIn" },
-        { name: "Questions Editor Page", path: "/QuestionEditor/multiple-choice" }
+        { name: "Questions Editor Page", path: "/QuestionEditor" },
+        { name: "Quizzes Page", path: "/Quizzes" },
+        { name: "Quizzes Detail Page", path: "/QuizDetails" },
     ]
 
     const { pathname } = useLocation()
@@ -21,9 +23,7 @@ export default function TempNavigation() {
                     </button>
                 </Link>
             ))}
-
             <hr />
-
         </div>
     );
 }
