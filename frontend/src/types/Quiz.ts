@@ -14,7 +14,6 @@ enum AssignmentGroup{
     Projects
 }
 
-//TODO: make some enums?
 export type Quiz = {
     quiz_id: string; //use timestamp?
     name: string;

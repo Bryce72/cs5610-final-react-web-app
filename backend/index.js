@@ -1,7 +1,7 @@
 import express from 'express';
 import session from "express-session";
 import cors from "cors";
-
+import QuizAttemptRoutes from './Kanbas/QuizAttempt/routes.js';
 import QuizRoutes from "./Kanbas/Quiz/routes.js";
 import UserRoutes from "./Kanbas/Users/routes.js";
 
@@ -15,6 +15,23 @@ app.use(cors({
 })
 );
 
+//QUESTION: this turns on proxy support if we're in production???
+// if (process.env.NODE_ENV !== "development") {
+//     sessionOptions.proxy = true;
+//     sessionOptions.cookie = {
+//         sameSite: "none",
+//         secure: true,
+//         domain: process.env.NODE_SERVER_DOMAIN,
+//     };
+// }
+// app.use(
+//     session(sessionOptions)
+// );
 
+
+app.use(express.json()); //lets clilent put json into request body
+QuizRoutes(app);
+QuizAttemptRoutes(app);
+UserRoutes(app);
 
 app.listen(4000)
