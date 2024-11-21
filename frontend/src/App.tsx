@@ -12,6 +12,7 @@ import Courses from "./CourseNavigation";
 import * as db from "./Database";
 import { useEffect, useState } from "react";
 import Dashboard from "./Dashboard";
+import React from "react";
 
 
 const courses = db.courses
