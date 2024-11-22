@@ -1,51 +1,37 @@
+// Import your Database or MongoDB connection
 // import db from mongo when ready
 
-//TODO
-export function findQuizzesForCourse(courseID) {
+// Find all quizzes for a specific course
+export function findQuizzesForCourse(courseId) {
   const { quizzes } = Database;
-  return quizzes.filter((quiz) => quiz.course === courseId);
+  return quizzes.filter((quiz) => quiz.courseId === courseId);
 }
 
-//TODO
+// Find all quizzes
+export function findAllQuizzes() {
+  const { quizzes } = Database;
+  return quizzes;
+}
+
+// Create a new quiz
 export function createQuiz(quiz) {
-  //add unique ID to the new quiz, for now use timestamp
   const newQuiz = { ...quiz, quiz_id: Date.now().toString() };
+  Database.quizzes.push(newQuiz);
+  return newQuiz;
 }
 
-//TODO
-export function deleteQuiz(quizID) {
+// Delete a quiz by ID
+export function deleteQuiz(quizId) {
   const { quizzes } = Database;
-  Database.quizzes = quizzes.filter((quiz) => quiz._id !== quizId);
+  Database.quizzes = quizzes.filter((quiz) => quiz.quiz_id !== quizId);
 }
 
-//TODO
-export function updateQuiz(quizID, quizUpdates) {
+// Update a quiz
+export function updateQuiz(quizId, quizUpdates) {
   const { quizzes } = Database;
-  const quizze = quizzes.find((quizze) => quizze._id === quizzeId);
-  Object.assign(quizze, quizzeUpdates);
-  return quizze;
-}
-
-import Qui from "../Database/index.js";
-
-export function findModulesForCourse(courseId) {
-  const { modules } = Database;
-  return modules.filter((module) => module.course === courseId);
-}
-
-export function createModule(module) {
-  const newModule = { ...module, _id: Date.now().toString() };
-  Database.modules = [...Database.modules, newModule];
-  return newModule;
-}
-export function deleteModule(moduleId) {
-  const { modules } = Database;
-  Database.modules = modules.filter((module) => module._id !== moduleId);
-}
-
-export function updateModule(moduleId, moduleUpdates) {
-  const { modules } = Database;
-  const module = modules.find((module) => module._id === moduleId);
-  Object.assign(module, moduleUpdates);
-  return module;
+  const quiz = quizzes.find((quiz) => quiz.quiz_id === quizId);
+  if (quiz) {
+    Object.assign(quiz, quizUpdates);
+  }
+  return quiz;
 }
