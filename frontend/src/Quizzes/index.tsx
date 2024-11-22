@@ -27,9 +27,9 @@ export default function Quizzes() {
     const quiz = quizzes[0];
 
     // Local states for form fields based on the first quiz in the list
-    const [quizTitle, setQuizTitle] = useState(quiz?.title || "");
+    const [quizName, setQuizName] = useState(quiz?.name || "");
     const [quizInstructions, setQuizInstructions] = useState(quiz?.description || "");
-    const [quizType, setQuizType] = useState(quiz?.type || "hello?");
+    const [quizType, setQuizType] = useState(quiz?.quiz_type || "hello?");
     const [assignmentGroup, setAssignmentGroup] = useState(quiz?.assignment_group || "ASSIGNMENTS");
     const [shuffleAnswers, setShuffleAnswers] = useState(quiz?.shuffle || false);
     const [timeLimitEnabled, setTimeLimitEnabled] = useState(Boolean(quiz?.time_limit));
@@ -77,7 +77,7 @@ export default function Quizzes() {
         <div className="container mt-4">
             {/* Header with Points and Publish Status */}
             <div className="d-flex justify-content-between align-items-center mb-3">
-                <h3>{quizTitle || "Quizzes"}</h3>
+                <h3>{quizName || "Quizzes"}</h3>
                 <div className="d-flex align-items-center">
                     <span className="me-3">
                         <strong>Points:</strong> {points}
@@ -114,8 +114,8 @@ export default function Quizzes() {
                             <input
                                 type="text"
                                 className="form-control"
-                                value={quizTitle}
-                                onChange={(e) => setQuizTitle(e.target.value)}
+                                value={quizName}
+                                onChange={(e) => setQuizName(e.target.value)}
                                 placeholder="Unnamed Quiz"
                             />
                         </div>
