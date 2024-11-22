@@ -45,6 +45,10 @@ package-lock.json
 .DS_Store
 *.log
 
+front/node_modules/
+node_modules/
+
+
 # Ignore node_modules and package-lock.json
 node_modules/
 package-lock.json
