@@ -1,7 +1,10 @@
 // import db from mongo when ready
 
 //TODO
-export function findQuizzesForCourse(courseID) {}
+export function findQuizzesForCourse(courseID) {
+  const { quizzes } = Database;
+  return quizzes.filter((quiz) => quiz.course === courseId);
+}
 
 //TODO
 export function createQuiz(quiz) {
@@ -10,10 +13,18 @@ export function createQuiz(quiz) {
 }
 
 //TODO
-export function deleteQuiz(quizID) {}
+export function deleteQuiz(quizID) {
+  const { quizzes } = Database;
+  Database.quizzes = quizzes.filter((quiz) => quiz._id !== quizId);
+}
 
 //TODO
-export function updateQuiz(quizID, quizUpdates) {}
+export function updateQuiz(quizID, quizUpdates) {
+  const { quizzes } = Database;
+  const quizze = quizzes.find((quizze) => quizze._id === quizzeId);
+  Object.assign(quizze, quizzeUpdates);
+  return quizze;
+}
 
 import Qui from "../Database/index.js";
 

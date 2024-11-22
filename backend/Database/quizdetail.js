@@ -1,5 +1,6 @@
 export default [
   {
+    course_id: "C1001",
     quiz_id: "Q101",
     name: "Q1 - HTML",
     quiz_type: 0,
@@ -19,6 +20,7 @@ export default [
     questions: [],
   },
   {
+    course_id: "C1002",
     quiz_id: "Q102",
     name: "Q2 - CSS",
     quiz_type: 1,
