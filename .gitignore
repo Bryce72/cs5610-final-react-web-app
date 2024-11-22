@@ -1,1 +1,4 @@
 node_modules
+.idea/*
+*_BACKUP_42.json
+*.json.swp
