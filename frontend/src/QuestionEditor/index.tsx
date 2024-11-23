@@ -23,10 +23,15 @@ export default function QuestionEditor() {
                 <Route path="/multiple-choice" element={<MultipleChoiceEditor />}></Route>
             </Routes>
 
+            {/* TODO: add functionality to buttons */}
             <div id="question-editor-controls" className="d-flex flex-row border-top mt-3">
-                {/* TODO: add functionality to buttons */}
-                <button id="question-editor-cancel" className="btn btn-light border-secondary mx-2 my-3">Cancel</button>
-                <button id="question-editor-save" className="btn btn-danger mx-2 my-3">Save</button>
+                <button id="question-editor-cancel" className="btn btn-light border-secondary mx-2 my-3">
+                    Cancel
+                </button>
+
+                <button id="question-editor-save" className="btn btn-danger mx-2 my-3">
+                    Save
+                </button>
             </div>
         </div>
     );
