@@ -15,7 +15,7 @@ export default function KanbasNavigation() {
     { label: "Courses", path: "/Kanbas/Courses", icon: LiaBookSolid },
     { label: "Calendar", path: "/Kanbas/Calendar", icon: IoCalendarOutline },
     { label: "Inbox", path: "/Kanbas/Inbox", icon: FaInbox },
-    { label: "Labs", path: "/Labs", icon: LiaCogSolid },
+    
   ];
 
   return (
@@ -28,10 +28,10 @@ export default function KanbasNavigation() {
         <a id="wd-neu-link" target="_blank"
           href="https://www.northeastern.edu/"
           className="list-group-item bg-black border-0 text-center">
-          <img src="/images/neuLogo.png" width="75px" /></a><br />
+          <img src="/images/NEU.png" width="75px" /></a><br />
 
 
-        <Link to="/Kanbas/Account" className={`list-group-item text-center border-0 bg-black
+        <Link to="/account/signin" className={`list-group-item text-center border-0 bg-black
             ${pathname.includes("Account") ? "bg-white text-danger" : "bg-black text-white"}`}>
           <FaRegCircleUser className={`fs-1 ${pathname.includes("Account") ? "text-danger" : "text-white"}`} />
           <br />

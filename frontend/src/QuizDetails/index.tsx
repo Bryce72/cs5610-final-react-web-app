@@ -7,6 +7,7 @@ export default function QuizDetails() {
   const dispatch = useDispatch();
 
   // Load the quizzes from Redux state
+  // comment
   const quizzes = useSelector((state: any) => state.quizDetail || []);
 
   // Fetch quizzes on component mount
