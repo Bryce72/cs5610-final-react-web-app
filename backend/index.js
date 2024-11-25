@@ -1,18 +1,18 @@
-import express from 'express';
+import express from "express";
 import session from "express-session";
 import cors from "cors";
-import QuizAttemptRoutes from './Kanbas/QuizAttempt/routes.js';
+import QuizAttemptRoutes from "./Kanbas/QuizAttempt/routes.js";
 import QuizRoutes from "./Kanbas/Quiz/routes.js";
 import UserRoutes from "./Kanbas/Users/routes.js";
 
-const app = express()
+const app = express();
 
 // Change NETLIFY_URL when MongoDB set up
-app.use(cors({
+app.use(
+  cors({
     credentials: true,
     origin: process.env.NETLIFY_URL || "http://localhost:3000",
-
-})
+  })
 );
 
 //QUESTION: this turns on proxy support if we're in production???
@@ -28,10 +28,9 @@ app.use(cors({
 //     session(sessionOptions)
 // );
 
-
 app.use(express.json()); //lets clilent put json into request body
 QuizRoutes(app);
 QuizAttemptRoutes(app);
 UserRoutes(app);
 
-app.listen(4000)
+app.listen(4000);
