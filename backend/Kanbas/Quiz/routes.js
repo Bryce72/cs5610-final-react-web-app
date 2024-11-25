@@ -1,41 +1,27 @@
-import * as dao from "./dao.js";
+import * as quizzesDao from "./dao.js";
 
 export default function QuizRoutes(app) {
-  // Delete quiz
-  app.delete("/api/quizzes/:quizId", (req, res) => {
-    const { quizId } = req.params;
-    dao.deleteQuiz(quizId);
+  app.delete("/api/quizzes/:qid", async (req, res) => {
+    const { qid } = req.params;
+    await quizzesDao.deleteAssignment(qid);
+    res.sendStatus(200);
+  });
+
+  app.post("/api/courses/:cid/quizzes", async (req, res) => {
+    const { qid } = req.params;
+    const newQuiz = await quizzesDao.createAssignment(qid, req.body);
+    res.send(newQuiz);
+  });
+
+  app.put("/api/quizzes/:qid", async (req, res) => {
+    const { qid } = req.params;
+    await quizzesDao.updateAssignment(qid, req.body);
     res.sendStatus(204);
   });
 
-  // Create a new quiz
-  app.post("/api/quizzes", (req, res) => {
-    const quiz = dao.createQuiz(req.body);
-    res.send(quiz);
-  });
-
-  // Get all quizzes
-  app.get("/api/quizzes", (req, res) => {
-    const quizzes = dao.findAllQuizzes();
-    res.send(quizzes);
-  });
-
-  // Get all quizzes for a specific course
-  app.get("/api/courses/:courseId/quizzes", (req, res) => {
-    const { courseId } = req.params;
-    const quizzes = dao.findQuizzesForCourse(courseId);
+  app.get("/api/courses/:cid/quizzes", async (req, res) => {
+    const { cid } = req.params;
+    const quizzes = await quizzesDao.getAssignmentsByCourse(cid);
     res.json(quizzes);
-  });
-
-  // Update a quiz
-  app.put("/api/quizzes/:quizId", (req, res) => {
-    const { quizId } = req.params;
-    const quizUpdates = req.body;
-    const updatedQuiz = dao.updateQuiz(quizId, quizUpdates);
-    if (updatedQuiz) {
-      res.sendStatus(204);
-    } else {
-      res.status(404).send({ error: "Quiz not found" });
-    }
   });
 }

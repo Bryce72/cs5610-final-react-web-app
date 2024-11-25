@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { setQuizzes } from "./reducer"; // Import necessary actions
+import { addQuiz, setQuizzes, deleteQuiz } from "./reducer"; // Import necessary actions
 // import quizzesData from "../Database/quizzes.json"; // Import quizzes data
 import "bootstrap/dist/css/bootstrap.min.css";
 import "react-quill/dist/quill.snow.css"; // Import styles for the editor
 import Select from "react-select"; // Import React Select
 import ReactQuill from "react-quill";
-
+import * as client from "../ClientForQuizzes/client";
+import { useParams } from "react-router";
 
 const formatDateForInput = (dateString: any) => {
     const date = new Date(dateString);
@@ -15,13 +16,30 @@ const formatDateForInput = (dateString: any) => {
 };
 
 export default function Quizzes() {
+    const { cid } = useParams(); // Get the course ID from the URL
     const dispatch = useDispatch();
+    const quizzes = useSelector((state: any) => state.quizzesReducer.quizzes);
 
-    const test = useSelector((state: any) => {
-        return state.quizzesReducer;
-    });
+    // create quiz
+    const createQuiz = async (quiz: any) => {
+        const newQuiz = await client.createQuiz(cid as string, quiz);
+        dispatch(addQuiz(quiz));
+    };
+    // remove quiz
+    const removeQuiz = async (qid: string) => {
+        await client.deleteQuiz(qid);
+        dispatch(deleteQuiz(qid));
+    };
 
-    const quizzes = test.quizzes;
+    // get quiz
+    const fetchQuizzes = async () => {
+        const quizzes = await client.findQuizzesForCourse(cid as string);
+        dispatch(setQuizzes(quizzes));
+    };
+    useEffect(() => {
+        fetchQuizzes();
+    }, []);
+
 
     // Select a quiz to display. Here, we take the first quiz as an example.
     const quiz = quizzes[0];
