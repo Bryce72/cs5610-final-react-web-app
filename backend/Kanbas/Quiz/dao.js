@@ -1,20 +1,20 @@
 import model from "./model.js";
 
-export function deleteAssignment(assignmentId) {
-  return model.deleteOne({ _id: assignmentId });
+export function deleteQuiz(quizId) {
+  return model.deleteOne({ _id: quizId });
 }
 
-export function getAssignmentsByCourse(assignmentId) {
-  console.log("courseId", assignmentId);
-  const res = model.find({ assignment: assignmentId });
+export function getQuizzesByCourse(courseId) {
+  console.log("courseId", courseId);
+  const res = model.find({ quiz: courseId });
   return res;
 }
 
-export function createAssignment(assignment) {
-  delete assignment._id;
-  return model.create(assignment);
+export function createQuiz(quiz) {
+  delete quiz._id;
+  return model.create(quiz);
 }
 
-export function updateAssignment(assignmentId, assignmentUpdates) {
-  return model.updateOne({ _id: assignmentId }, assignmentUpdates);
+export function updateQuiz(quizId, quizUpdates) {
+  return model.updateOne({ _id: quizId }, quizUpdates);
 }
