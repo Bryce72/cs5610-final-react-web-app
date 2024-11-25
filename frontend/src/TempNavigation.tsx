@@ -8,6 +8,7 @@ export default function TempNavigation() {
     { name: "Questions Editor Page", path: "/QuestionEditor" },
     { name: "Quizzes Page", path: "/Quizzes" },
     { name: "Quizzes Detail Page", path: "/QuizDetails" },
+    { name: "Quiz Preview Page", path: "/QuizPreview" },
   ];
 
   const { pathname } = useLocation();

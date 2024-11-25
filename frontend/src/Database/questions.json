@@ -1,0 +1,24 @@
+[
+  {
+    "_id": "1",
+    "quiz_id": "Q101",
+    "quiz_number": 1,
+    "question": "What does HTML stand for?",
+    "answers": [
+      "Hyper Text Markup Language",
+      "Hyperlinks and Text Markup Language",
+      "Home Tool Markup Language"
+    ],
+    "correct": "Hyper Text Markup Language",
+    "points": 5
+  },
+  {
+    "_id": "2",
+    "quiz_id": "Q101",
+    "quiz_number": 2,
+    "question": "Who is making the Web standards?",
+    "answers": ["Mozilla", "Microsoft", "The World Wide Web Consortium"],
+    "correct": "The World Wide Web Consortium",
+    "points": 5
+  }
+]
