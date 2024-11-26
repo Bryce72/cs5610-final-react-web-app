@@ -18,3 +18,8 @@ export function createQuiz(quiz) {
 export function updateQuiz(quizId, quizUpdates) {
   return model.updateOne({ _id: quizId }, quizUpdates);
 }
+
+//double check
+export function getQuizById(quiz_id) {
+  return model.find({ quiz: quiz_id });
+}

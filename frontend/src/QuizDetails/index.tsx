@@ -5,15 +5,22 @@ import * as coursesClient from "../client";
 import { Badge, Button, Table } from "react-bootstrap";
 import { useEffect } from "react";
 import { FaPencilAlt } from "react-icons/fa";
+import * as client from "../ClientForQuizzes/client";
 
 export default function QuizDetails() {
   const router = useNavigate();
   const { cid } = useParams();
   const dispatch = useDispatch();
-  const { quizzes } = useSelector((state: any) => state.quizzesReducer);
+  const { quizzes } = useSelector((state: any) => state.quizDetailReducer);
 
+  // const fetchQuizzes = async () => {
+  //   const quizzes = await coursesClient.findQuizzesForCourse(cid as string);
+  //   dispatch(setQuizzes(quizzes));
+  // };
+
+  // get quiz
   const fetchQuizzes = async () => {
-    const quizzes = await coursesClient.findQuizzesForCourse(cid as string);
+    const quizzes = await client.getQuizById("123");
     dispatch(setQuizzes(quizzes));
   };
 
@@ -32,8 +39,12 @@ export default function QuizDetails() {
   };
 
   // Placeholder for the quiz being viewed
-  const quiz = quizzes && quizzes.length > 0 ? quizzes[0] : [];
+  const quiz = quizzes && quizzes.length > 0 ? quizzes[0] : null;
+  //const quiz = quizzes && quizzes.length > 0 ? quizzes[0] : [];
   console.log("check quiz", quiz);
+  if (!quiz) {
+    return <p>Loading...</p>;
+  }
 
   // if (!quiz) {
   //   return <p>Loading...</p>;

@@ -1,7 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
+import QuizDetails from "../Database/quizdetail.json";
 
 const initialState = {
-  quizzes: [],
+  quizzes: QuizDetails,
 };
 const quizzesSlice = createSlice({
   name: "quizzes",

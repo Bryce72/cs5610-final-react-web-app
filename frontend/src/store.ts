@@ -3,6 +3,7 @@ import quizSlice from "./app-redux/quizReducer";
 import quizQuestionSlice from "./app-redux/quizQuestionReducer";
 import userSlice from "./app-redux/userReducer";
 import quizzesReducer from "./Quizzes/reducer";
+import quizDetailReducer from "./QuizDetails/quizDetailReducer";
 import questionReducer from "./QuizPreview/reducer";
 
 const store = configureStore({
@@ -11,6 +12,7 @@ const store = configureStore({
     quizQuestionSlice,
     userSlice,
     quizzesReducer,
+    quizDetailReducer,
     questions: questionReducer,
   },
 });

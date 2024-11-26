@@ -25,4 +25,12 @@ export default function QuizRoutes(app) {
     console.log(quizzes);
     res.json(quizzes);
   });
+
+  //added
+  app.get("/api/quizzes/:qid", async (req, res) => {
+    const { qid } = req.params;
+    const quizzes = await quizzesDao.getQuizById(qid);
+    console.log(quizzes);
+    res.json(quizzes);
+  });
 }
