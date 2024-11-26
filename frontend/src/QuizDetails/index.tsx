@@ -6,7 +6,7 @@ import { Badge, Button, Table } from "react-bootstrap";
 import { useEffect } from "react";
 import { FaPencilAlt } from "react-icons/fa";
 
-export default function Quizzes() {
+export default function QuizDetails() {
   const router = useNavigate();
   const { cid } = useParams();
   const dispatch = useDispatch();
@@ -32,11 +32,13 @@ export default function Quizzes() {
   };
 
   // Placeholder for the quiz being viewed
-  const quiz = quizzes && quizzes.length > 0 ? quizzes[0] : null;
+  const quiz = quizzes && quizzes.length > 0 ? quizzes[0] : [];
+  console.log("check quiz", quiz);
 
-  if (!quiz) {
-    return <p>Loading...</p>;
-  }
+  // if (!quiz) {
+  //   return <p>Loading...</p>;
+  // }
+
   return (
     <div className="container quiz-details-container mt-4">
       {/* Header Section */}
