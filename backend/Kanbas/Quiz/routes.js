@@ -8,8 +8,8 @@ export default function QuizRoutes(app) {
   });
 
   app.post("/api/courses/:cid/quizzes", async (req, res) => {
-    const { qid } = req.params;
-    const newQuiz = await quizzesDao.createQuiz(qid, req.body);
+    const { cid } = req.params;
+    const newQuiz = await quizzesDao.createQuiz(cid, req.body);
     res.send(newQuiz);
   });
 
@@ -22,6 +22,7 @@ export default function QuizRoutes(app) {
   app.get("/api/courses/:cid/quizzes", async (req, res) => {
     const { cid } = req.params;
     const quizzes = await quizzesDao.getQuizzesByCourse(cid);
+    console.log(quizzes);
     res.json(quizzes);
   });
 }

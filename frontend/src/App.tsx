@@ -23,7 +23,7 @@ import QuizPewview from "./QuizPreview";
 
 const courses = db.courses;
 const course = {
-  _id: "RS101",
+  _id: "6744e7072e798610ab356c31", //changed to objectId, RS101
   name: "Rocket Propulsion",
   number: "RS4550",
   startDate: "2023-01-10",
@@ -55,7 +55,7 @@ export default function Kanbas() {
             <Route path="/account/*" element={<Account />} />
             <Route path="/QuestionEditor/*" element={<QuestionEditor />} />
             <Route path="/QuizPreview" element={<QuizPewview />} />
-            <Route path="/Quizzes" element={<Quizzes />} />
+            <Route path="/quizzes" element={<Quizzes />} />
             <Route path="/QuizDetails" element={<QuizDetails />} />
             <Route
               path="kanbas/Dashboard"

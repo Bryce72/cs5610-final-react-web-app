@@ -6,7 +6,7 @@ export function deleteQuiz(quizId) {
 
 export function getQuizzesByCourse(courseId) {
   console.log("courseId", courseId);
-  const res = model.find({ quiz: courseId });
+  const res = model.find({ course: courseId });
   return res;
 }
 
