@@ -3,7 +3,7 @@ import quizzes from "../Database/quizzes.json";
 import QuizDetails from "../Database/quizdetail.json";
 
 const initialState = {
-  quizzes: QuizDetails,
+  quizzes: [],
 };
 
 const quizzesSlice = createSlice({
@@ -36,28 +36,30 @@ const quizzesSlice = createSlice({
         available_until: quiz.available_until || null,
         questions: quiz.questions || [],
       };
-      state.quizzes = [...state.quizzes, newQuiz];
+      state.quizzes = [...state.quizzes, newQuiz] as any;
     },
 
     // Delete a quiz by its quiz_id
     deleteQuiz: (state, { payload: quizId }) => {
-      state.quizzes = state.quizzes.filter((quiz) => quiz.quiz_id !== quizId);
+      state.quizzes = state.quizzes.filter(
+        (quiz: any) => quiz.quiz_id !== quizId
+      );
     },
 
     // Update a quiz by its quiz_id
     updateQuiz: (state, { payload: updatedQuiz }) => {
-      state.quizzes = state.quizzes.map((quiz) =>
+      state.quizzes = state.quizzes.map((quiz: any) =>
         quiz.quiz_id === updatedQuiz.quiz_id
           ? { ...quiz, ...updatedQuiz }
           : quiz
-      );
+      ) as any;
     },
 
     // Set a quiz to editing mode (if needed)
     editQuiz: (state, { payload: quizId }) => {
-      state.quizzes = state.quizzes.map((quiz) =>
+      state.quizzes = state.quizzes.map((quiz: any) =>
         quiz.quiz_id === quizId ? { ...quiz, editing: true } : quiz
-      );
+      ) as any;
     },
   },
 });

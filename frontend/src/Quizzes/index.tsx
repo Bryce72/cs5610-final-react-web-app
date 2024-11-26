@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { setQuizzes } from "./reducer"; // Import necessary actions
+import { addQuiz, setQuizzes, deleteQuiz } from "./reducer"; // Import necessary actions
 // import quizzesData from "../Database/quizzes.json"; // Import quizzes data
 import "bootstrap/dist/css/bootstrap.min.css";
 import "react-quill/dist/quill.snow.css"; // Import styles for the editor
 import Select from "react-select"; // Import React Select
 import ReactQuill from "react-quill";
-
+import * as client from "../ClientForQuizzes/client";
+import { useParams } from "react-router";
 
 const formatDateForInput = (dateString: any) => {
     const date = new Date(dateString);
@@ -15,31 +16,62 @@ const formatDateForInput = (dateString: any) => {
 };
 
 export default function Quizzes() {
+    const { cid } = useParams(); // Get the course ID from the URL
     const dispatch = useDispatch();
+    const quizzes = useSelector((state: any) => state.quizzesReducer.quizzes);
 
-    const test = useSelector((state: any) => {
-        return state.quizzesReducer;
-    });
+    // create quiz
+    const createQuiz = async (quiz: any) => {
+        const newQuiz = await client.createQuiz(quiz);
+        dispatch(addQuiz(quiz));
+    };
+    // remove quiz
+    const removeQuiz = async (qid: string) => {
+        await client.deleteQuiz(qid);
+        dispatch(deleteQuiz(qid));
+    };
 
-    const quizzes = test.quizzes;
+    // get quiz
+    const fetchQuizzes = async () => {
+        const quizzes = await client.findQuizzesForCourse();
+        dispatch(setQuizzes(quizzes));
+    };
+    console.log("check quizzes", quizzes);
+
+    useEffect(() => {
+        if (quizzes.length > 0) {
+            const quiz = quizzes[0];
+            setQuizName(quiz?.name || "");
+            setQuizInstructions(quiz?.description || "");
+            setQuizType(quiz?.quiz_type || "hello?");
+            setAssignmentGroup(quiz?.assignment_group || "ASSIGNMENTS");
+            setShuffleAnswers(quiz?.shuffle || false);
+            setTimeLimitEnabled(Boolean(quiz?.time_limit));
+            setTimeLimit(quiz?.time_limit?.toString() || "");
+            setAllowMultipleAttempts(quiz?.multiple_attempts || false);
+            setPoints(quiz?.points || 0);
+            setPublishStatus(quiz?.is_published ? "Published" : "Not Published");
+            setAssignedTo(quiz?.assign_to || []);
+        }
+    }, [quizzes]);
 
     // Select a quiz to display. Here, we take the first quiz as an example.
     const quiz = quizzes[0];
+    console.log("check quiz 0", quiz);
 
-    // Local states for form fields based on the first quiz in the list
-    const [quizName, setQuizName] = useState(quiz?.name || "");
-    const [quizInstructions, setQuizInstructions] = useState(quiz?.description || "");
-    const [quizType, setQuizType] = useState(quiz?.quiz_type || "hello?");
-    const [assignmentGroup, setAssignmentGroup] = useState(quiz?.assignment_group || "ASSIGNMENTS");
-    const [shuffleAnswers, setShuffleAnswers] = useState(quiz?.shuffle || false);
-    const [timeLimitEnabled, setTimeLimitEnabled] = useState(Boolean(quiz?.time_limit));
-    const [timeLimit, setTimeLimit] = useState(quiz?.time_limit?.toString() || "");
-    const [allowMultipleAttempts, setAllowMultipleAttempts] = useState(quiz?.multiple_attempts || false);
+    const [quizName, setQuizName] = useState("");
+    const [quizInstructions, setQuizInstructions] = useState("");
+    const [quizType, setQuizType] = useState("hello?");
+    const [assignmentGroup, setAssignmentGroup] = useState("ASSIGNMENTS");
+    const [shuffleAnswers, setShuffleAnswers] = useState(false);
+    const [timeLimitEnabled, setTimeLimitEnabled] = useState(false);
+    const [timeLimit, setTimeLimit] = useState("");
+    const [allowMultipleAttempts, setAllowMultipleAttempts] = useState(false);
     const [wordCount, setWordCount] = useState(0);
     const [activeTab, setActiveTab] = useState("details");
-    const [points, setPoints] = useState(quiz.points || 0);
-    const [publishStatus, setPublishStatus] = useState(quiz?.is_published ? "Published" : "Not Published");
-    const [assignedTo, setAssignedTo] = useState(quiz.assign_to || []);
+    const [points, setPoints] = useState(0);
+    const [publishStatus, setPublishStatus] = useState("Not Published");
+    const [assignedTo, setAssignedTo] = useState<{ value: string; label: string }[]>([]);
 
     // Options for the "Assign to" field
     const assignOptions = [
@@ -214,7 +246,7 @@ export default function Quizzes() {
                                 <Select
                                     isMulti
                                     options={assignOptions}
-                                    defaultInputValue={assignedTo}
+                                    defaultValue={assignedTo}
                                     onChange={(selectedOptions) =>
                                         setAssignedTo(selectedOptions as { value: string; label: string }[])
                                     }

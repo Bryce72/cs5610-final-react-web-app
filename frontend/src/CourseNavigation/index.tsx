@@ -6,7 +6,7 @@ import TempNavigation from '../TempNavigation';
 
 export default function Courses({ courses }: { courses: any[]; }) {
   // const { cid } = useParams();
-  const cid = "RS101";
+  const cid = "6744e7072e798610ab356c31";
   const course = courses.find((course) => course._id === cid);
   const { pathname } = useLocation();
 
