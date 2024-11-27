@@ -1,63 +1,45 @@
-import FillBlanksEditor from "./FillBlanksEditor";
-import MultipleChoiceEditor from "./MultipleChoiceEditor";
-import QuestionBasicsEditor from "./QuestionBasicsEditor";
-import TrueFalseEditor from "./TrueFalseEditor";
-import { Routes, Route } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { QuizQuestion } from "../types/QuizQuestion";
 import { useState } from "react";
 
-
+import QuestionCard from "./QuestionCard";
+import { QuizQuestion } from "../types/QuizQuestion";
 
 export default function QuestionEditor() {
     const dispatch = useDispatch();
 
-    //REDUX for all questions in the current quiz
-    const { questions } = useSelector((state: any) => state.quizQuestionsReducer);
+    //todo: get id for current quiz from path params
 
-    //local state for question we're currently editing
-    const [currQuestion, setCurrQuestion] = useState<QuizQuestion>();
+    //REDUX for all questions in the current quiz
+    //todo: filter this for current quiz only
+    const { quizQuestions } = useSelector((state: any) => state.quizQuestionsReducer);
+
 
     return (
-        <div id="question-editor" className="container mt-4" >
-
+        <div id="question-editor" className="container mt-4">
             <div id="questions-overview" className="text-center">
+                {
+                    quizQuestions.map((q: QuizQuestion) => (
+                        <QuestionCard question={q} key={q.question_id} />
+                    ))
+                }
 
-                {questions.map((q: QuizQuestion) => {
-                    //TODO: question preview card, with buttons to edit or delete
-                    return (
-                        <div>
-                            <p>{q.title}</p>
-                        </div>
-                    );
-                })}
-
-                <button id="question-editor-new-question" className="btn btn-light border-secondary mx-2 ">
-                    {/* TODO: onClick triggers new question being created and visibility of question-editor */}
+                {/* TODO: onclick add a new empty question right above this button */}
+                <button id="question-editor-new-question" className="btn btn-warning mx-2">
                     + New Question
                 </button>
 
             </div>
 
             <br />
-            {/* TODO: only show this when we've chosen to edit a question or make a new question */}
-            <div id="question-editor">
-                <QuestionBasicsEditor />
 
-                <Routes>
-                    <Route path="/fill-blanks" element={<FillBlanksEditor />}></Route>
-                    <Route path="/true-false" element={<TrueFalseEditor />}></Route>
-                    <Route path="/multiple-choice" element={<MultipleChoiceEditor />}></Route>
-                </Routes>
-            </div>
-
-            {/* TODO: add functionality to buttons */}
+            {/* very bottom of my page to save all changes to all the questions */}
             <div id="question-editor-controls" className="d-flex flex-row border-top mt-3">
-                <button id="question-editor-cancel" className="btn btn-light border-secondary mx-2 my-3">
+                <button id="question-editor-cancel" className="btn btn-outline-danger mx-2 my-3">
                     Cancel
                 </button>
 
-                <button id="question-editor-save" className="btn btn-danger mx-2 my-3">
+                {/* QUESTION:  does this save changes to questions only or does it save changes to the entire quiz?*/}
+                <button id="question-editor-save" className="btn btn-success mx-2 my-3">
                     Save
                 </button>
             </div>
