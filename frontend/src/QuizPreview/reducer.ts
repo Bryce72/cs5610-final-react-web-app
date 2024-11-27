@@ -29,7 +29,9 @@ const questionsSlice = createSlice({
 
       // Update currentPoints only when selecting an answer for the current question
       const currentQuestion = state.questions[questionIndex];
-      if (answer === currentQuestion.correct) {
+
+      //FIXME: currentQuestion doesn't have .correct attribute ??
+      if (answer === currentQuestion) {
         state.currentPoints += currentQuestion.points;
       }
     },
