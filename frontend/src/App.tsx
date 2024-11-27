@@ -34,6 +34,7 @@ const course = {
 };
 
 export default function Kanbas() {
+
   function DebugRoute() {
     const location = useLocation();
 
@@ -59,7 +60,7 @@ export default function Kanbas() {
             <Route path="/QuizDetails" element={<QuizDetails />} />
             <Route
               path="kanbas/Dashboard"
-              element={<Dashboard courses={courses} course={course} />}
+              element={<Dashboard />} //courses={courses} course={course} 
             />
             <Route
               path="/Courses/:cid/*"

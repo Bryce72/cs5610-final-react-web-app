@@ -4,6 +4,7 @@ import cors from "cors";
 import QuizAttemptRoutes from "./Kanbas/QuizAttempt/routes.js";
 import QuizRoutes from "./Kanbas/Quiz/routes.js";
 import UserRoutes from "./Kanbas/Users/routes.js";
+import CourseRoutes from "./Kanbas/Courses/routes.js";
 import mongoose from "mongoose";
 import "dotenv/config";
 
@@ -55,6 +56,7 @@ app.use(express.json()); //lets clilent put json into request body
 QuizRoutes(app);
 QuizAttemptRoutes(app);
 UserRoutes(app);
+CourseRoutes(app);
 
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {

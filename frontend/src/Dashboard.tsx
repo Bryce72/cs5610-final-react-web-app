@@ -1,16 +1,21 @@
 import { Link } from "react-router-dom";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import * as courseClient from "./courseClient";
 // import { enrollCourse, unenrollCourse } from "./reducer"; // Adjust the path as needed
 
-export default function Dashboard({
-  courses,
-  course,
-}: {
-  courses: any[];
-  course: any;
-}) {
-  const [showAllCourses, setShowAllCourses] = useState(false);
+export default function Dashboard() {
+
+  const [courses, setCourses] = useState<any[]>([]);
+
+  const fetchAllCourses = async () => {
+    const courses = await courseClient.fetchAllCourses();
+    setCourses(courses);
+  };
+
+  useEffect(() => {
+    fetchAllCourses();
+  }, []);
 
   return (
     <div id="wd-dashboard">
