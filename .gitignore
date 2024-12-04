@@ -29,3 +29,5 @@ yarn-error.log*
 *LOCAL_*.json
 *REMOTE_*.json
 *BACKUP_*.json
+backend/.vscode/settings.json
+frontend/.vscode/settings.json
