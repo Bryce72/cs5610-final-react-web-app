@@ -1,6 +1,5 @@
-import { Routes, Route, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { QuizQuestion, QuestionType } from "../types/QuizQuestion";
 
 
@@ -10,8 +9,15 @@ import { FaRegTrashAlt } from 'react-icons/fa';
 import { FaRegEdit } from 'react-icons/fa';
 
 export default function QuestionCard({ question }: { question: QuizQuestion }) {
+    // console.debug(`making question card for:\n${JSON.stringify(question, null, 1)}`)
+    const [type, setType] = useState<QuestionType>(question.type || QuestionType.MultipleChoice);
+
+    // useEffect(() => {
+    //     console.log(`question type = ${type}`);
+    // }, [type]);
+
     return (
-        <div className="question-card card mb-3 border-light">
+        <div className="question-card card mb-5 border-faded">
             <div className="card-body">
                 {/* Question Header */}
                 <div className="d-flex justify-content-between align-items-center">
@@ -28,13 +34,11 @@ export default function QuestionCard({ question }: { question: QuizQuestion }) {
                 </p>
 
                 {/* Question Editing Section */}
-                <div className="question-editor mt-4">
-                    <QuestionBasicsEditor />
-                    <Routes>
-                        <Route path={`/${QuestionType.FillBlanks}`} element={<FillBlanksEditor />} />
-                        <Route path={`/${QuestionType.TrueFalse}`} element={<TrueFalseEditor />} />
-                        <Route path={`/${QuestionType.MultipleChoice}`} element={<MultipleChoiceEditor />} />
-                    </Routes>
+                <div className="question-editor container p-4 border rounded shadow-sm">
+                    {<QuestionBasicsEditor type={type} setType={setType} />}
+                    {type === QuestionType.TrueFalse && <TrueFalseEditor />}
+                    {type === QuestionType.FillBlanks && <FillBlanksEditor />}
+                    {type === QuestionType.MultipleChoice && <MultipleChoiceEditor />}
                 </div>
             </div>
         </div>
@@ -42,40 +46,40 @@ export default function QuestionCard({ question }: { question: QuizQuestion }) {
 }
 
 //this is the part of the question editor that is the same for all question types
-function QuestionBasicsEditor() {
-    const questionTypes = new Map<string, any>([
-        ["Multiple Choice", {
+function QuestionBasicsEditor({
+    type,
+    setType,
+}: {
+    type: QuestionType;
+    setType: (type: QuestionType) => void;
+}) {
+    const questionNames = new Map<string, QuestionType>([
+        ["Multiple Choice", QuestionType.MultipleChoice],
+        ["True/False", QuestionType.TrueFalse],
+        ["Fill in the Blanks", QuestionType.FillBlanks]
+    ]);
+
+    const questionTypesDict = new Map<string, any>([
+        [QuestionType.MultipleChoice, {
             name: "Multiple Choice",
-            path: "multiple-choice",
             instructions: "Enter your question text and multiple answers, then select the one correct answer."
         }],
-        ["True/False", {
+        [QuestionType.TrueFalse, {
             name: "True/False",
-            path: "true-false",
             instructions: "Enter your question text, then select if True or False is the correct answer."
         }],
-        ["Fill in the Blanks", {
+        [QuestionType.FillBlanks, {
             name: "Fill in the Blanks",
-            path: "fill-blanks",
             instructions: "Enter your question text, then define all possible correct answers for the blank. Students will see the question followed by a small text box to type their answer."
         }]
     ]);
 
     const questionTypeNames = ["Multiple Choice", "True/False", "Fill in the Blanks"]
 
-    const navigate = useNavigate();
-    const [questionType, setQuestionType] = useState("Multiple Choice");
-
-    const changeQuestionType = (questionName: string) => {
-        setQuestionType(questionName);
-        const qPath = questionTypes.get(questionName)?.path;
-        navigate(`${qPath}`);
-    };
-
     return (
-        <div className="container p-4 border rounded shadow-sm">
-            {/* Question Basics Form */}
+        <div>
             <div className="row mb-3 g-3 align-items-center">
+
                 {/* Question Title */}
                 <div className="col-md-6">
                     <label htmlFor="question-title" className="form-label">
@@ -98,9 +102,16 @@ function QuestionBasicsEditor() {
                     <select
                         id="question-type"
                         className="form-select"
-                        value={questionType}
+                        value={questionTypesDict.get(type).name}
                         title="Question Type"
-                        onChange={(e) => changeQuestionType(e.target.value)}
+                        onChange={(e) => {
+                            const newType = questionNames.get(e.target.value);
+                            console.log(`onChange -> newType = ${newType}`);
+                            if (newType === undefined) {
+                                return;
+                            }
+                            setType(newType);
+                        }}
                     >
                         {questionTypeNames.map((qType, index) => (
                             <option key={index} value={qType}>
@@ -127,8 +138,8 @@ function QuestionBasicsEditor() {
 
             {/* Instructions Section */}
             <div id="question-editor-instructions" className="mt-4">
-                <div className="alert alert-secondary">
-                    {questionTypes.get(questionType)?.instructions}
+                <div className="alert alert-secondary border-0">
+                    {questionTypesDict.get(type)?.instructions}
                 </div>
             </div>
 
@@ -142,10 +153,10 @@ function QuestionBasicsEditor() {
                     placeholder="Type question text here..."
                     style={{ height: "200px" }}
                 />
-            </div>
+            </div> <br/> <br/> <br/>
 
             {/* Answers Section */}
-            <div className="mt-4">
+            <div>
                 <h5>Answers:</h5>
                 {/* Answers input will go here */}
             </div>
@@ -164,7 +175,7 @@ function MultipleChoiceEditor() {
             }
 
             <button
-                className='btn float-end text-danger fs-5 border-light-subtle'
+                className='btn float-end fs-6 border-light-subtle btn-warning'
                 onClick={(e) => {
                     answerChoiceSetter([...answerChoices, ""]);
                 }}
@@ -221,7 +232,7 @@ function FillBlanksEditor() {
             }
 
             <button
-                className='btn float-end text-danger fs-5 border-light-subtle'
+                className='btn float-end fs-6 border-light-subtle btn-warning'
                 onClick={(e) => {
                     blankOptionsSetter([...blankOptions, ""]);
                 }}

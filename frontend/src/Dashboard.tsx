@@ -23,7 +23,7 @@ export default function Dashboard() {
       <hr />
       <div id="wd-dashboard-courses" className="row">
         {courses.map((course) => (
-          <div
+<div
             key={course._id}
             className="wd-dashboard-course col"
             style={{ width: "300px" }}

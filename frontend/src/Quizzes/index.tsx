@@ -8,6 +8,7 @@ import Select from "react-select"; // Import React Select
 import ReactQuill from "react-quill";
 import * as client from "../ClientForQuizzes/client";
 import { useParams } from "react-router";
+import QuestionEditor from "../QuestionEditor";
 
 const formatDateForInput = (dateString: any) => {
     const date = new Date(dateString);
@@ -284,8 +285,7 @@ export default function Quizzes() {
                 {activeTab === "questions" && (
                     <div>
                         {/* Placeholder for Questions Tab Content */}
-                        <h4>Questions Editor</h4>
-                        <p>This is where you can add questions for the quiz.</p>
+                        <QuestionEditor />
                     </div>
                 )}
             </div>

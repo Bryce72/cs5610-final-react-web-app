@@ -54,13 +54,13 @@ export default function Kanbas() {
           <Routes>
             <Route path="/" element={<Navigate to="account/signin" />} />
             <Route path="/account/*" element={<Account />} />
-            <Route path="/QuestionEditor/*" element={<QuestionEditor />} />
             <Route path="/QuizPreview" element={<QuizPewview />} />
+            <Route path="/quizzes/questions/*" element={<QuestionEditor />} />
             <Route path="/quizzes" element={<Quizzes />} />
             <Route path="/QuizDetails" element={<QuizDetails />} />
             <Route
               path="kanbas/Dashboard"
-              element={<Dashboard />} //courses={courses} course={course} 
+              element={<Dashboard />} //courses={courses} course={course}
             />
             <Route
               path="/Courses/:cid/*"

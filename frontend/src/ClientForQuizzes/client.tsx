@@ -3,6 +3,7 @@ import axios from "axios";
 const axiosWithCredentials = axios.create({ withCredentials: true });
 const REMOTE_SERVER = process.env.REACT_APP_REMOTE_SERVER;
 const COURSES_API = `${REMOTE_SERVER}/api/courses`;
+const QUIZ_API = `${REMOTE_SERVER}/api/quizzes`;
 const COURSE_ID = "6744e7072e798610ab356c31";
 
 // export const findQuizzesForCourse = async (courseId: string) => {
@@ -44,8 +45,6 @@ export const createQuiz = async (quiz: any) => {
   );
   return response.data;
 };
-
-const QUIZ_API = `${REMOTE_SERVER}/api/quizzes`;
 
 export const deleteQuiz = async (quizId: string) => {
   const response = await axiosWithCredentials.delete(`${QUIZ_API}/${quizId}`);

@@ -13,7 +13,6 @@ export default function QuestionEditor() {
     //todo: filter this for current quiz only
     const { quizQuestions } = useSelector((state: any) => state.quizQuestionsReducer);
 
-
     return (
         <div id="question-editor" className="container mt-4">
             <div id="questions-overview" className="text-center">
