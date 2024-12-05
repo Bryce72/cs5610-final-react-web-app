@@ -21,5 +21,6 @@ export function updateQuiz(quizId, quizUpdates) {
 
 //double check
 export function getQuizById(quiz_id) {
-  return model.find({ quiz: quiz_id });
+  console.log("getquizbyid - backend");
+  return model.find({ _id: quiz_id });
 }

@@ -63,5 +63,6 @@ export const updateQuiz = async (quiz: any) => {
 //added
 export const getQuizById = async (quizId: any) => {
   const response = await axiosWithCredentials.get(`${QUIZ_API}/${quizId}`);
+  console.log("getquizbyid" + response.data);
   return response.data;
 };

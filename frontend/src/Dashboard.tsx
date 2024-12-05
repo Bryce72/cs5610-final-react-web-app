@@ -5,7 +5,6 @@ import * as courseClient from "./courseClient";
 // import { enrollCourse, unenrollCourse } from "./reducer"; // Adjust the path as needed
 
 export default function Dashboard() {
-
   const [courses, setCourses] = useState<any[]>([]);
 
   const fetchAllCourses = async () => {
@@ -20,13 +19,15 @@ export default function Dashboard() {
   return (
     <div id="wd-dashboard">
       <h1 id="wd-dashboard-title">Dashboard</h1>
-      <h2 id="wd-dashboard-published">
-        Published Courses ({courses.length})
-      </h2>
+      <h2 id="wd-dashboard-published">Published Courses ({courses.length})</h2>
       <hr />
       <div id="wd-dashboard-courses" className="row">
         {courses.map((course) => (
-          <div key={course._id} className="wd-dashboard-course col" style={{ width: "300px" }}>
+          <div
+            key={course._id}
+            className="wd-dashboard-course col"
+            style={{ width: "300px" }}
+          >
             <div className="card rounded-3 overflow-hidden">
               <Link
                 className="wd-dashboard-course-link text-decoration-none text-dark"

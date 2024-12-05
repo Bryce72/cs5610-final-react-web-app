@@ -19,8 +19,9 @@ export default function QuizDetails() {
   // };
 
   // get quiz
+  // need to fix for quizid
   const fetchQuizzes = async () => {
-    const quizzes = await client.getQuizById("123");
+    const quizzes = await client.getQuizById("674d46596fa4204ec2faf6be");
     dispatch(setQuizzes(quizzes));
   };
 
@@ -45,10 +46,6 @@ export default function QuizDetails() {
   if (!quiz) {
     return <p>Loading...</p>;
   }
-
-  // if (!quiz) {
-  //   return <p>Loading...</p>;
-  // }
 
   return (
     <div className="container quiz-details-container mt-4">
