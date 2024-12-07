@@ -1,0 +1,23 @@
+#wd-profile-screen {
+    max-width: 400px;
+    margin: auto;
+  }
+  
+  #wd-profile-screen h2 {
+    font-size: 2rem;
+    font-weight: bold;
+  }
+  
+  #wd-profile-screen .form-control {
+    padding: 10px;
+    font-size: 1.1rem;
+  }
+  
+  #wd-profile-screen .btn {
+    background-color: #c44b4f;
+    border: none;
+    border-radius: 6px;
+    padding: 10px;
+    width: 100%;
+  }
+  

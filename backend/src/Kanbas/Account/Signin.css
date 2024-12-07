@@ -1,0 +1,29 @@
+#wd-signin-screen {
+    max-width: 400px;
+    margin: auto;
+  }
+  
+  #wd-signin-screen h2 {
+    font-size: 2rem;
+    font-weight: bold;
+  }
+  
+  #wd-signin-btn {
+    background-color: #cd0606; 
+    border: none;
+    border-radius: 6px;
+    padding: 10px;
+    width: 100%;
+  }
+  
+  #wd-signup-link {
+    display: inline-block;
+    margin-top: 10px;
+    text-decoration: none;
+    font-size: 1rem;
+  }
+  
+  #wd-signup-link:hover {
+    text-decoration: underline;
+  }
+  

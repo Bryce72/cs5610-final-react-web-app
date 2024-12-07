@@ -1,0 +1,48 @@
+ul.ulArrayState {
+    display: flex;
+    flex-direction: column;
+    border-radius: 25px;
+    border: 2px solid #9b9fa1;
+    padding: 20px;
+    width: 300px;
+    list-style-type: none; 
+    margin: 0; 
+}
+
+li.liArrayState {
+    display: flex;
+    justify-content: space-between; 
+    align-items: center;
+    font-family: Sans-serif;
+    font-weight: bold;
+    font-size: larger;
+    padding: 10px 0; 
+    border-bottom: 1px solid #ddd; 
+}
+
+li:last-child {
+    border-bottom: none; /* looked quite ugly with that last grey line doubling up sp this makes it cooler */
+}
+
+.btn-success {
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+
+.btn-danger {
+    background-color: #d9534f; 
+    border-radius: 15px;
+    padding: 8px 12px;
+    font-size: 16px;
+    color: white;
+    border: none;
+    cursor: pointer;
+    margin-left: auto; 
+    
+}
+
+.btn-danger:hover {
+    background-color: #c9302c; 
+}

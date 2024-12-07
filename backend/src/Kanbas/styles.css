@@ -1,0 +1,83 @@
+body   {  margin: 0;  padding: 0;  }
+body * {  font-family: Arial, Helvetica, sans-serif;  }
+
+@media (min-width: 768px) {
+  #wd-kanbas .wd-main-content-offset {
+    padding-left: 140px !important;
+  }
+}
+
+
+.list-group.wd > .list-group-item:focus {
+    color: black;
+    background-color: white;
+    border-left: 3px solid black !important;
+  }
+  
+
+  .btn-secondary {
+    --bs-btn-color: #000 !important;
+    --bs-btn-bg: #c7cdd1 !important;
+    --bs-btn-border-color: #c7cdd1 !important;
+    --bs-btn-hover-color: #fff !important;
+  }
+  .bg-secondary {
+    --bs-secondary-rgb: 199, 205, 209;
+  }
+  .list-group-item {
+    --bs-list-group-border-color: gray;
+  }
+  .wd-lesson {
+    border-left: 3px solid green !important;
+  }
+  
+  .modules-controls-grid {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+}
+
+.modules-controls-grid-items {
+    display: grid;
+    grid-auto-flow: column;
+    grid-gap: 10px;
+    align-items: center;
+    justify-content: end;
+}
+
+
+#wd-account-navigation .nav-link {
+  font-size: 1.5rem;
+  font-weight: 500;
+  margin-bottom: 10px;
+  color: #dc3545; /* Default text-danger color */
+  text-decoration: none;
+}
+
+#wd-account-navigation .nav-link.active {
+  color: black;
+  font-weight: bold;
+  border-left: 3px solid black; /* Add the vertical line as in the image */
+  padding-left: 10px;
+}
+
+#wd-account-navigation .nav-link:hover {
+  text-decoration: none;
+  color: #007bff;
+}
+
+.wd-enrollmentButton {
+  float:right;
+  background-color: blue;
+  border-radius: 12px;
+  transition-duration: 0.4s;
+  text-align: center;
+  color: #f7f7f7;
+}
+
+.wd-enrollmentButton:hover{
+  float:right;
+  background-color: rgb(35, 6, 222);
+  border-radius: 12px;
+  color: red;
+}

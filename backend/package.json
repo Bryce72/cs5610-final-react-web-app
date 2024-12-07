@@ -1,34 +1,52 @@
 {
-  "type": "module",
-  "name": "final-backend",
-  "version": "1.0.0",
-  "description": "the backend server for final project",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js"
-  },
-  "keywords": [
-    "Node",
-    "REST",
-    "Server",
-    "HTTP",
-    "Web",
-    "Development",
-    "CS5610",
-    "CS4550"
-  ],
-  "author": "final web dev project crew",
-  "license": "ISC",
+  "name": "kanbas-react-web-app-cs5610-fa24",
+  "version": "0.1.0",
+  "private": true,
   "dependencies": {
+    "@reduxjs/toolkit": "^2.3.0",
+    "@testing-library/jest-dom": "^5.17.0",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^13.5.0",
+    "@types/jest": "^27.5.2",
+    "@types/node": "^16.18.108",
+    "@types/react": "^18.3.5",
+    "@types/react-dom": "^18.3.0",
     "axios": "^1.7.7",
+    "bootstrap": "^5.3.3",
     "cors": "^2.8.5",
-    "dotenv": "^16.4.5",
-    "express": "^4.21.1",
-    "express-session": "^1.18.1",
-    "mongoose": "^8.8.3"
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-icons": "^5.3.0",
+    "react-redux": "^9.1.2",
+    "react-router": "^6.26.2",
+    "react-router-dom": "^6.26.2",
+    "react-scripts": "5.0.1",
+    "redux": "^5.0.1",
+    "typescript": "^4.9.5",
+    "web-vitals": "^2.1.4"
   },
-  "devDependencies": {
-    "@types/axios": "^0.14.4"
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   }
 }
