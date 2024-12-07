@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "axios": "^1.7.7",
+    "babel": "^5.8.38",
     "dotenv": "^16.4.5",
     "mongoose": "^8.8.3"
   }
