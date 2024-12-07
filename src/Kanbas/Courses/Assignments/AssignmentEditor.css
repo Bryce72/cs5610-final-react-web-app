@@ -1,0 +1,46 @@
+#wd-assignments-editor {
+  font-weight: normal;
+}
+
+.wd-underline {
+  background-color: darkgray;
+}
+
+#wd-name {
+  font-weight: normal;
+  margin-top: 15px;
+  margin-bottom: 10px;
+}
+
+textarea {
+  width: 100%;
+  height: 100px;
+  resize: none;
+  margin-bottom: 15px;
+}
+
+#wd-points, #wd-group, #wd-display-grade-as, #wd-submission-type, 
+#wd-checkbox, #wd-assign-to, #wd-due-date, #wd-available-util, 
+#wd-available-from, #wd-group {
+  margin-bottom: 20px;
+  margin-top: 20px;
+}
+
+#wd-file-upload {
+  margin-bottom: 20px;
+}
+#wd-assign-to {
+  margin-top: 0px;
+}
+
+#wd-due-date, #wd-available-util, #wd-available-from {
+  margin-top: 0px;
+}
+
+#wd-available-from {
+  margin-right: 0px;
+  width: 97%;
+}
+#wd-available-util {
+  margin-left: 0px;
+}

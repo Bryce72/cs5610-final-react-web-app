@@ -1,0 +1,21 @@
+
+.wd-assignment-list-item {
+  font-weight: normal;
+
+}
+.wd-assignment-description {
+  font-weight: normal;
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
+#wd-search-assignment {
+  margin-right: 5px;
+  width: auto;
+  display: inline-block;
+}
+
+#wd-add-assignment-group,
+#wd-add-assignment {
+  margin-right: 5px;
+}

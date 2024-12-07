@@ -1,0 +1,92 @@
+body   {  margin: 0;  padding: 0;  }
+body * {  font-family: Arial, Helvetica, sans-serif;  }
+
+@media (min-width: 768px) {
+  #wd-kanbas .wd-main-content-offset{
+    padding-left: 140px !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .wd-top-content-offset{
+    margin-top: 37px !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .right-menu {
+    position:absolute;
+    top: 0;
+    right: 0;
+    display: block !important;
+  }
+}
+@media (min-width: 768px) {
+  .right-menu {
+  top: 0;
+  bottom: 0;
+  background: #000;
+  }
+}
+
+.left-menu {
+  width: 120px;
+  height: 60px;
+  background-color: #000;
+}
+
+.right-menu {
+  width: 120px;
+  height: 60px;
+  background-color: #000;
+}
+
+
+
+@media (min-width: 768px) {
+  .left-menu {
+  top: 0;
+  bottom: 0;
+  background: #000;
+  }
+}
+
+@media (max-width: 768px) {
+  .left-menu {
+    position:absolute;
+    top: 0;
+    left: 0;
+    display: block !important;
+  }
+}
+
+
+.left-content {
+z-index: 1000 ;
+}
+
+
+
+.list-group.wd > .list-group-item.active {
+  color: black;
+  background-color: white;
+  border-left: 3px solid black !important;
+}
+
+
+.btn-secondary {
+  --bs-btn-color: #000 !important;
+  --bs-btn-bg: #c7cdd1 !important;
+  --bs-btn-border-color: #c7cdd1 !important;
+  --bs-btn-hover-color: #fff !important;
+}
+.bg-secondary {
+  --bs-secondary-rgb: 199, 205, 209;
+}
+.list-group-item {
+  --bs-list-group-border-color: lightgray;
+}
+.wd-lesson {
+  border-left: 3px solid green !important;
+}
+
