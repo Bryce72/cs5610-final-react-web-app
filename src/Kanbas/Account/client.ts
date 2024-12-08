@@ -16,6 +16,7 @@ export const profile = async () => {
 };
 export const signup = async (user: any) => {
   const response = await axiosWithCredentials.post(`${USERS_API}/signup`, user);
+  console.log("PLACING THIS LOG HERE TO SEE WHATS GOOD: ", user);
   return response.data;
 };
 export const signout = async () => {
