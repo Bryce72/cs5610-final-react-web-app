@@ -1,19 +1,26 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import * as client from "./client";
 import { useDispatch } from "react-redux";
 import { setCurrentUser } from "./reducer";
-import { useState } from "react";
 
 export default function Signup() {
        const [user, setUser] = useState<any>({});
        const navigate = useNavigate();
        const dispatch = useDispatch();
+
        const signup = async () => {
-              const currentUser = await client.signup(user);
-              dispatch(setCurrentUser(currentUser));
-              navigate("/Kanbas/Account/Profile");
+              try {
+                     const currentUser = await client.signup(user);
+                     dispatch(setCurrentUser(currentUser));
+                     alert("Signup successful!"); 
+                     navigate("/Kanbas/Account/Profile");
+              } catch (error: any) {
+                     const errorMessage = error.response?.data?.message || "Signup failed. Username might already be taken.";
+                     alert(errorMessage); 
+              }
        };
+
        return (
               <div className="wd-signup-screen">
                      <h1>Sign up</h1>
