@@ -5,10 +5,12 @@ const REMOTE_SERVER = process.env.REACT_APP_REMOTE_SERVER;
 const COURSES_API = `${REMOTE_SERVER}/api/courses`;
 
 export const fetchAllCourses = async () => {
+  console.log(`Courses/client - fetchAllCourses\n${COURSES_API}`);
   const { data } = await axiosWithCredentials.get(COURSES_API);
   console.log(data);
   return data;
 };
+
 export const createCourse = async (course: any) => {
   const { data } = await axiosWithCredentials.post(COURSES_API, course);
   return data;
@@ -28,6 +30,7 @@ export const updateCourse = async (course: any) => {
 };
 
 export const findModulesForCourse = async (courseId: string) => {
+  console.log(`Courses/client - findModulesForCourse\n${`${COURSES_API}/${courseId}/modules`}`);
   const response = await axiosWithCredentials.get(
     `${COURSES_API}/${courseId}/modules`
   );
