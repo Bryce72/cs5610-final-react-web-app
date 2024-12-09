@@ -5,7 +5,7 @@ export const USERS_API = `${REMOTE_SERVER}/api/users`;
 
 function logHelper(clientName: string, apiUrl: string) {
   console.log(`Account/client - ${clientName}\n${apiUrl}`);
-};
+}
 
 export const signin = async (credentials: any) => {
   logHelper("signin", `${USERS_API}/signin`);

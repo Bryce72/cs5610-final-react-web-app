@@ -1,5 +1,4 @@
 import { FaPlus } from "react-icons/fa";
-import React from "react";
 import { IoIosSearch } from "react-icons/io";
 import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";

@@ -58,7 +58,7 @@ export default function Modules() {
   useEffect(() => {
     if (cid) {
       fetchModules();
-    };
+    }
   }, [cid, modules]);
 
   const [isLeftMenuVisible, setLeftMenuVisible] = useState(false);
