@@ -5,7 +5,8 @@ import * as coursesClient from "../client";
 import { Badge, Button, Table } from "react-bootstrap";
 import { useEffect } from "react";
 import { FaPencilAlt } from "react-icons/fa";
-import * as client from "../ClientForQuizzes/client";
+import * as client from "../client";
+import React from "react";
 
 export default function QuizDetails() {
   const router = useNavigate();
@@ -232,6 +233,6 @@ export default function QuizDetails() {
       </Table>
     </>
   );
- 
+
 }
    */

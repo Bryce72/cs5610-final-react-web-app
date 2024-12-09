@@ -71,15 +71,6 @@ export default function Kanbas() {
     }
   };
 
-  // const fetchCourses = async () => {
-  //   try {
-  //     const courses = await courseClient.fetchAllCourses();
-  //     setCourses(courses);
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // };
-
   useEffect(() => {
     if (enrolling) {
       fetchCourses();
@@ -93,7 +84,6 @@ export default function Kanbas() {
     const newCourse = await courseClient.createCourse(course);
     setCourses([...courses, newCourse]);
   };
-
 
   const deleteCourse = async (courseId: string) => {
     const status = await courseClient.deleteCourse(courseId);

@@ -7,7 +7,7 @@ const COURSES_API = `${REMOTE_SERVER}/api/courses`;
 
 function logHelper(clientName: string, apiUrl: string) {
     console.log(`Assignments/client - ${clientName}\n${apiUrl}`);
-};
+}
 
 export const findAssignmentsForCourse = async (courseId: string) => {
     logHelper("findAssignmentsForCourse", `${COURSES_API}/${courseId}/assignments`)

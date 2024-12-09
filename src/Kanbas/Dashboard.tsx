@@ -1,8 +1,8 @@
 import { Link } from "react-router-dom";
 import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { enrollCourse, unenrollCourse } from "./reducer"; // Adjust the path as needed
-import * as enrollClient from "./client"; // Adjust the path as needed
+import { enrollCourse, unenrollCourse } from "./Enrollments/reducer";
+import * as enrollClient from "./Enrollments/client";
 
 export default function Dashboard({
   courses,

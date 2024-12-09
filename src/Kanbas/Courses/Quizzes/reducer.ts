@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
-import quizzes from "../Database/quizzes.json";
-import QuizDetails from "../Database/quizdetail.json";
+import {quizzes} from "../../Database";
+import {QuizDetails} from "../../Database";
 
 const initialState = {
   quizzes: [],
