@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { addQuiz, setQuizzes, deleteQuiz } from "./reducer"; // Import necessary actions
-// import quizzesData from "../Database/quizzes.json"; // Import quizzes data
+import { addQuiz, setQuizzes, deleteQuiz } from "../../src/Kanbas/Courses/Quizzes/reducer"; // Import necessary actions
 import "bootstrap/dist/css/bootstrap.min.css";
 import "react-quill/dist/quill.snow.css"; // Import styles for the editor
 import Select from "react-select"; // Import React Select
