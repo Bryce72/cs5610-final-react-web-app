@@ -23,3 +23,7 @@ yarn-debug.log*
 yarn-error.log*
 
 .env
+.idea/cs5610-final-react-web-app.iml
+.idea/modules.xml
+.idea/vcs.xml
+.idea/inspectionProfiles/Project_Default.xml
