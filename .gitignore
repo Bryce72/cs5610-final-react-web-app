@@ -31,3 +31,4 @@ yarn-error.log*
 *BACKUP_*.json
 backend/.vscode/settings.json
 frontend/.vscode/settings.json
+.vscode/settings.json
