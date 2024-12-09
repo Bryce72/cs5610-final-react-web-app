@@ -5,7 +5,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "react-quill/dist/quill.snow.css"; // Import styles for the editor
 import * as client from "./client";
 import { useParams } from "react-router";
-
+import QuestionEditor from "./QuestionEditor";
 
 import ReactQuill, { ReactQuillProps } from "react-quill";
 import Select from 'react-select';
@@ -285,7 +285,7 @@ export default function Quizzes() {
 
                 {activeTab === "questions" && (
                     <div>
-                        {/* <QuestionEditor /> */}
+                        <QuestionEditor />
 
                     </div>
                 )}
