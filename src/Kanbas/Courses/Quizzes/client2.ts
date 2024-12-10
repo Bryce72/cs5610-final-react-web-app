@@ -1,3 +1,5 @@
+//FIXME: think we can just delete this as nobody is using it anywhere?
+
 import axios from "axios";
 
 const axiosWithCredentials = axios.create({ withCredentials: true });

@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
-import { QuizQuestion, QuestionType } from "../types/QuizQuestion";
+import { QuizQuestion, QuestionType } from "../../types/QuizQuestion";
 
 
 import ReactQuill from "react-quill";
@@ -154,7 +154,7 @@ function QuestionBasicsEditor({
                     placeholder="Type question text here..."
                     style={{ height: "200px" }}
                 />
-            </div> <br/> <br/> <br/>
+            </div> <br /> <br /> <br />
 
             {/* Answers Section */}
             <div>

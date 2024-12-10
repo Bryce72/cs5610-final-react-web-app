@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
 
 import QuestionCard from "./QuestionCard";
-import { QuizQuestion } from "../types/QuizQuestion";
+import { QuizQuestion } from "../../types/QuizQuestion";
 import React from "react";
 
 export default function QuestionEditor() {

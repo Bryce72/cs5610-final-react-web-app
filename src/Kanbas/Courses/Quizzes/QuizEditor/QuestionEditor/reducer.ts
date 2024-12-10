@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { QuizQuestion } from "../types/QuizQuestion";
-import { questions } from "../../../Database";
+import { QuizQuestion } from "../../types/QuizQuestion";
+import { questions } from "../../../../Database";
 
 //for now initial state comes from json file in database
 const initialState: { quizQuestions: QuizQuestion[] } = { quizQuestions: questions as QuizQuestion[] };
