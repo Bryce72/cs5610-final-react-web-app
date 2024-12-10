@@ -6,7 +6,7 @@ import "react-quill/dist/quill.snow.css"; // Import styles for the editor
 import * as client from "./client";
 import { useParams } from "react-router";
 import QuestionEditor from "./QuestionEditor";
-
+import ProtectedRole from "../../Account/ProtectedRole";
 import ReactQuill, { ReactQuillProps } from "react-quill";
 import Select from 'react-select';
 
@@ -137,7 +137,7 @@ export default function Quizzes() {
                     Questions
                 </span>
             </div>
-
+      <ProtectedRole role="FACULTY">
             {/* Tab Content */}
             <div className="tab-content border p-4 bg-white">
                 {activeTab === "details" && (
@@ -290,6 +290,7 @@ export default function Quizzes() {
                     </div>
                 )}
             </div>
+            </ProtectedRole>
         </div>
     );
 }
