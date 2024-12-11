@@ -9,6 +9,7 @@ import PeopleTable from './People/Table';
 import { FaAlignJustify } from 'react-icons/fa';
 import AssignmentEditorNew from './Assignments/AssignmentEditorNew';
 import Quizzes from './Quizzes';
+import QuizEditor from './Quizzes/QuizEditor';
 
 export default function Courses({ courses }: { courses: any[]; }) {
   const { cid } = useParams();
@@ -43,7 +44,7 @@ export default function Courses({ courses }: { courses: any[]; }) {
 
 
               <Route path="Quizzes" element={<h3>{<Quizzes />}</h3>} />
-
+              <Route path="Quizzes/QuizEditor" element={<QuizEditor />} />
               <Route path="People" element={<h3>{<PeopleTable />}</h3>} />
             </Routes>
           </div>
