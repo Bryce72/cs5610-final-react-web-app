@@ -5,10 +5,10 @@ import { useNavigate } from "react-router-dom";
 
 
 
-const navigate = useNavigate();
 
 
 export default function Quizzes() {
+    const navigate = useNavigate();
     return (
         //todo: get all quizzes for current course then map to list of quizzes
 

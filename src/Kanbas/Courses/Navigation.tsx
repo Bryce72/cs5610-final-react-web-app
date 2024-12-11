@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { Link, useLocation, useParams } from "react-router-dom";
-import { courses } from "../Database";
 import * as client from "./client";
 
 
