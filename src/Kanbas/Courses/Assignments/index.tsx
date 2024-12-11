@@ -8,7 +8,6 @@ import { Link } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 import * as db from '../../Database';
 import { useDispatch, useSelector } from 'react-redux';
-import { add } from '../../../Labs/Lab3/Math';
 import { addAssignment, deleteAssignment, setAssignments } from './reducer';
 import { FaPencil } from "react-icons/fa6";
 import { FaTrash } from "react-icons/fa6";
