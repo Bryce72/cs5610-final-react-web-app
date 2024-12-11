@@ -1,32 +1,36 @@
+// reducer.ts
 import { createSlice } from "@reduxjs/toolkit";
 
-// Helper function to check if answer is correct
-const checkAnswer = (questionType: string, userAnswer: any, solution: any) => {
-  switch (questionType) {
-    case "fill-blanks":
-      // For fill-blanks, check if the answer matches any of the correct answers
-      if (Array.isArray(solution)) {
-        return solution.some(
-          (correctAnswer) =>
-            userAnswer?.toLowerCase() === correctAnswer.toLowerCase()
-        );
-      }
-      return userAnswer?.toLowerCase() === solution.toLowerCase();
+interface QuizState {
+  questions: any[];
+  currentQuestionIndex: number;
+  selectedAnswers: (string | boolean | null)[];
+  currentPoints: number;
+  totalPoints: number;
+  loading: boolean;
+  error: string | null;
+  answersChanged: boolean; // New flag to track if answers changed
+}
 
-    case "true-false":
-      return userAnswer === solution;
-
-    case "multiple-choice":
-    default:
-      return userAnswer === solution;
-  }
+const initialState: QuizState = {
+  questions: [],
+  currentQuestionIndex: 0,
+  selectedAnswers: [],
+  currentPoints: 0,
+  totalPoints: 0,
+  loading: false,
+  error: null,
+  answersChanged: false,
 };
 
-// Helper function to calculate total points
-const calculateTotalPoints = (questions: any[], selectedAnswers: any[]) => {
+// Helper function to calculate points for all questions
+const calculateTotalPoints = (
+  questions: any[],
+  selectedAnswers: (string | boolean | null)[]
+) => {
   return questions.reduce((total, question, index) => {
     const answer = selectedAnswers[index];
-    if (checkAnswer(question.type, answer, question.solution)) {
+    if (answer === question.solution) {
       return total + question.points;
     }
     return total;
@@ -35,16 +39,7 @@ const calculateTotalPoints = (questions: any[], selectedAnswers: any[]) => {
 
 const quizPreviewSlice = createSlice({
   name: "quizPreview",
-  initialState: {
-    questions: [],
-    currentQuestionIndex: 0,
-    selectedAnswers: [] as any[],
-    currentPoints: 0,
-    totalPoints: 0,
-    loading: false,
-    error: null,
-    answersChanged: false,
-  },
+  initialState,
   reducers: {
     setQuestions: (state, action) => {
       state.questions = action.payload;
@@ -53,6 +48,7 @@ const quizPreviewSlice = createSlice({
         (sum: number, q: any) => sum + q.points,
         0
       );
+      state.currentPoints = 0;
     },
     setLoading: (state, action) => {
       state.loading = action.payload;
@@ -62,6 +58,7 @@ const quizPreviewSlice = createSlice({
     },
     nextQuestion: (state) => {
       if (state.currentQuestionIndex < state.questions.length - 1) {
+        // Calculate points if answers have changed
         if (state.answersChanged) {
           state.currentPoints = calculateTotalPoints(
             state.questions,
@@ -74,6 +71,7 @@ const quizPreviewSlice = createSlice({
     },
     prevQuestion: (state) => {
       if (state.currentQuestionIndex > 0) {
+        // Calculate points if answers have changed
         if (state.answersChanged) {
           state.currentPoints = calculateTotalPoints(
             state.questions,
@@ -87,9 +85,10 @@ const quizPreviewSlice = createSlice({
     selectAnswer: (state, action) => {
       const { questionIndex, answer } = action.payload;
       state.selectedAnswers[questionIndex] = answer;
-      state.answersChanged = true;
+      state.answersChanged = true; // Mark that answers have changed
     },
     setQuestionIndex: (state, action) => {
+      // Calculate points if answers have changed before changing question
       if (state.answersChanged) {
         state.currentPoints = calculateTotalPoints(
           state.questions,
@@ -105,6 +104,7 @@ const quizPreviewSlice = createSlice({
       state.currentPoints = 0;
       state.answersChanged = false;
     },
+    // New action to force score calculation
     calculateCurrentScore: (state) => {
       if (state.answersChanged) {
         state.currentPoints = calculateTotalPoints(

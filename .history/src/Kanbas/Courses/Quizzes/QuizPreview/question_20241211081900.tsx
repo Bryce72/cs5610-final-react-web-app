@@ -6,29 +6,52 @@ interface QuestionProps {
   choices?: (string | boolean)[];
   solution?: string | string[] | boolean;
   points: number;
-  onAnswer: (answer: string | boolean) => void;
-  selectedAnswer: string | boolean | null;
+  onAnswer: (answer: string | boolean | string[]) => void;
+  selectedAnswer: string | boolean | string[] | null;
 }
 
 export default function Question({
   question,
   type,
   choices,
+  solution,
   onAnswer,
   selectedAnswer,
 }: QuestionProps) {
+  const handleFillBlanksChange = (value: string, index: number) => {
+    // Convert selectedAnswer to array if it's not already
+    const currentAnswers = Array.isArray(selectedAnswer)
+      ? [...selectedAnswer]
+      : Array(Array.isArray(solution) ? solution.length : 1).fill("");
+    currentAnswers[index] = value;
+    onAnswer(currentAnswers);
+  };
+
   const renderAnswerOptions = () => {
     switch (type) {
       case "fill-blanks":
+        // If solution is an array, create that many input boxes
+        const numBlanks = Array.isArray(solution) ? solution.length : 1;
+        const answers = Array.isArray(selectedAnswer)
+          ? selectedAnswer
+          : Array(numBlanks).fill("");
+
         return (
           <div className="p-3">
-            <input
-              type="text"
-              className="form-control"
-              value={selectedAnswer?.toString() || ""}
-              onChange={(e) => onAnswer(e.target.value)}
-              placeholder="Enter your answer"
-            />
+            {Array.from({ length: numBlanks }).map((_, index) => (
+              <div key={index} className="mb-2">
+                <label className="mb-1">Blank {index + 1}:</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  value={answers[index] || ""}
+                  onChange={(e) =>
+                    handleFillBlanksChange(e.target.value, index)
+                  }
+                  placeholder={`Enter answer for blank ${index + 1}`}
+                />
+              </div>
+            ))}
           </div>
         );
 

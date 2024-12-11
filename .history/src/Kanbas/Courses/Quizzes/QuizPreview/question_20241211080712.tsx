@@ -3,8 +3,7 @@ import React from "react";
 interface QuestionProps {
   question: string;
   type: "true-false" | "multiple-choice" | "fill-blanks";
-  choices?: (string | boolean)[];
-  solution?: string | string[] | boolean;
+  choices: (string | boolean)[];
   points: number;
   onAnswer: (answer: string | boolean) => void;
   selectedAnswer: string | boolean | null;
@@ -27,7 +26,7 @@ export default function Question({
               className="form-control"
               value={selectedAnswer?.toString() || ""}
               onChange={(e) => onAnswer(e.target.value)}
-              placeholder="Enter your answer"
+              placeholder="Type your answer here"
             />
           </div>
         );
@@ -56,7 +55,7 @@ export default function Question({
       default:
         return (
           <ul className="list-unstyled p-3">
-            {choices?.map((choice, index) => (
+            {choices.map((choice, index) => (
               <li key={index}>
                 <label className="d-flex align-items-center">
                   <input

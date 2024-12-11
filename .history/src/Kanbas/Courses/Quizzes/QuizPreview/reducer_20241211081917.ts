@@ -1,17 +1,16 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-// Helper function to check if answer is correct
-const checkAnswer = (questionType: string, userAnswer: any, solution: any) => {
+// Helper function to check if answers are correct
+const checkAnswers = (questionType: string, userAnswer: any, solution: any) => {
   switch (questionType) {
     case "fill-blanks":
-      // For fill-blanks, check if the answer matches any of the correct answers
-      if (Array.isArray(solution)) {
-        return solution.some(
-          (correctAnswer) =>
-            userAnswer?.toLowerCase() === correctAnswer.toLowerCase()
+      if (Array.isArray(solution) && Array.isArray(userAnswer)) {
+        // All answers must be correct to get points
+        return solution.every(
+          (sol, index) => userAnswer[index]?.toLowerCase() === sol.toLowerCase()
         );
       }
-      return userAnswer?.toLowerCase() === solution.toLowerCase();
+      return false;
 
     case "true-false":
       return userAnswer === solution;
@@ -26,7 +25,7 @@ const checkAnswer = (questionType: string, userAnswer: any, solution: any) => {
 const calculateTotalPoints = (questions: any[], selectedAnswers: any[]) => {
   return questions.reduce((total, question, index) => {
     const answer = selectedAnswers[index];
-    if (checkAnswer(question.type, answer, question.solution)) {
+    if (checkAnswers(question.type, answer, question.solution)) {
       return total + question.points;
     }
     return total;
@@ -38,7 +37,7 @@ const quizPreviewSlice = createSlice({
   initialState: {
     questions: [],
     currentQuestionIndex: 0,
-    selectedAnswers: [] as any[],
+    selectedAnswers: [],
     currentPoints: 0,
     totalPoints: 0,
     loading: false,
@@ -48,7 +47,12 @@ const quizPreviewSlice = createSlice({
   reducers: {
     setQuestions: (state, action) => {
       state.questions = action.payload;
-      state.selectedAnswers = new Array(action.payload.length).fill(null);
+      // Initialize selectedAnswers based on question type
+      state.selectedAnswers = action.payload.map((q: any) =>
+        q.type === "fill-blanks" && Array.isArray(q.solution)
+          ? new Array(q.solution.length).fill("")
+          : null
+      );
       state.totalPoints = action.payload.reduce(
         (sum: number, q: any) => sum + q.points,
         0
@@ -101,7 +105,11 @@ const quizPreviewSlice = createSlice({
     },
     resetQuiz: (state) => {
       state.currentQuestionIndex = 0;
-      state.selectedAnswers = new Array(state.questions.length).fill(null);
+      state.selectedAnswers = state.questions.map((q: any) =>
+        q.type === "fill-blanks" && Array.isArray(q.solution)
+          ? new Array(q.solution.length).fill("")
+          : null
+      );
       state.currentPoints = 0;
       state.answersChanged = false;
     },

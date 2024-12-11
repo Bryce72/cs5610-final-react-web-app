@@ -71,7 +71,7 @@ export default function QuizPreview() {
     fetchQuestions();
   }, [dispatch, quizId]);
 
-  const handleAnswerSelection = (answer: string | boolean | string[]) => {
+  const handleAnswerSelection = (answer: string | boolean) => {
     dispatch(selectAnswer({ questionIndex: currentQuestionIndex, answer }));
     setLastSaveTime(formatStartTime());
   };

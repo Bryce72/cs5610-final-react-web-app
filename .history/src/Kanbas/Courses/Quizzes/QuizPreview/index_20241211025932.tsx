@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import * as client from "./client";
-import Question from "./question";
 import {
   nextQuestion,
   prevQuestion,
@@ -71,47 +70,68 @@ export default function QuizPreview() {
     fetchQuestions();
   }, [dispatch, quizId]);
 
-  const handleAnswerSelection = (answer: string | boolean | string[]) => {
+  const handleAnswerSelection = (answer: string | boolean) => {
     dispatch(selectAnswer({ questionIndex: currentQuestionIndex, answer }));
     setLastSaveTime(formatStartTime());
   };
 
-  if (loading) return <div className="p-4">Loading questions...</div>;
-  if (error) return <div className="p-4 text-danger">{error}</div>;
-  if (!questions.length)
+  if (loading) {
+    return <div className="p-4">Loading questions...</div>;
+  }
+
+  if (error) {
+    return <div className="p-4 text-danger">{error}</div>;
+  }
+
+  if (!questions.length) {
     return <div className="p-4">No questions available</div>;
+  }
 
   const currentQuestion = questions[currentQuestionIndex];
 
   return (
     <div className="wd-main-content-offset p-4">
-      {/* Points Display */}
-      <div className="alert alert-info mb-4">
-        <div className="d-flex justify-content-between">
-          <span>
-            Score: {currentPoints} / {totalPoints} points
-          </span>
-          <span>
-            Progress: {((currentPoints / totalPoints) * 100).toFixed(1)}%
-          </span>
-        </div>
-      </div>
-
       <div className="row">
-        {/* Main Quiz Content */}
+        {/* Main Quiz Content (Left Side) */}
         <div className="col-md-9 pe-4">
           <div className="list-group">
+            {/* Quiz Instructions */}
             <h2 className="fs-4 mb-4">Quiz Instructions</h2>
 
-            {/* Question Component */}
-            <Question
-              question={currentQuestion.question}
-              type={currentQuestion.type}
-              choices={currentQuestion.choices || []}
-              points={currentQuestion.points}
-              onAnswer={handleAnswerSelection}
-              selectedAnswer={selectedAnswers[currentQuestionIndex]}
-            />
+            {/* Question Container */}
+            <div className="border rounded mb-3">
+              <div className="d-flex justify-content-between p-3 bg-light border-bottom">
+                <span>Question {currentQuestionIndex + 1}</span>
+                <span>{currentQuestion.points} pts</span>
+              </div>
+              <div className="p-4">
+                <p className="mb-4">{currentQuestion.question}</p>
+                <div className="mb-3">
+                  {currentQuestion.choices?.map(
+                    (choice: string | boolean, index: number) => (
+                      <div key={index} className="form-check mb-2">
+                        <input
+                          type="radio"
+                          id={`answer-${index}`}
+                          name="answer"
+                          className="form-check-input"
+                          checked={
+                            selectedAnswers[currentQuestionIndex] === choice
+                          }
+                          onChange={() => handleAnswerSelection(choice)}
+                        />
+                        <label
+                          className="form-check-label"
+                          htmlFor={`answer-${index}`}
+                        >
+                          {String(choice)}
+                        </label>
+                      </div>
+                    )
+                  )}
+                </div>
+              </div>
+            </div>
 
             {/* Navigation */}
             <div className="d-flex justify-content-between mb-3">
@@ -155,7 +175,7 @@ export default function QuizPreview() {
           </div>
         </div>
 
-        {/* Questions List Sidebar */}
+        {/* Questions List Sidebar (Right Side) */}
         <div className="col-md-3">
           <div className="bg-light border rounded p-3">
             <h3 className="fs-5 mb-3">Questions</h3>

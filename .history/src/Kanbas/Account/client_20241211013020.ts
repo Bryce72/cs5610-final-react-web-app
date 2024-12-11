@@ -8,8 +8,6 @@ function logHelper(clientName: string, apiUrl: string) {
 }
 
 export const signin = async (credentials: any) => {
-  console.log("REMOTE_SERVER:", REMOTE_SERVER);
-  console.log("USERS_API:", USERS_API);
   logHelper("signin", `${USERS_API}/signin`);
   const response = await axiosWithCredentials.post(
     `${USERS_API}/signin`,

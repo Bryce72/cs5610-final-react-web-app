@@ -16,7 +16,7 @@ const store = configureStore({
     enrollmentReducer,
     quizzesReducer,
     quizDetailReducer,
-    quizQuestions,
+    quizQuestions
     quizPreview,
   },
 });
