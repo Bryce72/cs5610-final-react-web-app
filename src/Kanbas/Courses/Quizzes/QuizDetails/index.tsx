@@ -10,7 +10,8 @@ import React from "react";
 
 export default function QuizDetails() {
   const router = useNavigate();
-  const { cid } = useParams();
+  const { cid, quizId } = useParams();
+  console.log("Params:", cid, quizId);
   const dispatch = useDispatch();
   const { quizzes } = useSelector((state: any) => state.quizDetailReducer);
 
@@ -22,7 +23,9 @@ export default function QuizDetails() {
   // get quiz
   // need to fix for quizid
   const fetchQuizzes = async () => {
-    const quizzes = await client.getQuizById("674d46596fa4204ec2faf6be");
+    //const quizzes = await client.getQuizById("674d46596fa4204ec2faf6be");
+    const quizzes = await client.getQuizById(quizId);
+
     dispatch(setQuizzes(quizzes));
   };
 

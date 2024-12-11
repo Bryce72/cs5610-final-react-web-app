@@ -22,21 +22,25 @@ export default function Quizzes() {
     fetchQuizzes();
   }, [cid]); // Re-fetch if the course ID changes
 
-  const quizzes = useSelector((state: any) => state.quizzesReducer.quizzes || []);
+  const quizzes = useSelector(
+    (state: any) => state.quizzesReducer.quizzes || []
+  );
   const navigate = useNavigate();
   return (
     <div>
-               <ProtectedRole role="FACULTY">
-             <div className="wd-quizzes-container">
-                 {/* Button to navigate to Quiz Editor */}
-                 <button
-                    onClick={() => navigate(`/Kanbas/Courses/${cid}/Quizzes/QuizEditor`)}
-                    className="wd-quiz-editor-button"
-                >
-                    FACULTY Quiz Editor
-                </button>
-            </div>
-            </ProtectedRole>
+      <ProtectedRole role="FACULTY">
+        <div className="wd-quizzes-container">
+          {/* Button to navigate to Quiz Editor */}
+          <button
+            onClick={() =>
+              navigate(`/Kanbas/Courses/${cid}/Quizzes/QuizEditor`)
+            }
+            className="wd-quiz-editor-button"
+          >
+            FACULTY Quiz Editor
+          </button>
+        </div>
+      </ProtectedRole>
       <ul id="wd-quizzes" className="list-group rounded-0">
         <li className="wd-module list-group-item p-0 mb-4 fs-5 border-lightgray">
           <div className="wd-title p-3 ps-2 bg-light d-flex justify-content-between align-items-center">
@@ -74,20 +78,13 @@ export default function Quizzes() {
         </li>
       </ul>
     </div>
-    
   );
 }
-
-
 
 // import React from "react";
 // import ProtectedRole from "../../Account/ProtectedRole";
 // import { useNavigate, useParams } from "react-router-dom";
 // import "./index.css";
-
-
-
-
 
 // export default function Quizzes() {
 //     const navigate = useNavigate();
@@ -95,10 +92,7 @@ export default function Quizzes() {
 //     return (
 //         //todo: get all quizzes for current course then map to list of quizzes
 
-
 //         //todo: if student clicks on a specific quiz show the quiz details(?) and or quiz preview
-        
-
 
 //         <ProtectedRole role="FACULTY">
 //             <div className="wd-quizzes-container">
@@ -113,4 +107,3 @@ export default function Quizzes() {
 //             </ProtectedRole>
 //         );
 //     }
-    
