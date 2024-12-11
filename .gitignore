@@ -4,6 +4,9 @@
 /node_modules
 /.pnp
 .pnp.js
+.cache/
+frontend/.cache/
+node_modules/.cache/
 
 # testing
 /coverage
