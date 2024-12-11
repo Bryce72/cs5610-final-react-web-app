@@ -5,7 +5,7 @@
 /.pnp
 .pnp.js
 .cache/
-frontend/.cache/
+frontend/node_modules/.cache/
 node_modules/.cache/
 
 # testing
