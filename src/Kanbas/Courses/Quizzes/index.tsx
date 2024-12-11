@@ -1,7 +1,7 @@
 import React from "react";
 import ProtectedRole from "../../Account/ProtectedRole";
 import { useNavigate, useParams } from "react-router-dom";
-import "./Quizzes.css";
+import "./index.css";
 
 
 
