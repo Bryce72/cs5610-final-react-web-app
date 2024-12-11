@@ -6,20 +6,21 @@ import * as client from "./client";
 import { setQuizzes } from "./reducer"; // Assumes a reducer for managing quizzes
 
 export default function Quizzes() {
-  const { cid } = useParams();
+  const { cid } = useParams(); // Fetch the course ID from the URL
   const dispatch = useDispatch();
 
   // Fetch quizzes for the course
   const fetchQuizzes = async () => {
-    const quizzes = await client.findQuizzesForCourse();
+    if (!cid) return; // Ensure course ID is present
+    const quizzes = await client.findQuizzesForCourse(cid); // Pass the course ID dynamically
     dispatch(setQuizzes(quizzes));
   };
 
   useEffect(() => {
     fetchQuizzes();
-  }, []);
+  }, [cid]); // Re-fetch if the course ID changes
 
-  const quizzes = useSelector((state: any) => state.quizzesReducer.quizzes);
+  const quizzes = useSelector((state: any) => state.quizzesReducer.quizzes || []);
 
   return (
     <div>
