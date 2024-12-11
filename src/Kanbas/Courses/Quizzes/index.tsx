@@ -1,9 +1,10 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { BsGripVertical } from "react-icons/bs";
 import * as client from "./client";
 import { setQuizzes } from "./reducer";
+import ProtectedRole from "../../Account/ProtectedRole";
 
 export default function Quizzes() {
   const { cid } = useParams(); // Fetch the course ID from the URL
@@ -21,9 +22,20 @@ export default function Quizzes() {
   }, [cid]); // Re-fetch if the course ID changes
 
   const quizzes = useSelector((state: any) => state.quizzesReducer.quizzes || []);
-
+  const navigate = useNavigate();
   return (
     <div>
+               <ProtectedRole role="FACULTY">
+             <div className="wd-quizzes-container">
+                 {/* Button to navigate to Quiz Editor */}
+                 <button
+                    onClick={() => navigate(`/Kanbas/Courses/${cid}/Quizzes/QuizEditor`)}
+                    className="wd-quiz-editor-button"
+                >
+                    FACULTY Quiz Editor
+                </button>
+            </div>
+            </ProtectedRole>
       <ul id="wd-quizzes" className="list-group rounded-0">
         <li className="wd-module list-group-item p-0 mb-4 fs-5 border-lightgray">
           <div className="wd-title p-3 ps-2 bg-light d-flex justify-content-between align-items-center">
@@ -61,6 +73,7 @@ export default function Quizzes() {
         </li>
       </ul>
     </div>
+    
   );
 }
 
