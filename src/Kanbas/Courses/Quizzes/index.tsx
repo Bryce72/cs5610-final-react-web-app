@@ -1,9 +1,9 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { BsGripVertical } from "react-icons/bs";
 import * as client from "./client";
-import { setQuizzes } from "./reducer"; // Assumes a reducer for managing quizzes
+import { setQuizzes } from "./reducer";
 
 export default function Quizzes() {
   const { cid } = useParams(); // Fetch the course ID from the URL
@@ -42,12 +42,17 @@ export default function Quizzes() {
                 <BsGripVertical className="me-2 fs-3" />
                 <div className="flex-grow-1 ms-2">
                   <h6 className="mb-1">
-                    <strong>{quiz.title}</strong>
+                    <Link
+                      to={`/Kanbas/Courses/${cid}/Quizzes/${quiz._id}`}
+                      className="text-decoration-none text-dark"
+                    >
+                      <strong>{quiz.name}</strong>
+                    </Link>
                   </h6>
                   <small className="text-muted">
-                    <strong>Available:</strong> {quiz.availableFrom || "TBD"} |{" "}
-                    <strong>Due:</strong> {quiz.dueDate || "TBD"} |{" "}
-                    {quiz.points || 0} pts
+                    <strong>Available:</strong> {quiz.available_from || "TBD"} |{" "}
+                    <strong>Due:</strong> {quiz.due || "TBD"} |{" "}
+                    {quiz.total_points || 0} pts
                   </small>
                 </div>
               </li>
@@ -58,7 +63,6 @@ export default function Quizzes() {
     </div>
   );
 }
-
 
 
 
