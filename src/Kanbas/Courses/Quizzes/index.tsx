@@ -5,6 +5,7 @@ import { BsGripVertical } from "react-icons/bs";
 import * as client from "./client";
 import { setQuizzes } from "./reducer";
 import ProtectedRole from "../../Account/ProtectedRole";
+import "./index.css";
 
 export default function Quizzes() {
   const { cid } = useParams(); // Fetch the course ID from the URL
