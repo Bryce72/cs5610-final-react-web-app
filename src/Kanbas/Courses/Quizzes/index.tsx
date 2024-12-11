@@ -1,5 +1,11 @@
 import React from "react";
 import QuizEditor from "./QuizEditor";
+import ProtectedRole from "../../Account/ProtectedRole";
+import { useNavigate } from "react-router-dom";
+
+
+
+const navigate = useNavigate();
 
 
 export default function Quizzes() {
@@ -8,9 +14,21 @@ export default function Quizzes() {
 
 
         //todo: if student clicks on a specific quiz show the quiz details(?) and or quiz preview
-
-
-        //todo: only show this when faculty or admin clicks on a specific quiz
-        <QuizEditor />
-    );
-}
+        
+            <div className="wd-quizzes-container">
+                {/* Button to navigate to Quiz Editor */}
+                <button
+                    onClick={() => navigate("/quiz-editor")}
+                    className="wd-quiz-editor-button"
+                >
+                    FACULTY Quiz Editor
+                </button>
+    
+                {/* Protected role content */}
+                <ProtectedRole role="FACULTY">
+                    <QuizEditor />
+                </ProtectedRole>
+            </div>
+        );
+    }
+    
