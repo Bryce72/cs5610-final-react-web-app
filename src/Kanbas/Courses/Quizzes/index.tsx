@@ -28,6 +28,8 @@ export default function Quizzes() {
   const navigate = useNavigate();
   return (
     <div>
+
+      {/* FIXME: remove this now that faculty can click on edit button inside of quiz details */}
       <ProtectedRole role="FACULTY">
         <div className="wd-quizzes-container">
           {/* Button to navigate to Quiz Editor */}
@@ -41,6 +43,7 @@ export default function Quizzes() {
           </button>
         </div>
       </ProtectedRole>
+
       <ul id="wd-quizzes" className="list-group rounded-0">
         <li className="wd-module list-group-item p-0 mb-4 fs-5 border-lightgray">
           <div className="wd-title p-3 ps-2 bg-light d-flex justify-content-between align-items-center">
@@ -90,9 +93,7 @@ export default function Quizzes() {
 //     const navigate = useNavigate();
 //     const { cid } = useParams();
 //     return (
-//         //todo: get all quizzes for current course then map to list of quizzes
 
-//         //todo: if student clicks on a specific quiz show the quiz details(?) and or quiz preview
 
 //         <ProtectedRole role="FACULTY">
 //             <div className="wd-quizzes-container">

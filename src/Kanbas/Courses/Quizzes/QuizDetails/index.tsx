@@ -7,6 +7,7 @@ import { AiOutlineStop } from "react-icons/ai";
 import { addQuiz, setQuizzes } from "./quizDetailReducer";
 import * as client from "../client";
 import "./QuizDetails.css";
+import ProtectedRole from "../../../Account/ProtectedRole";
 
 export default function QuizDetails() {
   const navigate = useNavigate();
@@ -41,7 +42,7 @@ export default function QuizDetails() {
       setError("Quiz ID is missing");
       return;
     }
-    navigate(`/Kanbas/Courses/${cid}/Quizzes/${quizId}/Question/1`);
+    navigate(`/Kanbas/Courses/${cid}/Quizzes/${quizId}/QuizPreview`);
   };
 
   return (
@@ -52,16 +53,14 @@ export default function QuizDetails() {
         <div className="action-buttons">
           <button
             id="wd-publish-btn"
-            className={`btn btn-lg ${
-              quiz.published ? "btn-success" : "btn-danger"
-            }`}
+            className={`btn btn-lg ${quiz.published ? "btn-success" : "btn-danger"
+              }`}
           >
             {quiz.published ? <FaPlus /> : <AiOutlineStop />}
             {quiz.published ? " Published" : " Unpublished"}
           </button>
         </div>
       </div>
-
       <hr />
 
       {/* Quiz Details */}
@@ -69,7 +68,6 @@ export default function QuizDetails() {
         <p><strong>Quiz Type:</strong> {quiz.quiz_type || "Graded Quiz"}</p>
         <p><strong>Points:</strong> {quiz.total_points || 0}</p>
       </div>
-
       <hr />
 
       {/* Dates Table */}
@@ -97,6 +95,15 @@ export default function QuizDetails() {
           Click here To take the Quiz
         </Button>
       </div>
+
+      {/* TODO: styling/positioning for this button */}
+      <ProtectedRole role="FACULTY">
+        <Button onClick={e => navigate(`/Kanbas/Courses/${cid}/Quizzes/${quizId}/QuizEditor`)}>
+          Edit
+        </Button>
+      </ProtectedRole>
+
+      {/* TODO: show this student's previous attempt and how many more times they can take this quiz*/}
     </div>
   );
 }
