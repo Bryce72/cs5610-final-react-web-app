@@ -30,6 +30,7 @@ export default function Quizzes() {
   const handleQuizClick = (quizId: string) => {
     navigate(`/Kanbas/Courses/${cid}/Quizzes/${quizId}/QuizPreview`);
   };
+
   return (
     <div>
       <ProtectedRole role="FACULTY">

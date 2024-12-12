@@ -28,7 +28,7 @@ export default function Quizzes() {
   );
 
   const handleQuizClick = (quizId: string) => {
-    navigate(`/Kanbas/Courses/${cid}/Quizzes/${quizId}/QuizPreview`);
+    navigate(`/Kanbas/Courses/${courseId}/Quizzes/${quizId}/QuizPreview`);
   };
   return (
     <div>
