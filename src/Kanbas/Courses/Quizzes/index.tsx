@@ -26,14 +26,22 @@ export default function Quizzes() {
   const quizzes = useSelector(
     (state: any) => state.quizzesReducer.quizzes || []
   );
+<<<<<<< HEAD
 
   const handleQuizClick = (quizId: string) => {
     navigate(`/Kanbas/Courses/${cid}/Quizzes/${quizId}/QuizPreview`);
   };
+=======
+  const navigate = useNavigate();
+>>>>>>> 9d372dc2c33df6d488cec73e2084679697e6aad2
   return (
     <div>
       <ProtectedRole role="FACULTY">
         <div className="wd-quizzes-container">
+<<<<<<< HEAD
+=======
+          {/* Button to navigate to Quiz Editor */}
+>>>>>>> 9d372dc2c33df6d488cec73e2084679697e6aad2
           <button
             onClick={() =>
               navigate(`/Kanbas/Courses/${cid}/Quizzes/QuizEditor`)
@@ -44,7 +52,10 @@ export default function Quizzes() {
           </button>
         </div>
       </ProtectedRole>
+<<<<<<< HEAD
 
+=======
+>>>>>>> 9d372dc2c33df6d488cec73e2084679697e6aad2
       <ul id="wd-quizzes" className="list-group rounded-0">
         <li className="wd-module list-group-item p-0 mb-4 fs-5 border-lightgray">
           <div className="wd-title p-3 ps-2 bg-light d-flex justify-content-between align-items-center">
