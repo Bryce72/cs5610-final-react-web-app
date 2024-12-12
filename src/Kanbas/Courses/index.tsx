@@ -13,6 +13,7 @@ import QuizEditor from "./Quizzes/QuizEditor";
 import QuizDetails from "./Quizzes/QuizDetails";
 import QuizPreview from "./Quizzes/QuizPreview";
 
+
 export default function Courses({ courses }: { courses: any[] }) {
   const { cid } = useParams();
   const course = courses.find((course) => course._id === cid);
@@ -40,23 +41,18 @@ export default function Courses({ courses }: { courses: any[] }) {
               <Route path="Assignments" element={<h3>{<Assignments />}</h3>} />
               <Route path="Assignments/:aid" element={<AssignmentEditor />} />
 
-              <Route
-                path="Assignments/AssignmentEditorNew"
-                element={<AssignmentEditorNew cid={cid} />}
-              />
+              <Route path="Assignments/AssignmentEditorNew" element={<AssignmentEditorNew cid={cid} />}/>
 
               <Route path="Quizzes" element={<h3>{<Quizzes />}</h3>} />
-              <Route
-                path="/Kanbas/Courses/:cid/Quizzes"
-                element={<Quizzes />}
-              />
+              <Route path="/Kanbas/Courses/:cid/Quizzes" element={<Quizzes />}/>
               <Route path="Quizzes/:quizId" element={<QuizDetails />} />
               <Route path="Quizzes/QuizEditor" element={<QuizEditor />} />
               <Route path="People" element={<h3>{<PeopleTable />}</h3>} />
-              <Route
-                path="Quizzes/:quizId/QuizPreview"
-                element={<QuizPreview />}
-              />
+              <Route path="Quizzes/:quizId/QuizPreview" element={<QuizPreview />}/>
+
+
+
+
             </Routes>
           </div>
         </div>
