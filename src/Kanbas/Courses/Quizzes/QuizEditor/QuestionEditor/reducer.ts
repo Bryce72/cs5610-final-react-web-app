@@ -1,9 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { QuizQuestion } from "../../types/QuizQuestion";
-import { questions } from "../../../../Database";
 
-//for now initial state comes from json file in database
-const initialState: { quizQuestions: QuizQuestion[] } = { quizQuestions: questions as QuizQuestion[] };
+//starts off empty
+const initialState: { quizQuestions: QuizQuestion[] } = { quizQuestions: [] };
 
 //slice for all the questions in the current quiz
 const quizQuestionSlice = createSlice(
@@ -13,8 +12,12 @@ const quizQuestionSlice = createSlice(
 
         reducers: {
             //for when we're using database to get quiz questions
-            setQuizQuestions: (state, payload: any) => {
-                state.quizQuestions = payload;
+            setQuizQuestions: (state, action) => {
+                state.quizQuestions = action.payload;
+
+                // console.log("REDUX setQuizQuestions:");
+                // console.debug(`ACTION =${JSON.stringify(action, null, 2)}`);
+                // console.debug(`STATE = ${JSON.stringify(state.quizQuestions, null, 2)}`);
             },
             addQuizQuestion: (state, { payload: newQuestion }) => {
                 const question = newQuestion as QuizQuestion; //type casting
@@ -37,5 +40,5 @@ const quizQuestionSlice = createSlice(
     }
 );
 
-export const { addQuizQuestion, removeQuizQuestion, editQuizQuestion } = quizQuestionSlice.actions;
+export const { addQuizQuestion, removeQuizQuestion, editQuizQuestion, setQuizQuestions } = quizQuestionSlice.actions;
 export default quizQuestionSlice.reducer;

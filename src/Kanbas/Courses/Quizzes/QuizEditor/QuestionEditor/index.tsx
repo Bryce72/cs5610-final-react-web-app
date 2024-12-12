@@ -1,23 +1,48 @@
 import { useDispatch, useSelector } from "react-redux";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import QuestionCard from "./QuestionCard";
 import { QuizQuestion } from "../../types/QuizQuestion";
 import React from "react";
+import * as client from './client';
+import { setQuizQuestions, addQuizQuestion, removeQuizQuestion, editQuizQuestion } from "./reducer";
+import { useParams } from "react-router-dom";
 
 export default function QuestionEditor() {
-    const dispatch = useDispatch();
 
-    //todo: get id for current quiz from path params
+    const dispatch = useDispatch();
+    const { quizId } = useParams<{ quizId: string }>();
 
     //REDUX for all questions in the current quiz
-    //todo: filter this for current quiz only
     const { quizQuestions } = useSelector((state: any) => state.quizQuestions);
+
+    const fetchQuestions = async (quizID: string) => {
+        //get questions for this quiz from the server
+        const serverQuestions = await client.getQuestionsForQuiz(quizID);
+        //update redux
+        dispatch(setQuizQuestions(serverQuestions));
+    };
+
+    // when page first loads get all the questions for this quiz
+    useEffect(() => {
+        if (typeof quizId !== "string") {
+            throw new TypeError(`'quizId' should be a string but is actually ${typeof quizId}`)
+        } else {
+            fetchQuestions(quizId);
+        }
+    }, []);
+
+    //testing: effect to log whenever our questions change
+    useEffect(() => {
+        console.log(`QuestionEditor\n${JSON.stringify(quizQuestions, null, 2)}`);
+    }, [quizQuestions]);
+
 
     return (
         <div id="question-editor" className="container mt-4">
             <div id="questions-overview" className="text-center">
                 {
+                    // FIXME: .map is not a function??
                     quizQuestions.map((q: QuizQuestion) => (
                         <QuestionCard question={q} key={q.question_id} />
                     ))

@@ -102,6 +102,11 @@ export default function QuizDetails() {
           Edit
         </Button>
       </ProtectedRole>
+      <ProtectedRole role="ADMIN">
+        <Button onClick={e => navigate(`/Kanbas/Courses/${cid}/Quizzes/${quizId}/QuizEditor`)}>
+          Edit
+        </Button>
+      </ProtectedRole>
 
       {/* TODO: show this student's previous attempt and how many more times they can take this quiz*/}
     </div>
