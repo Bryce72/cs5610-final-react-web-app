@@ -209,7 +209,7 @@ export default function QuizDetails() {
     </div>
   );
 }
-// Button and handelPreviewClick edit by Fan
+
 // import { useNavigate, useParams } from "react-router";
 // import { useDispatch, useSelector } from "react-redux";
 // import { addQuiz, setQuizzes } from "./quizDetailReducer";

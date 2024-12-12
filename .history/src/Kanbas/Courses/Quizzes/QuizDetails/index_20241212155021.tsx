@@ -38,6 +38,10 @@ export default function QuizDetails() {
     dispatch(setQuizzes(quizzes));
   };
 
+  const handlePreviewClick = () => {
+    navigate(`/Kanbas/Courses/${cid}/Quizzes/${quizId}/QuizPreview`);
+  };
+
   const togglePublish = async () => {
     if (!quiz) return;
 
@@ -71,10 +75,6 @@ export default function QuizDetails() {
   if (!quiz) {
     return <p>Loading...</p>;
   }
-
-  const handlePreviewClick = () => {
-    navigate(`/Kanbas/Courses/${cid}/Quizzes/${quizId}/QuizPreview`);
-  };
 
   return (
     <div className="container quiz-details-container mt-4">
@@ -201,7 +201,6 @@ export default function QuizDetails() {
         <Button
           variant="danger"
           style={{ fontSize: "1rem", padding: "10px 20px" }}
-          onClick={handlePreviewClick} // Add this line
         >
           Preview
         </Button>
@@ -209,7 +208,7 @@ export default function QuizDetails() {
     </div>
   );
 }
-// Button and handelPreviewClick edit by Fan
+
 // import { useNavigate, useParams } from "react-router";
 // import { useDispatch, useSelector } from "react-redux";
 // import { addQuiz, setQuizzes } from "./quizDetailReducer";
