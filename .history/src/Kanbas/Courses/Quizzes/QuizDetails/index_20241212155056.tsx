@@ -199,8 +199,9 @@ export default function QuizDetails() {
 
       <div className="text-center mt-4">
         <Button
-          variant="danger"
-          style={{ fontSize: "1rem", padding: "10px 20px" }}
+          variant="secondary"
+          className="me-2"
+          style={{ fontSize: "1rem", padding: "8px 16px" }}
           onClick={handlePreviewClick} // Add this line
         >
           Preview
@@ -209,7 +210,7 @@ export default function QuizDetails() {
     </div>
   );
 }
-// Button and handelPreviewClick edit by Fan
+
 // import { useNavigate, useParams } from "react-router";
 // import { useDispatch, useSelector } from "react-redux";
 // import { addQuiz, setQuizzes } from "./quizDetailReducer";
