@@ -3,6 +3,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import * as client from "./client";
 import Question from "./question";
+const backendURL = "https://kanbas-node-server-app-738l.onrender.com";
+
 import {
   nextQuestion,
   prevQuestion,
@@ -108,26 +110,39 @@ export default function QuizPreview() {
   }, [dispatch, quizId]);
 
   const handleSubmit = async () => {
-    console.log("quizId:", quizId);
-
-    if (!currentUser?._id) {
+    if (!currentUser || !currentUser._id) {
       alert("User not authenticated. Please log in.");
       return;
     }
-
-    if (!quizId) {
-      alert("Quiz ID is missing.");
-      return;
-    }
-
+  
+    const backendURL = "https://kanbas-node-server-app-738l.onrender.com";
+  
     const quizAttempt = {
-      answers: selectedAnswers,
       score: currentPoints,
+      answers: selectedAnswers,
       timestamp: new Date().toISOString(),
+      courseID: "67437ca12e798610ab356bce", // hard coded course id becuase brain needs this to work rn rn
+      attempt: 1, // need to change this to dynamically increment 
     };
-
+  
     try {
-      await client.createQuizAttempt(currentUser._id, quizId, quizAttempt);
+      const response = await fetch(`${backendURL}/api/users/${currentUser._id}/quizzes/${quizId}/attempt`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+          "Authorization": "Bearer <your_token>", // ignore
+        },
+        body: JSON.stringify(quizAttempt),
+      });
+  
+      if (!response.ok) {
+        throw new Error(`Failed to submit quiz attempt: ${response.statusText}`);
+      }
+  
+      const data = await response.json();
+      console.log("Quiz attempt submitted successfully:", data);
+  
       dispatch(resetQuiz());
       navigate(`/Kanbas/Courses/Quizzes/${quizId}/quiz-complete`);
     } catch (error) {
@@ -135,6 +150,8 @@ export default function QuizPreview() {
       alert("Failed to submit the quiz. Please try again.");
     }
   };
+  
+  
 
   if (loading) return <div className="p-4">Loading questions...</div>;
   if (error) return <div className="p-4 text-danger">{error}</div>;
