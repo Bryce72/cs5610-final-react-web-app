@@ -3,8 +3,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import * as client from "./client";
 import Question from "./question";
-const backendURL = "https://kanbas-node-server-app-738l.onrender.com";
-
 import {
   nextQuestion,
   prevQuestion,
@@ -17,6 +15,8 @@ import {
 } from "./reducer";
 import { setCurrentUser } from "../../../Account/reducer";
 import ProtectedRole from "../../../Account/ProtectedRole";
+
+const backendURL = "https://kanbas-node-server-app-738l.onrender.com";
 
 interface RootState {
   quizPreview: {
@@ -114,35 +114,33 @@ export default function QuizPreview() {
       alert("User not authenticated. Please log in.");
       return;
     }
-  
-    const backendURL = "https://kanbas-node-server-app-738l.onrender.com";
-  
+
     const quizAttempt = {
       score: currentPoints,
       answers: selectedAnswers,
       timestamp: new Date().toISOString(),
-      courseID: "67437ca12e798610ab356bce", // hard coded course id becuase brain needs this to work rn rn
-      attempt: 1, // need to change this to dynamically increment 
+      courseID: "67437ca12e798610ab356bce", // Replace with dynamic value if needed
+      attempt: 1, // Adjust to dynamically increment
     };
-  
+
     try {
       const response = await fetch(`${backendURL}/api/users/${currentUser._id}/quizzes/${quizId}/attempt`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           "Accept": "application/json",
-          "Authorization": "Bearer <your_token>", // ignore
+          "Authorization": "Bearer <your_token>", // Replace with a valid token if needed
         },
         body: JSON.stringify(quizAttempt),
       });
-  
+
       if (!response.ok) {
         throw new Error(`Failed to submit quiz attempt: ${response.statusText}`);
       }
-  
+
       const data = await response.json();
       console.log("Quiz attempt submitted successfully:", data);
-  
+
       dispatch(resetQuiz());
       navigate(`/Kanbas/Courses/Quizzes/${quizId}/quiz-complete`);
     } catch (error) {
@@ -150,8 +148,6 @@ export default function QuizPreview() {
       alert("Failed to submit the quiz. Please try again.");
     }
   };
-  
-  
 
   if (loading) return <div className="p-4">Loading questions...</div>;
   if (error) return <div className="p-4 text-danger">{error}</div>;
