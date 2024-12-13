@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import * as client from "./client";
@@ -13,6 +13,7 @@ import {
   setLoading,
   setError,
 } from "./reducer";
+import { setCurrentUser } from "../../../Account/reducer"; // Import setCurrentUser action
 import ProtectedRole from "../../../Account/ProtectedRole";
 
 interface RootState {
@@ -36,6 +37,8 @@ interface RootState {
 export default function QuizPreview() {
   const { courseId, quizId } = useParams<{ courseId: string; quizId: string }>();
   const dispatch = useDispatch();
+
+  // Selectors to get data from the Redux store
   const {
     questions,
     currentQuestionIndex,
@@ -45,8 +48,26 @@ export default function QuizPreview() {
     loading,
     error,
   } = useSelector((state: RootState) => state.quizPreview);
-  const userID = useSelector((state: RootState) => state.accountReducer.currentUser?.userID);
+  const currentUser = useSelector((state: RootState) => state.accountReducer.currentUser);
 
+  // Fetch the current user if not already loaded
+  useEffect(() => {
+    const fetchCurrentUser = async () => {
+      if (!currentUser) {
+        try {
+          const fetchedUser = await client.getCurrentUser(); // Fetch current user from backend
+          dispatch(setCurrentUser(fetchedUser)); // Store in Redux
+        } catch (error) {
+          console.error("Error fetching current user:", error);
+          alert("Failed to authenticate. Please log in.");
+        }
+      }
+    };
+
+    fetchCurrentUser();
+  }, [dispatch, currentUser]);
+
+  // Fetch quiz questions
   useEffect(() => {
     const fetchQuestions = async () => {
       if (!quizId) {
@@ -68,8 +89,9 @@ export default function QuizPreview() {
     fetchQuestions();
   }, [dispatch, quizId]);
 
+  // Handle quiz submission
   const handleSubmit = async () => {
-    if (!userID) {
+    if (!currentUser?.userID) {
       alert("User not authenticated. Please log in.");
       return;
     }
@@ -87,7 +109,7 @@ export default function QuizPreview() {
         timestamp: new Date().toISOString(),
       };
 
-      await client.createQuizAttempt(userID, quizId, quizAttempt);
+      await client.createQuizAttempt(currentUser.userID, quizId, quizAttempt);
       dispatch(resetQuiz());
       alert("Quiz submitted successfully!");
     } catch (error) {
@@ -96,6 +118,7 @@ export default function QuizPreview() {
     }
   };
 
+  // Render conditions
   if (loading) return <div className="p-4">Loading questions...</div>;
   if (error) return <div className="p-4 text-danger">{error}</div>;
   if (!questions?.length) return <div className="p-4">No questions available for this quiz</div>;
