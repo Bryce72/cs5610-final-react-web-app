@@ -55,3 +55,18 @@ export const deleteQuestion = async (questionId: string) => {
   const response = await axios.delete(`${QUIZ_API}/questions/${questionId}`);
   return response.data;
 };
+
+
+export const createQuizAttempt = async (userID: string, quizID: string, quizAttempt: any) => {
+  const response = await fetch(`/api/users/${userID}/quizzes/${quizID}/attempt`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(quizAttempt),
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed to create quiz attempt: ${response.statusText}`);
+  }
+
+  return response.json();
+};
