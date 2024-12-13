@@ -217,7 +217,13 @@ function QuestionBasicsEditor({ type, setType, }: {
     );
 }
 
-function MultipleChoiceEditor(q: QuizQuestion, questionEdits: any, setQuestionEdits: any, answerChoices: any, answerChoiceSetter: any) {
+function MultipleChoiceEditor(
+    q: QuizQuestion,
+    questionEdits: any,
+    setQuestionEdits: any,
+    answerChoices: string[],
+    answerChoiceSetter: (choices: string[]) => void
+) {
     const handleChoiceUpdate = (original: string, choiceUpdate: string) => {
         const i = answerChoices.findIndex(choice => choice === original);
         answerChoiceSetter(
@@ -226,38 +232,44 @@ function MultipleChoiceEditor(q: QuizQuestion, questionEdits: any, setQuestionEd
         setQuestionEdits({ ...questionEdits, choices: answerChoices });
     };
 
+    const handleDeleteChoice = (index: number) => {
+        // Remove the choice at the specified index
+        const updatedChoices = answerChoices.filter((_, i) => i !== index);
+        answerChoiceSetter(updatedChoices);
+        setQuestionEdits({ ...questionEdits, choices: updatedChoices });
+    };
+
     return (
-        <div id="question-editor-multiple-choice" className='mt-3 ps-5 pb-5'>
-            {
-                answerChoices !== undefined &&
-                answerChoices.map(
-                    (choice) =>
-                        <div className='d-flex mb-5 align-items-center' >
-                            {/* todo: flush left for more space */}
-                            <span className="">Possible Answer</span>
+        <div id="question-editor-multiple-choice" className="mt-3 ps-5 pb-5">
+            {answerChoices !== undefined &&
+                answerChoices.map((choice, index) => (
+                    <div key={index} className="d-flex mb-5 align-items-center">
+                        {/* todo: flush left for more space */}
+                        <span className="">Possible Answer</span>
 
-                            <input
-                                className="form-control"
-                                defaultValue={choice}
-                                onChange={(e) => handleChoiceUpdate(choice, e.target.value)} />
-
-                            <FaRegEdit className='fs-1 ms-4 color-primary' />
-                            <FaRegTrashAlt className='fs-2 me-2 ms-3 color-danger' />
-
-                        </div>)
-            }
+                        <input
+                            className="form-control"
+                            defaultValue={choice}
+                            onChange={(e) => handleChoiceUpdate(choice, e.target.value)} />
+                        <FaRegTrashAlt
+                            className="fs-2 me-2 ms-3 color-danger"
+                            onClick={() => handleDeleteChoice(index)}
+                        />
+                    </div>
+                ))}
 
             <button
-                className='btn float-end fs-6 border-light-subtle btn-warning'
-                onClick={(e) => {
+                className="btn float-end fs-6 border-light-subtle btn-warning"
+                onClick={() => {
                     answerChoiceSetter([...answerChoices, ""]);
                 }}
             >
                 + Add Another Answer
             </button>
-        </div >
+        </div>
     );
 }
+
 
 function TrueFalseEditor() {
     const [answerBool, setAnswer] = useState(true);
