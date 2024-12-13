@@ -53,12 +53,12 @@ const quizzesSlice = createSlice({
 
     // Delete a quiz by its quiz_id
     deleteQuiz: (state, { payload: quizId }) => {
-      console.log(`Quizzes REDUX`)
-      console.log(`num quizzes BEFORE delete = ${state.quizzes.length}`);
+      // console.log(`Quizzes REDUX`)
+      // console.log(`num quizzes BEFORE delete = ${state.quizzes.length}`);
       state.quizzes = state.quizzes.filter(
         (quiz: any) => quiz._id !== quizId
       );
-      console.log(`num quizzes AFTER delete = ${state.quizzes.length}`);
+      // console.log(`num quizzes AFTER delete = ${state.quizzes.length}`);
 
 
     },

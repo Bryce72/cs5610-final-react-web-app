@@ -6,7 +6,7 @@ export const addQuestion = async (newQuestion: any, quizId: string) => {
     const url = `${REMOTE_SERVER}/api/quiz/${quizId}/questions`;
     console.log(`QUESTION CLIENT - addQuestion ${url}`);
     const response = await axios.post(url, newQuestion);
-    console.log(`${JSON.stringify(response.data)}`);
+    // console.log(`${JSON.stringify(response.data)}`);
     return response.data;
 };
 

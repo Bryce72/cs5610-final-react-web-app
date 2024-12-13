@@ -37,7 +37,7 @@ export const deleteQuiz = async (quizId: string) => {
   console.log(`DELETE ${QUIZ_API}/${quizId}`);
   const response = await axiosWithCredentials.delete(`${QUIZ_API}/${quizId}`);
 
-  console.log(`response data = ${JSON.stringify(response.data, null, 2)}`);
+  // console.log(`response data = ${JSON.stringify(response.data, null, 2)}`);
   return response.data;
 };
 

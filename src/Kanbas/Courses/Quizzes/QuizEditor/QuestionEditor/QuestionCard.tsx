@@ -139,6 +139,7 @@ export default function QuestionCard({ question }: { question: QuizQuestion }) {
     );
 }
 
+// todo: if anyone wants to make this look less ugly feel free
 //this is the part of the question editor that is the same for all question types
 function QuestionBasicsEditor({
     editMode,
@@ -290,8 +291,6 @@ function QuestionBasicsEditor({
                 }
             </div>
 
-
-
             {/* Question Prompt */}
             {editMode && <div className="mt-4">
                 <label htmlFor="question-text" className="form-label">
@@ -304,7 +303,6 @@ function QuestionBasicsEditor({
                     value={prompt}
                     onChange={content => {
                         if (content !== null) {
-                            // FIXME: content has html tags
                             setPrompt(content);
                             setQuestionEdits({ ...questionEdits, prompt: content });
                         }

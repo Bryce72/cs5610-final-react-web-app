@@ -43,7 +43,6 @@ export default function Quizzes() {
     navigate(`${location.pathname}/${newQuiz._id}/QuizEditor`);
   };
 
-  // FIXME
   const removeQuiz = async (quizId: string) => {
     if (quizId !== undefined) {
       client.deleteQuiz(quizId);
