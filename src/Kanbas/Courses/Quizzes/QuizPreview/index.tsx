@@ -61,27 +61,25 @@ export default function QuizPreview() {
   } = useSelector((state: RootState) => state.quizPreview);
   const currentUser = useSelector((state: RootState) => state.accountReducer.currentUser);
 
-// Fetch the current user if not already loaded
-useEffect(() => {
-  const fetchCurrentUser = async () => {
-    if (!currentUser) {
-      try {
-        // Fetch current user from backend
-        const fetchedUser = await client.getCurrentUser();
-        console.log("Fetched User:", fetchedUser); // Log fetched user
-        dispatch(setCurrentUser(fetchedUser)); // Store in Redux
-      } catch (error) {
-        console.error("Error fetching current user:", error);
-        alert("Failed to authenticate. Please log in.");
+  // Fetch the current user if not already loaded
+  useEffect(() => {
+    const fetchCurrentUser = async () => {
+      if (!currentUser) {
+        try {
+          const fetchedUser = await client.getCurrentUser();
+          console.log("Fetched User:", fetchedUser);
+          dispatch(setCurrentUser(fetchedUser));
+        } catch (error) {
+          console.error("Error fetching current user:", error);
+          alert("Failed to authenticate. Please log in.");
+        }
+      } else {
+        console.log("Current User from Redux:", currentUser);
       }
-    } else {
-      console.log("Current User from Redux:", currentUser); // Log current user from Redux
-    }
-  };
+    };
 
-  fetchCurrentUser();
-}, [dispatch, currentUser]);
-
+    fetchCurrentUser();
+  }, [dispatch, currentUser]);
 
   // Fetch quiz questions
   useEffect(() => {
@@ -94,10 +92,19 @@ useEffect(() => {
       try {
         dispatch(setLoading(true));
         const fetchedQuestions = await client.findQuizQuestions(quizId);
-        console.log("Fetched Questions LOOK HERE ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~WOWOWOWOOWOWO:", fetchedQuestions);
+        console.log("Fetched Questions:", fetchedQuestions);
 
-        dispatch(setQuestions(fetchedQuestions));
+        // Transform the questions to match the expected structure
+        const transformedQuestions = fetchedQuestions.map((q) => ({
+          question: q.prompt || q.title || "No question text available",
+          type: q.type || "unknown",
+          choices: q.choices || [],
+          points: q.points || 0,
+        }));
+
+        dispatch(setQuestions(transformedQuestions));
       } catch (error) {
+        console.error("Error fetching questions:", error);
         dispatch(setError("Failed to fetch questions"));
       } finally {
         dispatch(setLoading(false));
@@ -113,12 +120,12 @@ useEffect(() => {
       alert("User not authenticated. Please log in.");
       return;
     }
-  
+
     if (!quizId) {
       alert("Quiz ID is required but is missing.");
       return;
     }
-  
+
     try {
       const quizAttempt = {
         courseID: courseId,
@@ -126,7 +133,7 @@ useEffect(() => {
         score: currentPoints,
         timestamp: new Date().toISOString(),
       };
-  
+
       await client.createQuizAttempt(currentUser._id, quizId, quizAttempt);
       dispatch(resetQuiz());
       alert("Quiz submitted successfully!");
@@ -135,7 +142,6 @@ useEffect(() => {
       alert("Failed to submit the quiz. Please try again.");
     }
   };
-  
 
   // Render conditions
   if (loading) return <div className="p-4">Loading questions...</div>;
