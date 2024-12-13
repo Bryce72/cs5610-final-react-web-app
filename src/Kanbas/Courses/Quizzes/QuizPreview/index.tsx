@@ -50,22 +50,27 @@ export default function QuizPreview() {
   } = useSelector((state: RootState) => state.quizPreview);
   const currentUser = useSelector((state: RootState) => state.accountReducer.currentUser);
 
-  // Fetch the current user if not already loaded
-  useEffect(() => {
-    const fetchCurrentUser = async () => {
-      if (!currentUser) {
-        try {
-          const fetchedUser = await client.getCurrentUser(); // Fetch current user from backend
-          dispatch(setCurrentUser(fetchedUser)); // Store in Redux
-        } catch (error) {
-          console.error("Error fetching current user:", error);
-          alert("Failed to authenticate. Please log in.");
-        }
+// Fetch the current user if not already loaded
+useEffect(() => {
+  const fetchCurrentUser = async () => {
+    if (!currentUser) {
+      try {
+        // Fetch current user from backend
+        const fetchedUser = await client.getCurrentUser();
+        console.log("Fetched User:", fetchedUser); // Log fetched user
+        dispatch(setCurrentUser(fetchedUser)); // Store in Redux
+      } catch (error) {
+        console.error("Error fetching current user:", error);
+        alert("Failed to authenticate. Please log in.");
       }
-    };
+    } else {
+      console.log("Current User from Redux:", currentUser); // Log current user from Redux
+    }
+  };
 
-    fetchCurrentUser();
-  }, [dispatch, currentUser]);
+  fetchCurrentUser();
+}, [dispatch, currentUser]);
+
 
   // Fetch quiz questions
   useEffect(() => {
