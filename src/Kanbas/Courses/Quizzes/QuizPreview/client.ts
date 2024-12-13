@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_API = process.env.REACT_APP_BASE_API_URL || "http://localhost:4000";
+const BASE_API = process.env.REACT_APP_BASE_API_URL || "https://kanbas-node-server-app-738l.onrender.com";
 const QUIZ_API = `${BASE_API}/api/quiz`;
 
 // Get all questions

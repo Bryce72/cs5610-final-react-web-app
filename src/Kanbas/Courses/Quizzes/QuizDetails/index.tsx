@@ -44,7 +44,8 @@ export default function QuizDetails() {
     }
     navigate(`/Kanbas/Courses/${cid}/Quizzes/${quizId}/QuizPreview`);
   };
-
+  //api/quiz/quizid/questions
+ 
   return (
     <div className="container quiz-details-container">
       {/* Quiz Header */}

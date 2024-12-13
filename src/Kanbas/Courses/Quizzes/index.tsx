@@ -29,20 +29,6 @@ export default function Quizzes() {
   return (
     <div>
 
-      {/* FIXME: remove this now that faculty can click on edit button inside of quiz details */}
-      <ProtectedRole role="FACULTY">
-        <div className="wd-quizzes-container">
-          {/* Button to navigate to Quiz Editor */}
-          <button
-            onClick={() =>
-              navigate(`/Kanbas/Courses/${cid}/Quizzes/QuizEditor`)
-            }
-            className="wd-quiz-editor-button"
-          >
-            FACULTY Quiz Editor
-          </button>
-        </div>
-      </ProtectedRole>
 
       <ul id="wd-quizzes" className="list-group rounded-0">
         <li className="wd-module list-group-item p-0 mb-4 fs-5 border-lightgray">
