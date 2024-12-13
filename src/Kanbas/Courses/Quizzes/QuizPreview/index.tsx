@@ -108,39 +108,36 @@ export default function QuizPreview() {
   }, [dispatch, quizId]);
 
   const handleSubmit = async () => {
+    console.log("courseId:", courseId);
+    console.log("quizId:", quizId);
+  
     if (!currentUser?._id) {
       alert("User not authenticated. Please log in.");
       return;
     }
-
-    if (!quizId) {
-      alert("Quiz ID is required but is missing.");
+  
+    if (!quizId || !courseId) {
+      alert("Quiz ID or Course ID is missing.");
       return;
     }
-
-    const backendURL = "https://kanbas-node-server-app-738l.onrender.com"; // Correct backend URL
+  
     const quizAttempt = {
       courseID: courseId,
       answers: selectedAnswers,
       score: currentPoints,
       timestamp: new Date().toISOString(),
     };
-
+  
     try {
-      await fetch(`${backendURL}/api/users/${currentUser._id}/quizzes/${quizId}/attempt`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(quizAttempt),
-      });
+      await client.createQuizAttempt(currentUser._id, quizId, quizAttempt);
       dispatch(resetQuiz());
-      navigate(`Quizzes/${courseId}/quiz-complete`);
+      navigate(`/Kanbas/Courses/${courseId}/Quizzes/${quizId}/quiz-complete`);
     } catch (error) {
       console.error("Error submitting quiz attempt:", error);
       alert("Failed to submit the quiz. Please try again.");
     }
   };
+  
 
   if (loading) return <div className="p-4">Loading questions...</div>;
   if (error) return <div className="p-4 text-danger">{error}</div>;
