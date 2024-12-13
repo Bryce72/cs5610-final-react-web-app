@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams, Link, useNavigate } from "react-router-dom";
+import { useParams, Link, useNavigate, useLocation } from "react-router-dom";
 import { BsGripVertical } from "react-icons/bs";
 import * as client from "./client";
 import { setQuizzes, deleteQuiz, addQuiz } from "./reducer";
@@ -12,36 +12,42 @@ import { FaPlus } from "react-icons/fa";
 export default function Quizzes() {
   const { cid } = useParams(); // Fetch the course ID from the URL
   const dispatch = useDispatch();
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  //REDUX
+  const quizzes = useSelector(
+    (state: any) => state.quizzesReducer.quizzes || []
+  );
 
   // Fetch quizzes for the course
   const fetchQuizzes = async () => {
     if (!cid) return; // Ensure course ID is present
-    const quizzes = await client.findQuizzesForCourse(cid); // Pass the course ID dynamically
-    dispatch(setQuizzes(quizzes));
+    const serverQuizzes = await client.findQuizzesForCourse(cid); // Pass the course ID dynamically
+    dispatch(setQuizzes(serverQuizzes));
   };
 
   useEffect(() => {
     fetchQuizzes();
   }, [cid]); // Re-fetch if the course ID changes
 
-  const quizzes = useSelector(
-    (state: any) => state.quizzesReducer.quizzes || []
-  );
 
-  //fixme
+
   const newQuiz = async () => {
     if (cid === undefined || typeof cid !== "string") {
       alert("Unable to create new quiz due to invalid course id!");
       return;
     }
     const newQuiz = await client.createQuizForCourse(cid);
-    addQuiz(newQuiz); //redux
+    dispatch(addQuiz(newQuiz)); //redux
+    navigate(`${location.pathname}/${newQuiz._id}/QuizEditor`);
   };
 
-  const deleteQuiz = async (quizId: string) => {
+  // FIXME
+  const removeQuiz = async (quizId: string) => {
     if (quizId !== undefined) {
       client.deleteQuiz(quizId);
-      deleteQuiz(quizId); //redux
+      dispatch(deleteQuiz(quizId)); //redux
     }
   };
 
@@ -57,10 +63,12 @@ export default function Quizzes() {
               <strong>QUIZZES</strong>
 
               {/* fixme: someone please make this less ugly */}
-              <button className="btn float btn-warning ms-5"
-                onClick={e => newQuiz()}>
-                New Quiz
-              </button>
+              <ProtectedRole role="FACULTY">
+                <button className="btn float btn-warning ms-5"
+                  onClick={e => newQuiz()}>
+                  New Quiz
+                </button>
+              </ProtectedRole>
             </div>
           </div>
 
@@ -90,7 +98,7 @@ export default function Quizzes() {
 
                 <ProtectedRole role="FACULTY">
                   <FaRegTrashAlt className="text-danger"
-                    onClick={e => deleteQuiz(quiz._id)} />
+                    onClick={e => removeQuiz(quiz._id)} />
                 </ProtectedRole>
 
               </li>

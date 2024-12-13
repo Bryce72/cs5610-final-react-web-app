@@ -15,14 +15,14 @@ export const findQuizzesForCourse = async (courseId: string) => {
 
 // Create a new quiz for a specific course FROM PROVIDED OBJECT
 export const createQuiz = async (courseId: string, quiz: any) => {
-  console.log(`POST ${COURSES_API}/${courseId}/quizzes`); //testing: works
+  console.log(`POST ${COURSES_API}/${courseId}/quizzes`);
 
   const response = await axiosWithCredentials.post(
     `${COURSES_API}/${courseId}/quizzes`,
     quiz
   );
-  console.log(`response data = ${JSON.stringify(response.data, null, 2)}`); //fixme: doesn't get to this point
 
+  // console.log(`response data = ${JSON.stringify(response.data, null, 2)}`);
   return response.data;
 };
 
@@ -34,7 +34,10 @@ export const createQuizForCourse = async (courseId: string) => {
 
 // Delete a quiz by ID
 export const deleteQuiz = async (quizId: string) => {
+  console.log(`DELETE ${QUIZ_API}/${quizId}`);
   const response = await axiosWithCredentials.delete(`${QUIZ_API}/${quizId}`);
+
+  console.log(`response data = ${JSON.stringify(response.data, null, 2)}`);
   return response.data;
 };
 

@@ -59,7 +59,7 @@ export default function Modules() {
     if (cid) {
       fetchModules();
     }
-  }, [cid, modules]);
+  }, [cid]); //NOTE: removed a dependency so this happens less often
 
   const [isLeftMenuVisible, setLeftMenuVisible] = useState(false);
   const [isRightMenuVisible, setRightMenuVisible] = useState(false);
