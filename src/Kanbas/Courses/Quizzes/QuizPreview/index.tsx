@@ -118,6 +118,7 @@ export default function QuizPreview() {
       return;
     }
 
+    const backendURL = "https://kanbas-node-server-app-738l.onrender.com"; // Correct backend URL
     const quizAttempt = {
       courseID: courseId,
       answers: selectedAnswers,
@@ -126,7 +127,13 @@ export default function QuizPreview() {
     };
 
     try {
-      await client.createQuizAttempt(currentUser._id, quizId, quizAttempt);
+      await fetch(`${backendURL}/api/users/${currentUser._id}/quizzes/${quizId}/attempt`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(quizAttempt),
+      });
       dispatch(resetQuiz());
       navigate("/quiz-complete");
     } catch (error) {
