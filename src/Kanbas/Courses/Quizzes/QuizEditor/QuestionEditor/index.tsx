@@ -5,7 +5,7 @@ import QuestionCard from "./QuestionCard";
 import { QuizQuestion } from "../../types/QuizQuestion";
 import React from "react";
 import * as client from './client';
-import { setQuizQuestions, addQuizQuestion, } from "./reducer";
+import { setQuizQuestions, addQuizQuestion, removeQuizQuestion, editQuizQuestion } from "./reducer";
 import { useParams } from "react-router-dom";
 
 export default function QuestionEditor() {
@@ -39,6 +39,8 @@ export default function QuestionEditor() {
         // console.log(`QuestionEditor\n${JSON.stringify(quizQuestions, null, 2)}`);
     }, [quizQuestions]);
 
+
+    //FIXME: new question card doesn't have an _id????
     const createNewQuestion = async () => {
         const emptyQuestion = {
             quiz: quizId,

@@ -9,10 +9,37 @@ import { FaRegTrashAlt } from 'react-icons/fa';
 import { FaRegEdit } from 'react-icons/fa';
 import React from "react";
 
+import * as client from "./client";
+
 export default function QuestionCard({ question }: { question: QuizQuestion }) {
-    const [type, setType] = useState<QuestionType>(question.type || QuestionType.MultipleChoice);
+    const dispatch = useDispatch();
 
     const [questionEdits, setQuestionEdits] = useState<QuizQuestion>();
+    const [type, setType] = useState<QuestionType>(question.type || QuestionType.MultipleChoice);
+    const [editMode, setEditMode] = useState<boolean>(false);
+
+    const deleteQuestion = async () => {
+        const questionId = question._id;
+
+        console.log("Removing question:", questionId);
+        await client.deleteQuestion(questionId);
+        dispatch(removeQuizQuestion(questionId));
+    };
+
+    const saveQuestion = async () => {
+        setEditMode(false);
+
+        if (questionEdits === undefined) {
+            console.log("no edits to save")
+            return;
+        }
+
+        const editedQuestion = { ...question, ...questionEdits }
+        console.log(`New Question:\n${JSON.stringify(editedQuestion, null, 2)}`);
+        await client.updateQuestion(question._id, editedQuestion);
+        // FIXME
+        // dispatch(editQuizQuestion(editedQuestion))
+    };
 
     return (
         <div className="question-card card mb-5 border-faded">
@@ -21,12 +48,33 @@ export default function QuestionCard({ question }: { question: QuizQuestion }) {
                 <div className="d-flex justify-content-between align-items-center">
                     <h5 className="card-title fw-bold">{question.title}</h5>
                     <div>
-                        <button className="btn btn-sm btn-primary me-2">Edit</button>
-                        <button className="btn btn-sm btn-outline-danger">Delete</button>
+                        {!editMode &&
+                            <button
+                                className="btn btn-sm btn-primary me-2"
+                                onClick={e => setEditMode(true)}
+                            >
+                                Edit
+                            </button>
+                        }
+
+                        {editMode &&
+                            <button
+                                className="btn btn-sm btn-success me-2"
+                                onClick={e => saveQuestion()}
+                            >
+                                Save
+                            </button>
+                        }
+
+                        <button
+                            onClick={() => deleteQuestion()}
+                            className="btn btn-sm btn-outline-danger">
+                            Delete
+                        </button>
                     </div>
                 </div>
 
-                {/* Question Details */}
+                {/* Question Prompt */}
                 <p className="mt-3 text-muted">
                     <strong>Question:</strong> {question.question}
                 </p>
@@ -36,7 +84,7 @@ export default function QuestionCard({ question }: { question: QuizQuestion }) {
                     {<QuestionBasicsEditor type={type} setType={setType} />}
                     {type === QuestionType.TrueFalse && <TrueFalseEditor />}
                     {type === QuestionType.FillBlanks && <FillBlanksEditor />}
-                    {type === QuestionType.MultipleChoice && <MultipleChoiceEditor />}
+                    {type === QuestionType.MultipleChoice && MultipleChoiceEditor(question, questionEdits, setQuestionEdits)}
                 </div>
             </div>
         </div>
@@ -159,14 +207,36 @@ function QuestionBasicsEditor({ type, setType, }: {
     );
 }
 
-function MultipleChoiceEditor() {
-    const [answerChoices, answerChoiceSetter] = useState<string[]>([]);
+function MultipleChoiceEditor(q: QuizQuestion, questionEdits: any, setQuestionEdits: any) {
+    const [answerChoices, answerChoiceSetter] = useState<any[]>(q.choices);
+
+    const handleChoiceUpdate = (original: string, choiceUpdate: string) => {
+        const i = answerChoices.findIndex(choice => choice === original);
+        answerChoiceSetter(
+            [...answerChoices.slice(0, i), choiceUpdate, ...answerChoices.slice(i + 1)]
+        );
+        setQuestionEdits({ ...questionEdits, choices: answerChoices });
+    };
 
     return (
         <div id="question-editor-multiple-choice" className='mt-3 ps-5 pb-5'>
             {
+                answerChoices !== undefined &&
                 answerChoices.map(
-                    (choice) => <div className='d-flex mb-5'>{answerChoice(choice)}</div>)
+                    (choice) =>
+                        <div className='d-flex mb-5 align-items-center' >
+                            {/* todo: flush left for more space */}
+                            <span className="">Possible Answer</span>
+
+                            <input
+                                className="form-control"
+                                defaultValue={choice}
+                                onChange={(e) => handleChoiceUpdate(choice, e.target.value)} />
+
+                            <FaRegEdit className='fs-1 ms-4 color-primary' />
+                            <FaRegTrashAlt className='fs-2 me-2 ms-3 color-danger' />
+
+                        </div>)
             }
 
             <button
@@ -178,18 +248,6 @@ function MultipleChoiceEditor() {
                 + Add Another Answer
             </button>
         </div >
-    );
-}
-
-function answerChoice(answerValue: string) {
-    return (
-        <div className="d-flex align-items-center">
-            <span className="">Possible Answer</span>
-            <input className="form-control" defaultValue={answerValue} />
-
-            <FaRegEdit className='fs-2 ms-5' />
-            <FaRegTrashAlt className='fs-2 mx-2' />
-        </div>
     );
 }
 

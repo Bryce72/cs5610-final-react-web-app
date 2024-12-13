@@ -9,16 +9,16 @@ export const addQuestion = async (newQuestion: any, quizId: string) => {
 };
 
 export const deleteQuestion = async (questionId: string) => {
-    const url = `${REMOTE_SERVER}/api/quiz/questions/${questionId}`
+    const url = `${REMOTE_SERVER}/api/questions/${questionId}`
     console.log(`QUESTION CLIENT - deleteQuestion ${url}`);
-    const { data } = await axios.delete(url);
-    return data;
+    const response = await axios.delete(url);
+    return response;
 };
 
 export const updateQuestion = async (questionId: string, questionUpdates: any) => {
-    const url = `${REMOTE_SERVER}/api/quiz/questions/${questionId}`;
+    const url = `${REMOTE_SERVER}/api/questions/${questionId}`;
     console.log(`QUESTION CLIENT - updateQuestion ${url}`);
-    const { data } = await axios.post(url, questionUpdates);
+    const { data } = await axios.put(url, questionUpdates);
     return data;
 };
 
