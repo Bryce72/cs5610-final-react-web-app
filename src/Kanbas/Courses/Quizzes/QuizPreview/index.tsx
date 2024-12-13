@@ -13,6 +13,7 @@ import {
   setLoading,
   setError,
 } from "./reducer";
+import ProtectedRole from "../../../Account/ProtectedRole";
 
 export default function QuizPreview() {
   const { courseId, quizId } = useParams(); // Get both courseId and quizId
@@ -75,6 +76,8 @@ export default function QuizPreview() {
     <div className="wd-main-content-offset p-4">
       <h2 className="mb-4">Quiz Preview</h2>
       
+      {/* points dont update immediately, only updates when you got o next page */}
+      <ProtectedRole role="FACULTY">
       {/* Points Display */}
       <div className="alert alert-info mb-4">
         <div className="d-flex justify-content-between">
@@ -82,6 +85,7 @@ export default function QuizPreview() {
           <span>Question {currentQuestionIndex + 1} of {questions.length}</span>
         </div>
       </div>
+      </ProtectedRole>
 
       <div className="row">
         {/* Main Quiz Content */}
@@ -124,6 +128,16 @@ export default function QuizPreview() {
               disabled={currentQuestionIndex === questions.length - 1}
             >
               Next
+            </button>
+
+
+            {/* SUBMIT BUTTON NEEDS FUNCTIONALITY */}
+            <button
+              className="btn btn-outline-danger"
+              onClick={() => dispatch(nextQuestion())}
+              disabled={currentQuestionIndex === questions.length - 1}
+            >
+              Submit
             </button>
           </div>
         </div>
