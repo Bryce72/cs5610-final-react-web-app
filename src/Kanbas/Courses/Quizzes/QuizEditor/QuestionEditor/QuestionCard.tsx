@@ -27,6 +27,11 @@ export default function QuestionCard({ question }: { question: QuizQuestion }) {
     const [points, setPoints] = useState<number>(question.points);
     const [solution, setSolution] = useState<any>(question.solution);
 
+    const [currentQuestion, setCurrentQuestion] = useState<QuizQuestion>(question);
+    const updateQuestion = (updatedQuestion: QuizQuestion) => {
+        setCurrentQuestion(updatedQuestion);
+    };
+
     const deleteQuestion = async () => {
         const questionId = question._id;
 
@@ -46,7 +51,6 @@ export default function QuestionCard({ question }: { question: QuizQuestion }) {
         const editedQuestion = { ...question, ...questionEdits }
         console.log(`New Question:\n${JSON.stringify(editedQuestion, null, 2)}`);
         await client.updateQuestion(question._id, editedQuestion);
-        // FIXME
         dispatch(editQuizQuestion(editedQuestion))
     };
 
@@ -91,8 +95,11 @@ export default function QuestionCard({ question }: { question: QuizQuestion }) {
                 {/* Question Editing Section */}
                 <div className="question-editor container p-4 border rounded shadow-sm">
                     {QuestionBasicsEditor({ type, setType, title, setTitle, prompt, setPrompt, points, setPoints, questionEdits, setQuestionEdits })}
-                    {type === QuestionType.TrueFalse && <TrueFalseEditor />}
-                    {type === QuestionType.FillBlanks && <FillBlanksEditor />}
+
+                    {type === QuestionType.TrueFalse && <TrueFalseEditor question={currentQuestion} updateQuestion={updateQuestion} />}
+
+                    {type === QuestionType.FillBlanks && <FillBlanksEditor solution={solution} setSolution={setSolution} />}
+
                     {type === QuestionType.MultipleChoice && MultipleChoiceEditor(question, questionEdits, setQuestionEdits, answerChoices, answerChoiceSetter)}
                 </div>
             </div>
@@ -239,6 +246,7 @@ function QuestionBasicsEditor({
                     value={prompt}
                     onChange={content => {
                         if (content !== null) {
+                            // FIXME: content has html tags
                             setPrompt(content);
                             setQuestionEdits({ ...questionEdits, prompt: content });
                         }
@@ -280,7 +288,7 @@ function MultipleChoiceEditor(
 
     return (
         <div id="question-editor-multiple-choice" className="mt-3 ps-5 pb-5">
-            {answerChoices !== undefined &&
+            {answerChoices !== undefined && answerChoices.length >= 0 &&
                 answerChoices.map((choice, index) => (
                     <div key={index} className="d-flex mb-5 align-items-center">
                         {/* todo: flush left for more space */}
@@ -300,7 +308,13 @@ function MultipleChoiceEditor(
             <button
                 className="btn float-end fs-6 border-light-subtle btn-warning"
                 onClick={() => {
-                    answerChoiceSetter([...answerChoices, ""]);
+                    console.log(`\tadding new choice to answer choices\n${JSON.stringify(answerChoices)}`);
+                    if (answerChoices === undefined || answerChoices.length === 0) {
+                        answerChoiceSetter([""]);
+                    } else {
+                        answerChoiceSetter([...answerChoices, ""]);
+                    }
+                    setQuestionEdits({ ...questionEdits, choices: answerChoices });
                 }}
             >
                 + Add Another Answer
@@ -309,59 +323,103 @@ function MultipleChoiceEditor(
     );
 }
 
-
-function TrueFalseEditor() {
-    const [answerBool, setAnswer] = useState(true);
-
+function TrueFalseEditor({
+    question,
+    updateQuestion,
+}: {
+    question: QuizQuestion;
+    updateQuestion: (updatedQuestion: QuizQuestion) => void;
+}) {
+    const handleSolutionChange = async (newSolution: boolean) => {
+        const updatedQuestion = {
+            ...question,
+            solution: newSolution,
+        };
+        updateQuestion(updatedQuestion);
+        try {
+            await client.updateQuestion(question._id, updatedQuestion);
+            console.log("Question updated successfully:", updatedQuestion);
+        } catch (error) {
+            console.error("Failed to update question:", error);
+        }
+    };
     return (
-        <div id="question-editor-true-false" className="d-flex flex-column">
-
-            <div className="my-3" onClick={e => setAnswer(true)}>
-                <FaArrowRight className="fs-2 text-primary" visibility={answerBool ? "" : "hidden"} />
-                <span className={`fs-4 fw-bold ms-2 ${answerBool ? "text-success" : ""}`}>
-                    True
-                </span>
-            </div>
-
-
-            <div onClick={e => setAnswer(false)}>
-                <FaArrowRight className="fs-2 text-primary" visibility={answerBool ? "hidden" : ""} />
-                <span className={`fs-4 fw-bold ms-2 ${answerBool ? "" : "text-danger"}`}>
-                    False
-                </span>
-            </div>
+        <div className="true-false-editor">
+            <label>
+                <input
+                    type="radio"
+                    value="true"
+                    checked={question.solution === true}
+                    onChange={() => handleSolutionChange(true)}
+                />
+                True
+            </label>
+            <label>
+                <input
+                    type="radio"
+                    value="false"
+                    checked={question.solution === false}
+                    onChange={() => handleSolutionChange(false)}
+                />
+                False
+            </label>
         </div>
     );
 }
 
-function FillBlanksEditor() {
-    const [blankOptions, blankOptionsSetter] = useState<string[]>([]);
+function FillBlanksEditor({ solution, setSolution }: { solution: string[]; setSolution: (newSolution: string[]) => void }) {
+    const handleUpdateSolution = (index: number, newValue: string) => {
+        const updatedSolution = [...solution];
+        updatedSolution[index] = newValue;
+        setSolution(updatedSolution);
+    };
+
+    // onClick={() => {
+    //     console.log(`\tadding new choice to answer choices\n${JSON.stringify(answerChoices)}`);
+    //     if (answerChoices === undefined || answerChoices.length === 0) {
+    //         answerChoiceSetter([""]);
+    //     } else {
+    //         answerChoiceSetter([...answerChoices, ""]);
+    //     }
+    //     setQuestionEdits({ ...questionEdits, choices: answerChoices });
+    // }}
+
+    const handleAddBlank = () => {
+        if (solution === undefined || solution.length === 0) {
+            setSolution([""]);
+        } else {
+            setSolution([...solution, ""]);
+        }
+    };
+
+    const handleRemoveBlank = (index: number) => {
+        const updatedSolution = solution.filter((_, i) => i !== index);
+        setSolution(updatedSolution);
+    };
 
     return (
-        <div id="question-editor-fill-blanks" className='mt-3 ps-5 pb-5'>
-            {
-                blankOptions.map((blankOp) => <div className='d-flex mb-5'>{blankOption(blankOp)}</div>)
-            }
+        <div id="question-editor-fill-blanks" className="mt-3 ps-5 pb-5">
+            {solution !== undefined && solution.map((value, index) => (
+                <div key={index} className="d-flex mb-5 align-items-center">
+                    <span className="">Blank {index + 1}:</span>
 
+                    <input
+                        className="form-control mx-3"
+                        value={value}
+                        onChange={(e) => handleUpdateSolution(index, e.target.value)}
+                    />
+                    <FaRegTrashAlt
+                        className="fs-2 color-danger"
+                        onClick={() => handleRemoveBlank(index)}
+                    />
+                </div>
+            ))}
             <button
-                className='btn float-end fs-6 border-light-subtle btn-warning'
-                onClick={(e) => {
-                    blankOptionsSetter([...blankOptions, ""]);
-                }}
+                className="btn float-end fs-6 border-light-subtle btn-warning"
+                onClick={handleAddBlank}
             >
-                + Add Another Answer
+                + Add Another Blank
             </button>
-        </div>
-    );
-}
-
-function blankOption(optionValue: string) {
-    return (
-        <div className='d-flex align-items-center'>
-            <span className="">Possible Answer</span>
-            <input className="form-control" defaultValue={optionValue} />
-
-            <FaRegTrashAlt className='fs-2 mx-2' />
         </div>
     );
 }
