@@ -1,7 +1,26 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-// Helper function to check if answer is correct
-const checkAnswer = (questionType, userAnswer, solution) => {
+interface Question {
+  type: string;
+  points: number;
+  solution?: any;
+}
+
+interface QuizPreviewState {
+  questions: Question[];
+  currentQuestionIndex: number;
+  selectedAnswers: any[];
+  currentPoints: number;
+  totalPoints: number;
+  loading: boolean;
+  error: string | null;
+  answersChanged: boolean;
+  attempts: number;
+  maxAttempts: number;
+}
+
+// Helper function to check if the answer is correct
+const checkAnswer = (questionType: string, userAnswer: any, solution: any) => {
   switch (questionType) {
     case "fill-blanks":
       if (Array.isArray(solution)) {
@@ -10,7 +29,7 @@ const checkAnswer = (questionType, userAnswer, solution) => {
             userAnswer?.toLowerCase() === correctAnswer.toLowerCase()
         );
       }
-      return userAnswer?.toLowerCase() === solution.toLowerCase();
+      return userAnswer?.toLowerCase() === solution?.toLowerCase();
     case "true-false":
       return userAnswer === solution;
     case "multiple-choice":
@@ -20,38 +39,46 @@ const checkAnswer = (questionType, userAnswer, solution) => {
 };
 
 // Helper function to calculate total points
-const calculateTotalPoints = (questions, selectedAnswers) => {
+const calculateTotalPoints = (
+  questions: Question[],
+  selectedAnswers: any[]
+): number => {
   return questions.reduce((total, question, index) => {
     const answer = selectedAnswers[index];
     if (checkAnswer(question.type, answer, question.solution)) {
-      return total + question.points;
+      return total + (question.points || 0);
     }
     return total;
   }, 0);
 };
 
+const initialState: QuizPreviewState = {
+  questions: [],
+  currentQuestionIndex: 0,
+  selectedAnswers: [],
+  currentPoints: 0,
+  totalPoints: 0,
+  loading: false,
+  error: null,
+  answersChanged: false,
+  attempts: 0,
+  maxAttempts: 3,
+};
+
 const quizPreviewSlice = createSlice({
   name: "quizPreview",
-  initialState: {
-    questions: [],
-    currentQuestionIndex: 0,
-    selectedAnswers: [] as any[], // Explicitly define type for selectedAnswers
-    currentPoints: 0,
-    totalPoints: 0,
-    loading: false,
-    error: null as string | null,
-    answersChanged: false,
-    attempts: 0, // New field to track attempts
-    maxAttempts: 3, // Maximum allowed attempts
-  },
+  initialState,
   reducers: {
     setQuestions: (state, action) => {
-      state.questions = action.payload;
-      state.selectedAnswers = new Array(action.payload.length).fill(null);
-      state.totalPoints = action.payload.reduce(
-        (sum, q) => sum + q.points,
+      state.questions = action.payload || []; // Ensure questions is always an array
+      state.selectedAnswers = new Array(state.questions.length).fill(null);
+      state.totalPoints = state.questions.reduce(
+        (sum, q) => sum + (q.points || 0),
         0
       );
+      state.currentQuestionIndex = 0; // Reset to first question
+      state.currentPoints = 0; // Reset points
+      state.answersChanged = false; // Reset changes
     },
     setLoading: (state, action) => {
       state.loading = action.payload;
@@ -60,24 +87,18 @@ const quizPreviewSlice = createSlice({
       state.error = action.payload;
     },
     nextQuestion: (state) => {
-      if (state.currentQuestionIndex < state.questions.length - 1) {
+      if (state.questions.length > 0 && state.currentQuestionIndex < state.questions.length - 1) {
         if (state.answersChanged) {
-          state.currentPoints = calculateTotalPoints(
-            state.questions,
-            state.selectedAnswers
-          );
+          state.currentPoints = calculateTotalPoints(state.questions, state.selectedAnswers);
           state.answersChanged = false;
         }
         state.currentQuestionIndex += 1;
       }
     },
     prevQuestion: (state) => {
-      if (state.currentQuestionIndex > 0) {
+      if (state.questions.length > 0 && state.currentQuestionIndex > 0) {
         if (state.answersChanged) {
-          state.currentPoints = calculateTotalPoints(
-            state.questions,
-            state.selectedAnswers
-          );
+          state.currentPoints = calculateTotalPoints(state.questions, state.selectedAnswers);
           state.answersChanged = false;
         }
         state.currentQuestionIndex -= 1;
@@ -85,31 +106,35 @@ const quizPreviewSlice = createSlice({
     },
     selectAnswer: (state, action) => {
       const { questionIndex, answer } = action.payload;
-      state.selectedAnswers[questionIndex] = answer;
-      state.answersChanged = true;
+      if (state.questions.length > 0 && questionIndex >= 0 && questionIndex < state.questions.length) {
+        state.selectedAnswers[questionIndex] = answer;
+        state.answersChanged = true;
+      } else {
+        console.error("Invalid question index for selectAnswer:", questionIndex);
+      }
     },
     setQuestionIndex: (state, action) => {
-      if (state.answersChanged) {
-        state.currentPoints = calculateTotalPoints(
-          state.questions,
-          state.selectedAnswers
-        );
-        state.answersChanged = false;
+      const index = action.payload;
+      if (state.questions.length > 0 && index >= 0 && index < state.questions.length) {
+        if (state.answersChanged) {
+          state.currentPoints = calculateTotalPoints(state.questions, state.selectedAnswers);
+          state.answersChanged = false;
+        }
+        state.currentQuestionIndex = index;
+      } else {
+        console.error("Invalid question index for setQuestionIndex:", index);
       }
-      state.currentQuestionIndex = action.payload;
     },
     resetQuiz: (state) => {
       state.currentQuestionIndex = 0;
       state.selectedAnswers = new Array(state.questions.length).fill(null);
       state.currentPoints = 0;
       state.answersChanged = false;
+      state.error = null; // Clear any errors
     },
     calculateCurrentScore: (state) => {
       if (state.answersChanged) {
-        state.currentPoints = calculateTotalPoints(
-          state.questions,
-          state.selectedAnswers
-        );
+        state.currentPoints = calculateTotalPoints(state.questions, state.selectedAnswers);
         state.answersChanged = false;
       }
     },
@@ -120,8 +145,9 @@ const quizPreviewSlice = createSlice({
         state.currentQuestionIndex = 0; // Reset quiz state
         state.currentPoints = 0;
         state.selectedAnswers = new Array(state.questions.length).fill(null);
+        state.error = null; // Clear errors
       } else {
-        state.error = "Maximum attempts reached."; // Handle case where attempts exceed max
+        state.error = "Maximum attempts reached."; // Handle max attempts
       }
     },
   },
@@ -137,7 +163,7 @@ export const {
   setQuestionIndex,
   resetQuiz,
   calculateCurrentScore,
-  submitQuizAttempt, // Export the new action
+  submitQuizAttempt,
 } = quizPreviewSlice.actions;
 
 export default quizPreviewSlice.reducer;
