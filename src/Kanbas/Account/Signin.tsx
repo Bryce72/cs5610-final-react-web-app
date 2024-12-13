@@ -26,6 +26,7 @@ export default function Signin() {
       navigate("/Kanbas/Dashboard");
     } catch (Error) {
       alert("unable to log in\nplease try again!");
+      console.log(`${JSON.stringify(Error)}`);
     }
   };
 
