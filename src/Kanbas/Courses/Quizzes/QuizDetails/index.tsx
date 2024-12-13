@@ -46,6 +46,10 @@ export default function QuizDetails() {
   };
   //api/quiz/quizid/questions
 
+  const handleEditQuiz = () => {
+    navigate(`/Kanbas/Courses/${cid}/Quizzes/${quizId}/QuizEditor`);
+  };
+
   return (
     <div className="container quiz-details-container">
       {/* Quiz Header */}
@@ -138,32 +142,39 @@ export default function QuizDetails() {
         </tbody>
       </Table>
 
-      <div className="text-center mt-4">
-        <Button variant="danger" onClick={handleTakeQuiz}>
+      <div className="d-flex justify-content-center align-items-center mt-4 gap-3">
+        <Button
+          variant="danger"
+          onClick={handleTakeQuiz}
+          style={{ fontSize: "1rem", padding: "10px 20px" }}
+        >
           Click here To take the Quiz
         </Button>
+
+        {/* TODO: styling/positioning for this button */}
+        <ProtectedRole role="FACULTY">
+          <Button
+            variant="primary"
+            onClick={(e) =>
+              navigate(`/Kanbas/Courses/${cid}/Quizzes/${quizId}/QuizEditor`)
+            }
+            style={{ fontSize: "1rem", padding: "10px 20px" }}
+          >
+            Edit
+          </Button>
+        </ProtectedRole>
+        <ProtectedRole role="ADMIN">
+          <Button
+            variant="primary"
+            onClick={(e) =>
+              navigate(`/Kanbas/Courses/${cid}/Quizzes/${quizId}/QuizEditor`)
+            }
+            style={{ fontSize: "1rem", padding: "10px 20px" }}
+          >
+            Edit
+          </Button>
+        </ProtectedRole>
       </div>
-
-      {/* TODO: styling/positioning for this button */}
-      <ProtectedRole role="FACULTY">
-        <Button
-          onClick={(e) =>
-            navigate(`/Kanbas/Courses/${cid}/Quizzes/${quizId}/QuizEditor`)
-          }
-        >
-          Edit
-        </Button>
-      </ProtectedRole>
-      <ProtectedRole role="ADMIN">
-        <Button
-          onClick={(e) =>
-            navigate(`/Kanbas/Courses/${cid}/Quizzes/${quizId}/QuizEditor`)
-          }
-        >
-          Edit
-        </Button>
-      </ProtectedRole>
-
       {/* TODO: show this student's previous attempt and how many more times they can take this quiz*/}
     </div>
   );
