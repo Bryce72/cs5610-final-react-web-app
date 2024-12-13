@@ -48,6 +48,7 @@ interface RootState {
 export default function QuizPreview() {
   const { courseId, quizId } = useParams<{ courseId: string; quizId: string }>();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   // Selectors to get data from the Redux store
   const {
@@ -116,8 +117,7 @@ export default function QuizPreview() {
 
   // Handle quiz submission
   const handleSubmit = async () => {
-    const navigate = useNavigate();
-  
+
     if (!currentUser?._id) {
       alert("User not authenticated. Please log in.");
       return;
