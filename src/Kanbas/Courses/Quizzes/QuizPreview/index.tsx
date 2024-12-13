@@ -13,8 +13,10 @@ import {
   setLoading,
   setError,
 } from "./reducer";
-import { setCurrentUser } from "../../../Account/reducer"; // Import setCurrentUser action
+import { setCurrentUser } from "../../../Account/reducer";
 import ProtectedRole from "../../../Account/ProtectedRole";
+
+const backendURL = "https://kanbas-node-server-app-738l.onrender.com";
 
 interface RootState {
   quizPreview: {
@@ -45,12 +47,19 @@ interface RootState {
   };
 }
 
+interface QuizAttempt {
+  score: number;
+  answers: any[];
+  timestamp: string;
+  courseID: string;
+  attempt?: number;
+}
+
 export default function QuizPreview() {
-  const { courseId, quizId } = useParams<{ courseId: string; quizId: string }>();
+  const { quizId } = useParams<{ quizId: string }>();
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  // Selectors to get data from the Redux store
   const {
     questions,
     currentQuestionIndex,
@@ -60,29 +69,25 @@ export default function QuizPreview() {
     loading,
     error,
   } = useSelector((state: RootState) => state.quizPreview);
+
   const currentUser = useSelector((state: RootState) => state.accountReducer.currentUser);
 
-  // Fetch the current user if not already loaded
   useEffect(() => {
     const fetchCurrentUser = async () => {
       if (!currentUser) {
         try {
           const fetchedUser = await client.getCurrentUser();
-          console.log("Fetched User:", fetchedUser);
           dispatch(setCurrentUser(fetchedUser));
         } catch (error) {
           console.error("Error fetching current user:", error);
           alert("Failed to authenticate. Please log in.");
         }
-      } else {
-        console.log("Current User from Redux:", currentUser);
       }
     };
 
     fetchCurrentUser();
   }, [dispatch, currentUser]);
 
-  // Fetch quiz questions
   useEffect(() => {
     const fetchQuestions = async () => {
       if (!quizId) {
@@ -93,9 +98,6 @@ export default function QuizPreview() {
       try {
         dispatch(setLoading(true));
         const fetchedQuestions = await client.findQuizQuestions(quizId);
-        console.log("Fetched Questions:", fetchedQuestions);
-
-        // Transform the questions to match the expected structure
         const transformedQuestions = fetchedQuestions.map((q) => ({
           question: q.prompt || q.title || "No question text available",
           type: q.type || "unknown",
@@ -115,38 +117,84 @@ export default function QuizPreview() {
     fetchQuestions();
   }, [dispatch, quizId]);
 
-  // Handle quiz submission
   const handleSubmit = async () => {
-
-    if (!currentUser?._id) {
+    if (!currentUser || !currentUser._id) {
       alert("User not authenticated. Please log in.");
       return;
     }
-  
-    if (!quizId) {
-      alert("Quiz ID is required but is missing.");
-      return;
-    }
-  
-    const quizAttempt = {
-      courseID: courseId,
-      answers: selectedAnswers,
+
+    let quizAttempt: QuizAttempt = {
       score: currentPoints,
+      answers: selectedAnswers,
       timestamp: new Date().toISOString(),
+      courseID: "67437ca12e798610ab356bce", // Replace with dynamic value if needed
     };
-  
+
     try {
-      await client.createQuizAttempt(currentUser._id, quizId, quizAttempt);
+      // Check if the attempt exists
+      const checkResponse = await fetch(
+        `${backendURL}/api/users/${currentUser._id}/quizzes/${quizId}/attempt`,
+        {
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+          },
+        }
+      );
+
+      if (checkResponse.ok) {
+        // If the attempt exists, update it with a PUT request
+        const existingAttempt = await checkResponse.json();
+        quizAttempt = { ...quizAttempt, attempt: existingAttempt.attempt + 1 };
+
+        const updateResponse = await fetch(
+          `${backendURL}/api/users/${currentUser._id}/quizzes/${quizId}/attempt`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+              Accept: "application/json",
+            },
+            body: JSON.stringify(quizAttempt),
+          }
+        );
+
+        if (!updateResponse.ok) {
+          throw new Error(`Failed to update quiz attempt: ${updateResponse.statusText}`);
+        }
+        console.log("Quiz attempt updated successfully.");
+      } else if (checkResponse.status === 404) {
+        // If no attempt exists, create a new one with a POST request
+        quizAttempt = { ...quizAttempt, attempt: 1 };
+
+        const createResponse = await fetch(
+          `${backendURL}/api/users/${currentUser._id}/quizzes/${quizId}/attempt`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Accept: "application/json",
+            },
+            body: JSON.stringify(quizAttempt),
+          }
+        );
+
+        if (!createResponse.ok) {
+          throw new Error(`Failed to create quiz attempt: ${createResponse.statusText}`);
+        }
+        console.log("Quiz attempt created successfully.");
+      } else {
+        throw new Error("Failed to fetch existing attempts.");
+      }
+
       dispatch(resetQuiz());
-      alert("Quiz submitted successfully!");
-      navigate("/quiz-complete"); // Navigate to the "Quiz Complete" page
+      navigate(`/Kanbas/Courses/Quizzes/${quizId}/quiz-complete`);
     } catch (error) {
       console.error("Error submitting quiz attempt:", error);
       alert("Failed to submit the quiz. Please try again.");
     }
   };
 
-  // Render conditions
   if (loading) return <div className="p-4">Loading questions...</div>;
   if (error) return <div className="p-4 text-danger">{error}</div>;
   if (!questions?.length) return <div className="p-4">No questions available for this quiz</div>;
@@ -158,8 +206,12 @@ export default function QuizPreview() {
       <h2 className="mb-4">Quiz Preview</h2>
       <ProtectedRole role="FACULTY">
         <div className="alert alert-info mb-4">
-          <span>Score: {currentPoints} / {totalPoints} points</span>
-          <span>Question {currentQuestionIndex + 1} of {questions.length}</span>
+          <span>
+            Score: {currentPoints} / {totalPoints} points
+          </span>
+          <span>
+            Question {currentQuestionIndex + 1} of {questions.length}
+          </span>
         </div>
       </ProtectedRole>
 
@@ -198,10 +250,7 @@ export default function QuizPreview() {
             >
               Next
             </button>
-            <button
-              className="btn btn-outline-danger"
-              onClick={handleSubmit}
-            >
+            <button className="btn btn-outline-danger" onClick={handleSubmit}>
               Submit
             </button>
           </div>
@@ -213,7 +262,9 @@ export default function QuizPreview() {
               {questions.map((_, index) => (
                 <button
                   key={index}
-                  className={`list-group-item list-group-item-action ${currentQuestionIndex === index ? 'active' : ''}`}
+                  className={`list-group-item list-group-item-action ${
+                    currentQuestionIndex === index ? "active" : ""
+                  }`}
                   onClick={() => dispatch(setQuestionIndex(index))}
                 >
                   Question {index + 1}
