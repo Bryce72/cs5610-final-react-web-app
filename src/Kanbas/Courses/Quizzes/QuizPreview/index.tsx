@@ -98,11 +98,13 @@ export default function QuizPreview() {
       try {
         dispatch(setLoading(true));
         const fetchedQuestions = await client.findQuizQuestions(quizId);
-        const transformedQuestions = fetchedQuestions.map((q) => ({
+
+        // Transform questions to ensure flexibility
+        const transformedQuestions = fetchedQuestions.map((q: any) => ({
           question: q.prompt || q.title || "No question text available",
           type: q.type || "unknown",
-          choices: q.choices || [],
-          points: q.points || 0,
+          choices: Array.isArray(q.choices) ? q.choices : [], // Ensure choices is always an array
+          points: typeof q.points === "number" ? q.points : 0, // Default to 0 if points are not a number
         }));
 
         dispatch(setQuestions(transformedQuestions));
@@ -143,7 +145,6 @@ export default function QuizPreview() {
       );
 
       if (checkResponse.ok) {
-        // If the attempt exists, update it with a PUT request
         const existingAttempt = await checkResponse.json();
         quizAttempt = { ...quizAttempt, attempt: existingAttempt.attempt + 1 };
 
@@ -164,7 +165,6 @@ export default function QuizPreview() {
         }
         console.log("Quiz attempt updated successfully.");
       } else if (checkResponse.status === 404) {
-        // If no attempt exists, create a new one with a POST request
         quizAttempt = { ...quizAttempt, attempt: 1 };
 
         const createResponse = await fetch(
@@ -277,8 +277,6 @@ export default function QuizPreview() {
     </div>
   );
 }
-
-
 
 // import React, { useState, useEffect } from "react";
 // import { useDispatch, useSelector } from "react-redux";
