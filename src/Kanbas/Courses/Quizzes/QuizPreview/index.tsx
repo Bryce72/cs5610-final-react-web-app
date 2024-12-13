@@ -47,6 +47,14 @@ interface RootState {
   };
 }
 
+interface QuizAttempt {
+  score: number;
+  answers: any[];
+  timestamp: string;
+  courseID: string;
+  attempt?: number;
+}
+
 export default function QuizPreview() {
   const { quizId } = useParams<{ quizId: string }>();
   const dispatch = useDispatch();
@@ -115,31 +123,69 @@ export default function QuizPreview() {
       return;
     }
 
-    const quizAttempt = {
+    let quizAttempt: QuizAttempt = {
       score: currentPoints,
       answers: selectedAnswers,
       timestamp: new Date().toISOString(),
       courseID: "67437ca12e798610ab356bce", // Replace with dynamic value if needed
-      attempt: 1, // Adjust to dynamically increment
     };
 
     try {
-      const response = await fetch(`${backendURL}/api/users/${currentUser._id}/quizzes/${quizId}/attempt`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Accept": "application/json",
-          "Authorization": "Bearer <your_token>", // Replace with a valid token if needed
-        },
-        body: JSON.stringify(quizAttempt),
-      });
+      // Check if the attempt exists
+      const checkResponse = await fetch(
+        `${backendURL}/api/users/${currentUser._id}/quizzes/${quizId}/attempt`,
+        {
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+          },
+        }
+      );
 
-      if (!response.ok) {
-        throw new Error(`Failed to submit quiz attempt: ${response.statusText}`);
+      if (checkResponse.ok) {
+        // If the attempt exists, update it with a PUT request
+        const existingAttempt = await checkResponse.json();
+        quizAttempt = { ...quizAttempt, attempt: existingAttempt.attempt + 1 };
+
+        const updateResponse = await fetch(
+          `${backendURL}/api/users/${currentUser._id}/quizzes/${quizId}/attempt`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+              Accept: "application/json",
+            },
+            body: JSON.stringify(quizAttempt),
+          }
+        );
+
+        if (!updateResponse.ok) {
+          throw new Error(`Failed to update quiz attempt: ${updateResponse.statusText}`);
+        }
+        console.log("Quiz attempt updated successfully.");
+      } else if (checkResponse.status === 404) {
+        // If no attempt exists, create a new one with a POST request
+        quizAttempt = { ...quizAttempt, attempt: 1 };
+
+        const createResponse = await fetch(
+          `${backendURL}/api/users/${currentUser._id}/quizzes/${quizId}/attempt`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Accept: "application/json",
+            },
+            body: JSON.stringify(quizAttempt),
+          }
+        );
+
+        if (!createResponse.ok) {
+          throw new Error(`Failed to create quiz attempt: ${createResponse.statusText}`);
+        }
+        console.log("Quiz attempt created successfully.");
+      } else {
+        throw new Error("Failed to fetch existing attempts.");
       }
-
-      const data = await response.json();
-      console.log("Quiz attempt submitted successfully:", data);
 
       dispatch(resetQuiz());
       navigate(`/Kanbas/Courses/Quizzes/${quizId}/quiz-complete`);
@@ -160,8 +206,12 @@ export default function QuizPreview() {
       <h2 className="mb-4">Quiz Preview</h2>
       <ProtectedRole role="FACULTY">
         <div className="alert alert-info mb-4">
-          <span>Score: {currentPoints} / {totalPoints} points</span>
-          <span>Question {currentQuestionIndex + 1} of {questions.length}</span>
+          <span>
+            Score: {currentPoints} / {totalPoints} points
+          </span>
+          <span>
+            Question {currentQuestionIndex + 1} of {questions.length}
+          </span>
         </div>
       </ProtectedRole>
 
@@ -200,10 +250,7 @@ export default function QuizPreview() {
             >
               Next
             </button>
-            <button
-              className="btn btn-outline-danger"
-              onClick={handleSubmit}
-            >
+            <button className="btn btn-outline-danger" onClick={handleSubmit}>
               Submit
             </button>
           </div>
@@ -215,7 +262,9 @@ export default function QuizPreview() {
               {questions.map((_, index) => (
                 <button
                   key={index}
-                  className={`list-group-item list-group-item-action ${currentQuestionIndex === index ? 'active' : ''}`}
+                  className={`list-group-item list-group-item-action ${
+                    currentQuestionIndex === index ? "active" : ""
+                  }`}
                   onClick={() => dispatch(setQuestionIndex(index))}
                 >
                   Question {index + 1}
@@ -228,6 +277,7 @@ export default function QuizPreview() {
     </div>
   );
 }
+
 
 // import React, { useState, useEffect } from "react";
 // import { useDispatch, useSelector } from "react-redux";
