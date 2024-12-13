@@ -4,9 +4,7 @@ import { QuizQuestion, QuestionType } from "../../types/QuizQuestion";
 import { removeQuizQuestion, editQuizQuestion } from "./reducer"
 
 import ReactQuill from "react-quill";
-import { FaArrowRight } from "react-icons/fa";
 import { FaRegTrashAlt } from 'react-icons/fa';
-import { FaRegEdit } from 'react-icons/fa';
 import React from "react";
 
 import * as client from "./client";
@@ -15,9 +13,8 @@ export default function QuestionCard({ question }: { question: QuizQuestion }) {
     const dispatch = useDispatch();
 
     const [editMode, setEditMode] = useState<boolean>(false);
-
     //state variable to collect all edits made to this question
-    const [questionEdits, setQuestionEdits] = useState<QuizQuestion>();
+    const [questionEdits, setQuestionEdits] = useState<any>();
 
     //state variables for each question attribute that can be edited
     const [type, setType] = useState<QuestionType>(question.type || QuestionType.MultipleChoice);
@@ -28,6 +25,7 @@ export default function QuestionCard({ question }: { question: QuizQuestion }) {
     const [solution, setSolution] = useState<any>(question.solution);
 
     const [currentQuestion, setCurrentQuestion] = useState<QuizQuestion>(question);
+
     const updateQuestion = (updatedQuestion: QuizQuestion) => {
         setCurrentQuestion(updatedQuestion);
     };
@@ -48,59 +46,87 @@ export default function QuestionCard({ question }: { question: QuizQuestion }) {
             return;
         }
 
-        const editedQuestion = { ...question, ...questionEdits }
+        const editedQuestion = { ...question, ...questionEdits, solution: solution }
+
         console.log(`New Question:\n${JSON.stringify(editedQuestion, null, 2)}`);
+
         await client.updateQuestion(question._id, editedQuestion);
         dispatch(editQuizQuestion(editedQuestion))
     };
+
+    const cancelEdits = async () => {
+        setEditMode(false);
+        setQuestionEdits(null); //reset edits
+        setType(question.type); //reset question type
+    }
 
     return (
         <div className="question-card card mb-5 border-faded">
             <div className="card-body">
                 {/* Question Header */}
                 <div className="d-flex justify-content-between align-items-center">
-                    <h5 className="card-title fw-bold">{question.title}</h5>
-                    <div>
+                    {!editMode &&
+                        <h5 className="card-title fw-bold">{question.title}</h5>
+                    }
+
+                    {/* BUTTONS */}
+                    <div id="question-card-buttons">
                         {!editMode &&
-                            <button
-                                className="btn btn-sm btn-primary me-2"
-                                onClick={e => setEditMode(true)}
-                            >
-                                Edit
-                            </button>
+                            <span>
+                                <button
+                                    className="btn btn-sm btn-primary me-2"
+                                    onClick={e => setEditMode(true)}
+                                >
+                                    Edit
+                                </button>
+
+                                <button
+                                    onClick={() => deleteQuestion()}
+                                    className="btn btn-sm btn-outline-danger">
+                                    Delete
+                                </button>
+                            </span>
                         }
 
                         {editMode &&
-                            <button
-                                className="btn btn-sm btn-success me-2"
-                                onClick={e => saveQuestion()}
-                            >
-                                Save
-                            </button>
+                            <div className="mb-3">
+                                <button
+                                    className="btn btn-sm btn-success me-2"
+                                    onClick={e => saveQuestion()}
+                                >
+                                    Save
+                                </button>
+
+                                <button
+                                    className="btn btn-sm btn-outline-danger me-2"
+                                    onClick={e => cancelEdits()}
+                                >
+                                    Cancel
+                                </button>
+                            </div>
                         }
 
-                        <button
-                            onClick={() => deleteQuestion()}
-                            className="btn btn-sm btn-outline-danger">
-                            Delete
-                        </button>
+
                     </div>
                 </div>
 
                 {/* Question Prompt */}
-                <p className="mt-3 text-muted">
-                    <strong>Question:</strong> {question.prompt}
-                </p>
+                {!editMode &&
+                    <p className="mt-3 fs-5">
+                        <strong>Question Prompt:</strong> {question.prompt}
+                    </p>}
 
                 {/* Question Editing Section */}
-                <div className="question-editor container p-4 border rounded shadow-sm">
-                    {QuestionBasicsEditor({ type, setType, title, setTitle, prompt, setPrompt, points, setPoints, questionEdits, setQuestionEdits })}
+                <div className="question-editor container">
 
-                    {type === QuestionType.TrueFalse && <TrueFalseEditor question={currentQuestion} updateQuestion={updateQuestion} />}
+                    {QuestionBasicsEditor({ editMode, type, setType, title, setTitle, prompt, setPrompt, points, setPoints, questionEdits, setQuestionEdits })}
 
-                    {type === QuestionType.FillBlanks && <FillBlanksEditor solution={solution} setSolution={setSolution} />}
+                    {type === QuestionType.TrueFalse && <TrueFalseEditor editMode={editMode} question={currentQuestion} updateQuestion={updateQuestion} />}
 
-                    {type === QuestionType.MultipleChoice && MultipleChoiceEditor(question, questionEdits, setQuestionEdits, answerChoices, answerChoiceSetter)}
+                    {type === QuestionType.FillBlanks && <FillBlanksEditor editMode={editMode} solution={solution} setSolution={setSolution} />}
+
+                    {type === QuestionType.MultipleChoice && MultipleChoiceEditor(editMode, questionEdits, setQuestionEdits, answerChoices, answerChoiceSetter, solution, setSolution)}
+
                 </div>
             </div>
         </div>
@@ -109,6 +135,7 @@ export default function QuestionCard({ question }: { question: QuizQuestion }) {
 
 //this is the part of the question editor that is the same for all question types
 function QuestionBasicsEditor({
+    editMode,
     type,
     setType,
     title,
@@ -120,6 +147,7 @@ function QuestionBasicsEditor({
     questionEdits,
     setQuestionEdits
 }: {
+    editMode: boolean;
     type: QuestionType;
     setType: (type: QuestionType) => void;
     title: string;
@@ -157,87 +185,111 @@ function QuestionBasicsEditor({
         <div>
             <div className="row mb-3 g-3 align-items-center">
 
+                {/* Instructions Section */}
+                {editMode &&
+                    <div id="question-editor-instructions" className="mt-4">
+                        <div className="alert alert-secondary border-0">
+                            {questionTypesDict.get(type)?.instructions}
+                        </div>
+                    </div>}
+
                 {/* Question Title */}
-                <div className="col-md-6">
-                    <label htmlFor="question-title" className="form-label">
-                        Question Title
-                    </label>
-                    <input
-                        id="question-title"
-                        className="form-control"
-                        value={title}
-                        title="Question Title"
-                        type="text"
-                        placeholder="Enter question title"
-                        onChange={e => {
-                            setTitle(e.target.value);
-                            setQuestionEdits({ ...questionEdits, title: e.target.value })
-                        }}
-                    />
-                </div>
+                {editMode &&
+                    <div className="col-md-6">
+                        <label htmlFor="question-title" className="form-label">
+                            Question Title
+                        </label>
+                        <input
+                            id="question-title"
+                            className="form-control"
+                            value={title}
+                            title="Question Title"
+                            type="text"
+                            placeholder="Enter question title"
+                            onChange={e => {
+                                setTitle(e.target.value);
+                                setQuestionEdits({ ...questionEdits, title: e.target.value })
+                            }}
+                        />
+                    </div>
+                }
+                {/* if !editMode the QuestionCard takes care of it for us */}
+
 
                 {/* Question Type Dropdown */}
-                <div className="col-md-4">
-                    <label htmlFor="question-type" className="form-label">
-                        Question Type
-                    </label>
-                    <select
-                        id="question-type"
-                        className="form-select"
-                        value={questionTypesDict.get(type).name}
-                        title="Question Type"
-                        onChange={(e) => {
-                            const newType = questionNames.get(e.target.value);
-                            console.log(`onChange -> newType = ${newType}`);
-                            if (newType === undefined) {
-                                return;
-                            }
-                            setType(newType);
-                            setQuestionEdits({ ...questionEdits, type: questionNames.get(e.target.value) });
-                        }}
-                    >
-                        {questionTypeNames.map((qType, index) => (
-                            <option key={index} value={qType}>
-                                {qType}
-                            </option>
-                        ))}
-                    </select>
-                </div>
+                {editMode &&
+                    <div className="col-md-4">
+                        <label htmlFor="question-type" className="form-label">
+                            Question Type
+                        </label>
+                        <select
+                            id="question-type"
+                            className="form-select"
+                            value={questionTypesDict.get(type).name}
+                            title="Question Type"
+                            onChange={(e) => {
+                                const newType = questionNames.get(e.target.value);
+                                console.log(`onChange -> newType = ${newType}`);
+                                if (newType === undefined) {
+                                    return;
+                                }
+                                setType(newType);
+                                setQuestionEdits({ ...questionEdits, type: questionNames.get(e.target.value) });
+                            }}
+                        >
+                            {questionTypeNames.map((qType, index) => (
+                                <option key={index} value={qType}>
+                                    {qType}
+                                </option>
+                            ))}
+                        </select>
+                    </div>}
 
-                {/* Points Input */}
-                <div className="col-md-2 text-end">
-                    <label htmlFor="question-points" className="form-label">
-                        Points
-                    </label>
-                    <input
-                        id="question-points"
-                        className="form-control"
-                        type="number"
-                        placeholder="0"
-                        value={points}
-                        title="Number of Points"
-                        onChange={e => {
-                            const numPoints = parseInt(e.target.value);
-                            if (numPoints >= 0) {
-                                setPoints(numPoints);
-                                setQuestionEdits({ ...questionEdits, points: numPoints });
-                            }
-                        }}
-                    />
-                </div>
+                {!editMode &&
+                    <div>
+                        <span className="fw-bold">Question Type:   </span>
+                        <span>{questionTypesDict.get(type).name}</span>
+                    </div>
+                }
+
+
+                {/* Points */}
+                {editMode &&
+                    <div className="col-md-2 text-end">
+                        <label htmlFor="question-points" className="form-label">
+                            Points
+                        </label>
+                        <input
+                            id="question-points"
+                            className="form-control"
+                            type="number"
+                            placeholder="0"
+                            value={points}
+                            title="Number of Points"
+                            onChange={e => {
+                                const numPoints = parseInt(e.target.value);
+                                if (numPoints >= 0) {
+                                    setPoints(numPoints);
+                                    setQuestionEdits({ ...questionEdits, points: numPoints });
+                                }
+                            }}
+                        />
+                    </div>}
+
+                {!editMode &&
+                    <div>
+                        <span className="fw-bold">Points:   </span>
+                        <span>{points}</span>
+                    </div>
+                }
             </div>
 
-            {/* Instructions Section */}
-            <div id="question-editor-instructions" className="mt-4">
-                <div className="alert alert-secondary border-0">
-                    {questionTypesDict.get(type)?.instructions}
-                </div>
-            </div>
+
 
             {/* Question Prompt */}
-            <div className="mt-4">
+            {editMode && <div className="mt-4">
                 <label htmlFor="question-text" className="form-label">
-                    <h5>Question Text:</h5>
+                    <h5>Question Prompt:</h5>
                 </label>
                 <ReactQuill
                     theme="snow"
@@ -252,12 +304,14 @@ function QuestionBasicsEditor({
                         }
                     }}
                 />
-            </div> <br /> <br /> <br />
+                <br /> <br /> <br />
+            </div>
+            }
 
             {/* Answers Section */}
             <div>
                 {/* todo: flush left */}
-                <h5>Choices:</h5>
+                <p className="fw-bold">Choices:</p>
                 {/* Answers input will go here */}
             </div>
         </div>
@@ -265,11 +319,14 @@ function QuestionBasicsEditor({
 }
 
 function MultipleChoiceEditor(
-    q: QuizQuestion,
+    editMode: boolean,
     questionEdits: any,
     setQuestionEdits: any,
     answerChoices: string[],
-    answerChoiceSetter: (choices: string[]) => void
+    answerChoiceSetter: (choices: string[]) => void,
+    solution: any,
+    setSolution: (newSolution: any) => void
+
 ) {
     const handleChoiceUpdate = (original: string, choiceUpdate: string) => {
         const i = answerChoices.findIndex(choice => choice === original);
@@ -287,46 +344,81 @@ function MultipleChoiceEditor(
     };
 
     return (
-        <div id="question-editor-multiple-choice" className="mt-3 ps-5 pb-5">
+        <div id="question-editor-multiple-choice" className="mt-3">
             {answerChoices !== undefined && answerChoices.length >= 0 &&
-                answerChoices.map((choice, index) => (
-                    <div key={index} className="d-flex mb-5 align-items-center">
-                        {/* todo: flush left for more space */}
-                        <span className="">Possible Answer</span>
-
-                        <input
-                            className="form-control"
-                            defaultValue={choice}
-                            onChange={(e) => handleChoiceUpdate(choice, e.target.value)} />
-                        <FaRegTrashAlt
-                            className="fs-2 me-2 ms-3 color-danger"
-                            onClick={() => handleDeleteChoice(index)}
-                        />
-                    </div>
-                ))}
-
-            <button
-                className="btn float-end fs-6 border-light-subtle btn-warning"
-                onClick={() => {
-                    console.log(`\tadding new choice to answer choices\n${JSON.stringify(answerChoices)}`);
-                    if (answerChoices === undefined || answerChoices.length === 0) {
-                        answerChoiceSetter([""]);
+                answerChoices.map((choice, index) => {
+                    let isAnswer;
+                    if (typeof solution === "string") {
+                        //correct type of solution for a multiple choice
+                        isAnswer = solution === choice;
                     } else {
-                        answerChoiceSetter([...answerChoices, ""]);
+                        isAnswer = false;
                     }
-                    setQuestionEdits({ ...questionEdits, choices: answerChoices });
-                }}
-            >
-                + Add Another Answer
-            </button>
+
+                    return (
+                        <div key={index}
+                            className={`d-flex mb-3 align-items-center form-control ${isAnswer ? `border-success border-3` : `border-0`}`}
+                        >
+
+                            {isAnswer &&
+                                <button className="fw-bold btn py-2 pe-1 border-0 text-success">
+                                    Correct Answer
+                                </button>
+                            }
+                            {!isAnswer &&
+                                <button className="fw-bold btn py-2 pe-1 border-0 text-muted"
+                                    onClick={e => {
+                                        if (editMode) {
+                                            setSolution(choice)
+                                        }
+                                    }}>
+                                    Possible Answer
+                                </button>
+                            }
+
+                            <input
+                                className="form-control"
+                                defaultValue={choice}
+                                onChange={(e) => handleChoiceUpdate(choice, e.target.value)}
+                                disabled={!editMode}
+                            />
+                            {/* don't let them delete the correct answer */}
+                            {editMode && !isAnswer &&
+                                <FaRegTrashAlt
+                                    className="fs-2 pb-1 ms-4 text-danger"
+                                    onClick={() => handleDeleteChoice(index)}
+                                />}
+                        </div>
+                    );
+                }
+
+                )}
+
+            {editMode &&
+                <button
+                    className="btn float-end fs-6 border-light-subtle btn-warning"
+                    onClick={() => {
+                        console.log(`\tadding new choice to answer choices\n${JSON.stringify(answerChoices)}`);
+                        if (answerChoices === undefined || answerChoices.length === 0) {
+                            answerChoiceSetter([""]);
+                        } else {
+                            answerChoiceSetter([...answerChoices, ""]);
+                        }
+                        setQuestionEdits({ ...questionEdits, choices: answerChoices });
+                    }}
+                >
+                    + Add Another Answer
+                </button>}
         </div>
     );
 }
 
 function TrueFalseEditor({
+    editMode,
     question,
     updateQuestion,
 }: {
+    editMode: boolean;
     question: QuizQuestion;
     updateQuestion: (updatedQuestion: QuizQuestion) => void;
 }) {
@@ -343,46 +435,44 @@ function TrueFalseEditor({
             console.error("Failed to update question:", error);
         }
     };
+
     return (
-        <div className="true-false-editor">
-            <label>
+        <div>
+            <div className="form-check pb-3 d-flex align-items-center">
                 <input
+                    id="question-card-true"
+                    className="form-check-input mb-1"
                     type="radio"
                     value="true"
                     checked={question.solution === true}
                     onChange={() => handleSolutionChange(true)}
+                    disabled={!editMode}
                 />
-                True
-            </label>
-            <label>
+                <label className="form-check-label ms-2 fs-5" htmlFor="question-card-true">True</label>
+            </div>
+
+            <div className="form-check pb-3 d-flex align-items-center">
                 <input
+                    id="question-card-false"
+                    className="form-check-input mb-1"
                     type="radio"
                     value="false"
                     checked={question.solution === false}
                     onChange={() => handleSolutionChange(false)}
+                    disabled={!editMode}
                 />
-                False
-            </label>
+                <label className="form-check-label ms-2 fs-5" htmlFor="question-card-false">False</label>
+            </div>
         </div>
     );
 }
 
-function FillBlanksEditor({ solution, setSolution }: { solution: string[]; setSolution: (newSolution: string[]) => void }) {
+function FillBlanksEditor({ editMode, solution, setSolution }: { editMode: boolean; solution: string[]; setSolution: (newSolution: string[]) => void }) {
     const handleUpdateSolution = (index: number, newValue: string) => {
         const updatedSolution = [...solution];
         updatedSolution[index] = newValue;
         setSolution(updatedSolution);
     };
-
-    // onClick={() => {
-    //     console.log(`\tadding new choice to answer choices\n${JSON.stringify(answerChoices)}`);
-    //     if (answerChoices === undefined || answerChoices.length === 0) {
-    //         answerChoiceSetter([""]);
-    //     } else {
-    //         answerChoiceSetter([...answerChoices, ""]);
-    //     }
-    //     setQuestionEdits({ ...questionEdits, choices: answerChoices });
-    // }}
 
     const handleAddBlank = () => {
         if (solution === undefined || solution.length === 0) {
@@ -398,28 +488,34 @@ function FillBlanksEditor({ solution, setSolution }: { solution: string[]; setSo
     };
 
     return (
-        <div id="question-editor-fill-blanks" className="mt-3 ps-5 pb-5">
-            {solution !== undefined && solution.map((value, index) => (
-                <div key={index} className="d-flex mb-5 align-items-center">
-                    <span className="">Blank {index + 1}:</span>
+        <div id="question-editor-fill-blanks" className="mt-3">
+            {solution !== undefined && solution.length > 0 &&
+                solution.map((value, index) => (
+                    <div key={index} className="d-flex mb-2 align-items-center form-control border-0">
+                        <label htmlFor={`question-blank-${value}-${index}`} className="form-label fw-bold">Blank {index + 1}:</label>
 
-                    <input
-                        className="form-control mx-3"
-                        value={value}
-                        onChange={(e) => handleUpdateSolution(index, e.target.value)}
-                    />
-                    <FaRegTrashAlt
-                        className="fs-2 color-danger"
-                        onClick={() => handleRemoveBlank(index)}
-                    />
-                </div>
-            ))}
-            <button
-                className="btn float-end fs-6 border-light-subtle btn-warning"
-                onClick={handleAddBlank}
-            >
-                + Add Another Blank
-            </button>
+                        <input
+                            id={`question-blank-${value}-${index}`}
+                            className="form-control flex-grow-1 ms-4"
+                            value={value}
+                            onChange={(e) => handleUpdateSolution(index, e.target.value)}
+                            disabled={!editMode}
+                        />
+                        {editMode && <FaRegTrashAlt
+                            className="fs-2 text-danger ms-4 pb-1"
+                            onClick={() => handleRemoveBlank(index)}
+                        />}
+                    </div>
+                ))}
+
+
+            {editMode &&
+                <button
+                    className="btn float-end fs-6 mt-2 btn-warning"
+                    onClick={handleAddBlank}
+                >
+                    + Add Another Blank
+                </button>}
         </div>
     );
 }
