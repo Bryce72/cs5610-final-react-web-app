@@ -13,12 +13,22 @@ export const findQuizzesForCourse = async (courseId: string) => {
   return response.data;
 };
 
-// Create a new quiz for a specific course
+// Create a new quiz for a specific course FROM PROVIDED OBJECT
 export const createQuiz = async (courseId: string, quiz: any) => {
+  console.log(`POST ${COURSES_API}/${courseId}/quizzes`); //testing: works
+
   const response = await axiosWithCredentials.post(
     `${COURSES_API}/${courseId}/quizzes`,
     quiz
   );
+  console.log(`response data = ${JSON.stringify(response.data, null, 2)}`); //fixme: doesn't get to this point
+
+  return response.data;
+};
+
+// Create a new quiz for a specific course FROM SCRATCH
+export const createQuizForCourse = async (courseId: string) => {
+  const response = await axios.post(`${COURSES_API}/${courseId}/quizzes`, {});
   return response.data;
 };
 
@@ -43,11 +53,7 @@ export const getQuizById = async (quizId: string) => {
   return response.data;
 };
 
-// Create a new quiz for a specific course (alternate function)
-export const createQuizForCourse = async (courseId: string) => {
-  const response = await axios.post(`${COURSES_API}/${courseId}/quizzes`, {});
-  return response.data;
-};
+
 
 
 

@@ -3,9 +3,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { BsGripVertical } from "react-icons/bs";
 import * as client from "./client";
-import { setQuizzes } from "./reducer";
+import { setQuizzes, deleteQuiz, addQuiz } from "./reducer";
 import ProtectedRole from "../../Account/ProtectedRole";
 import "./index.css";
+import { FaRegTrashAlt } from 'react-icons/fa';
+import { FaPlus } from "react-icons/fa";
 
 export default function Quizzes() {
   const { cid } = useParams(); // Fetch the course ID from the URL
@@ -25,17 +27,40 @@ export default function Quizzes() {
   const quizzes = useSelector(
     (state: any) => state.quizzesReducer.quizzes || []
   );
-  const navigate = useNavigate();
+
+  //fixme
+  const newQuiz = async () => {
+    if (cid === undefined || typeof cid !== "string") {
+      alert("Unable to create new quiz due to invalid course id!");
+      return;
+    }
+    const newQuiz = await client.createQuizForCourse(cid);
+    addQuiz(newQuiz); //redux
+  };
+
+  const deleteQuiz = async (quizId: string) => {
+    if (quizId !== undefined) {
+      client.deleteQuiz(quizId);
+      deleteQuiz(quizId); //redux
+    }
+  };
+
   return (
     <div>
-
-
       <ul id="wd-quizzes" className="list-group rounded-0">
+
         <li className="wd-module list-group-item p-0 mb-4 fs-5 border-lightgray">
+
           <div className="wd-title p-3 ps-2 bg-light d-flex justify-content-between align-items-center">
             <div>
               <BsGripVertical className="me-2 fs-3" />
               <strong>QUIZZES</strong>
+
+              {/* fixme: someone please make this less ugly */}
+              <button className="btn float btn-warning ms-5"
+                onClick={e => newQuiz()}>
+                New Quiz
+              </button>
             </div>
           </div>
 
@@ -45,6 +70,7 @@ export default function Quizzes() {
                 key={quiz._id}
                 className="wd-lesson list-group-item p-3 ps-1 d-flex align-items-center"
               >
+                {/* todo if time: change this to another icon */}
                 <BsGripVertical className="me-2 fs-3" />
                 <div className="flex-grow-1 ms-2">
                   <h6 className="mb-1">
@@ -61,6 +87,12 @@ export default function Quizzes() {
                     {quiz.total_points || 0} pts
                   </small>
                 </div>
+
+                <ProtectedRole role="FACULTY">
+                  <FaRegTrashAlt className="text-danger"
+                    onClick={e => deleteQuiz(quiz._id)} />
+                </ProtectedRole>
+
               </li>
             ))}
           </ul>
