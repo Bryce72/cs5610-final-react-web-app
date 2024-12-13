@@ -13,7 +13,7 @@ import {
   setLoading,
   setError,
 } from "./reducer";
-import { setCurrentUser } from "../../../Account/reducer"; // Import setCurrentUser action
+import { setCurrentUser } from "../../../Account/reducer";
 import ProtectedRole from "../../../Account/ProtectedRole";
 
 interface RootState {
@@ -50,7 +50,6 @@ export default function QuizPreview() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  // Selectors to get data from the Redux store
   const {
     questions,
     currentQuestionIndex,
@@ -60,29 +59,25 @@ export default function QuizPreview() {
     loading,
     error,
   } = useSelector((state: RootState) => state.quizPreview);
+
   const currentUser = useSelector((state: RootState) => state.accountReducer.currentUser);
 
-  // Fetch the current user if not already loaded
   useEffect(() => {
     const fetchCurrentUser = async () => {
       if (!currentUser) {
         try {
           const fetchedUser = await client.getCurrentUser();
-          console.log("Fetched User:", fetchedUser);
           dispatch(setCurrentUser(fetchedUser));
         } catch (error) {
           console.error("Error fetching current user:", error);
           alert("Failed to authenticate. Please log in.");
         }
-      } else {
-        console.log("Current User from Redux:", currentUser);
       }
     };
 
     fetchCurrentUser();
   }, [dispatch, currentUser]);
 
-  // Fetch quiz questions
   useEffect(() => {
     const fetchQuestions = async () => {
       if (!quizId) {
@@ -93,9 +88,6 @@ export default function QuizPreview() {
       try {
         dispatch(setLoading(true));
         const fetchedQuestions = await client.findQuizQuestions(quizId);
-        console.log("Fetched Questions:", fetchedQuestions);
-
-        // Transform the questions to match the expected structure
         const transformedQuestions = fetchedQuestions.map((q) => ({
           question: q.prompt || q.title || "No question text available",
           type: q.type || "unknown",
@@ -115,38 +107,34 @@ export default function QuizPreview() {
     fetchQuestions();
   }, [dispatch, quizId]);
 
-  // Handle quiz submission
   const handleSubmit = async () => {
-
     if (!currentUser?._id) {
       alert("User not authenticated. Please log in.");
       return;
     }
-  
+
     if (!quizId) {
       alert("Quiz ID is required but is missing.");
       return;
     }
-  
+
     const quizAttempt = {
       courseID: courseId,
       answers: selectedAnswers,
       score: currentPoints,
       timestamp: new Date().toISOString(),
     };
-  
+
     try {
       await client.createQuizAttempt(currentUser._id, quizId, quizAttempt);
       dispatch(resetQuiz());
-      alert("Quiz submitted successfully!");
-      navigate("/quiz-complete"); // Navigate to the "Quiz Complete" page
+      navigate("/quiz-complete");
     } catch (error) {
       console.error("Error submitting quiz attempt:", error);
       alert("Failed to submit the quiz. Please try again.");
     }
   };
 
-  // Render conditions
   if (loading) return <div className="p-4">Loading questions...</div>;
   if (error) return <div className="p-4 text-danger">{error}</div>;
   if (!questions?.length) return <div className="p-4">No questions available for this quiz</div>;
@@ -226,7 +214,6 @@ export default function QuizPreview() {
     </div>
   );
 }
-
 
 // import React, { useState, useEffect } from "react";
 // import { useDispatch, useSelector } from "react-redux";
