@@ -45,7 +45,7 @@ export default function QuizDetails() {
     navigate(`/Kanbas/Courses/${cid}/Quizzes/${quizId}/QuizPreview`);
   };
   //api/quiz/quizid/questions
- 
+
   return (
     <div className="container quiz-details-container">
       {/* Quiz Header */}
@@ -54,8 +54,9 @@ export default function QuizDetails() {
         <div className="action-buttons">
           <button
             id="wd-publish-btn"
-            className={`btn btn-lg ${quiz.published ? "btn-success" : "btn-danger"
-              }`}
+            className={`btn btn-lg ${
+              quiz.published ? "btn-success" : "btn-danger"
+            }`}
           >
             {quiz.published ? <FaPlus /> : <AiOutlineStop />}
             {quiz.published ? " Published" : " Unpublished"}
@@ -66,8 +67,54 @@ export default function QuizDetails() {
 
       {/* Quiz Details */}
       <div className="quiz-details">
-        <p><strong>Quiz Type:</strong> {quiz.quiz_type || "Graded Quiz"}</p>
-        <p><strong>Points:</strong> {quiz.total_points || 0}</p>
+        <p>
+          <strong>Quiz Type:</strong> {quiz.quiz_type || "Graded Quiz"}
+        </p>
+        <p>
+          <strong>Points:</strong> {quiz.total_points || 0}
+        </p>
+        <p>
+          <strong>Assignment Group:</strong>{" "}
+          {quiz.assignment_group || "Quizzes"}
+        </p>
+        <p>
+          <strong>Shuffle Answers:</strong>{" "}
+          {quiz.shuffle_answers ? "Yes" : "No"}
+        </p>
+        <p>
+          <strong>Time Limit:</strong> {quiz.time_limit_minutes} Minutes
+        </p>
+        <p>
+          <strong>Multiple Attempts:</strong>{" "}
+          {quiz.multi_attempts ? "Yes" : "No"}
+        </p>
+        <p>
+          <strong>View Responses:</strong> Always
+        </p>
+        <p>
+          <strong>Show Correct Answers:</strong> {quiz.show_answer || "No"}
+        </p>
+        <p>
+          <strong>Access Code:</strong> {quiz.passcode || "None"}
+        </p>
+        <p>
+          <strong>One Question at a Time:</strong>{" "}
+          {quiz.questions_one_by_one ? "Yes" : "No"}
+        </p>
+        <p>
+          <strong>Require Respondus Lockdown Browser:</strong> No
+        </p>
+        <p>
+          <strong>Required to View Quiz Results:</strong> No
+        </p>
+        <p>
+          <strong>Webcam Required:</strong>{" "}
+          {quiz.webcam_required ? "Yes" : "No"}
+        </p>
+        <p>
+          <strong>Lock Questions After Answering:</strong>{" "}
+          {quiz.lock_questions ? "Yes" : "No"}
+        </p>
       </div>
       <hr />
 
@@ -99,12 +146,20 @@ export default function QuizDetails() {
 
       {/* TODO: styling/positioning for this button */}
       <ProtectedRole role="FACULTY">
-        <Button onClick={e => navigate(`/Kanbas/Courses/${cid}/Quizzes/${quizId}/QuizEditor`)}>
+        <Button
+          onClick={(e) =>
+            navigate(`/Kanbas/Courses/${cid}/Quizzes/${quizId}/QuizEditor`)
+          }
+        >
           Edit
         </Button>
       </ProtectedRole>
       <ProtectedRole role="ADMIN">
-        <Button onClick={e => navigate(`/Kanbas/Courses/${cid}/Quizzes/${quizId}/QuizEditor`)}>
+        <Button
+          onClick={(e) =>
+            navigate(`/Kanbas/Courses/${cid}/Quizzes/${quizId}/QuizEditor`)
+          }
+        >
           Edit
         </Button>
       </ProtectedRole>
@@ -113,7 +168,6 @@ export default function QuizDetails() {
     </div>
   );
 }
-
 
 // import React, { useState, useEffect } from "react";
 // import { useNavigate, useParams } from "react-router";
