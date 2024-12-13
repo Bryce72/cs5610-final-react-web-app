@@ -64,19 +64,6 @@ export default function QuestionEditor() {
                 </button>
 
             </div>
-
-            <br />
-
-            {/* QUESTION:  does the cancel and save apply to the ENTIRE quiz or JUST the quiz questions or..? */}
-            <div id="question-editor-controls" className="d-flex flex-row border-top mt-3">
-                <button id="question-editor-cancel" className="btn btn-outline-danger mx-2 my-3">
-                    Cancel
-                </button>
-
-                <button id="question-editor-save" className="btn btn-success mx-2 my-3">
-                    Save
-                </button>
-            </div>
         </div>
     );
 }
