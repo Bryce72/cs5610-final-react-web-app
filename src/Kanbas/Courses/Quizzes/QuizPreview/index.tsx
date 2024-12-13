@@ -94,6 +94,8 @@ useEffect(() => {
       try {
         dispatch(setLoading(true));
         const fetchedQuestions = await client.findQuizQuestions(quizId);
+        console.log("Fetched Questions LOOK HERE ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~WOWOWOWOOWOWO:", fetchedQuestions);
+
         dispatch(setQuestions(fetchedQuestions));
       } catch (error) {
         dispatch(setError("Failed to fetch questions"));
