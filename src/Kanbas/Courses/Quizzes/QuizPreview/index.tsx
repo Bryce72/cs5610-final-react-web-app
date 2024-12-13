@@ -135,7 +135,7 @@ export default function QuizPreview() {
         body: JSON.stringify(quizAttempt),
       });
       dispatch(resetQuiz());
-      navigate("/Kanbas/Courses/quiz-complete");
+      navigate("Quizzes/quiz-complete");
     } catch (error) {
       console.error("Error submitting quiz attempt:", error);
       alert("Failed to submit the quiz. Please try again.");
