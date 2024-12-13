@@ -24,12 +24,12 @@ const quizQuestionSlice = createSlice(
                 state.quizQuestions = [...state.quizQuestions, question];
             },
             removeQuizQuestion: (state, { payload: qID }) => {
-                state.quizQuestions = state.quizQuestions.filter(q => q.question_id !== qID);
+                state.quizQuestions = state.quizQuestions.filter(q => q._id !== qID);
             },
             editQuizQuestion: (state, { payload: quizQuestion }) => {
                 const editedQuestion = quizQuestion as QuizQuestion;
                 state.quizQuestions = state.quizQuestions.map((q) => {
-                    if (q.question_id === editedQuestion.question_id) {
+                    if (q._id === editedQuestion._id) {
                         return editedQuestion;
                     } else {
                         return q;

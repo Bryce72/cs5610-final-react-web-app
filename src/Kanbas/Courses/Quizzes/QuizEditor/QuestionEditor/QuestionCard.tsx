@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { QuizQuestion, QuestionType } from "../../types/QuizQuestion";
-
+import { removeQuizQuestion, editQuizQuestion } from "./reducer"
 
 import ReactQuill from "react-quill";
 import { FaArrowRight } from "react-icons/fa";
@@ -10,12 +10,9 @@ import { FaRegEdit } from 'react-icons/fa';
 import React from "react";
 
 export default function QuestionCard({ question }: { question: QuizQuestion }) {
-    // console.debug(`making question card for:\n${JSON.stringify(question, null, 1)}`)
     const [type, setType] = useState<QuestionType>(question.type || QuestionType.MultipleChoice);
 
-    // useEffect(() => {
-    //     console.log(`question type = ${type}`);
-    // }, [type]);
+    const [questionEdits, setQuestionEdits] = useState<QuizQuestion>();
 
     return (
         <div className="question-card card mb-5 border-faded">
@@ -47,10 +44,7 @@ export default function QuestionCard({ question }: { question: QuizQuestion }) {
 }
 
 //this is the part of the question editor that is the same for all question types
-function QuestionBasicsEditor({
-    type,
-    setType,
-}: {
+function QuestionBasicsEditor({ type, setType, }: {
     type: QuestionType;
     setType: (type: QuestionType) => void;
 }) {
