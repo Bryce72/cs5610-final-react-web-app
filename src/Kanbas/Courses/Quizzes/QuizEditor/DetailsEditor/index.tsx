@@ -43,7 +43,7 @@ export default function DetailsEditor() {
 
     // Select a quiz to display. Here, we take the first quiz as an example.
     const quiz = quizzes[0];
-    console.log("check quiz 0", quiz);
+    // console.log("check quiz 0", quiz);
 
     const [quizName, setQuizName] = useState("");
     const [quizInstructions, setQuizInstructions] = useState("");
@@ -182,7 +182,7 @@ export default function DetailsEditor() {
                     <Select
                         isMulti
                         options={assignOptions}
-                        //FIXME!!!!!
+                        //fixme: type error but doesn't seem to crash anything??
                         defaultValue={assignedTo}
                         onChange={(selectedOptions) =>
                             setAssignedTo(selectedOptions as { value: string; label: string }[])

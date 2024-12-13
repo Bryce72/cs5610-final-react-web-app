@@ -40,7 +40,7 @@ export default function QuizEditor() {
 
     // Select a quiz to display. Here, we take the first quiz as an example.
     const quiz = quizzes[0];
-    console.log("check quiz 0", quiz);
+    // console.log("check quiz 0", quiz);
 
     const [quizName, setQuizName] = useState("");
     const [quizInstructions, setQuizInstructions] = useState("");
