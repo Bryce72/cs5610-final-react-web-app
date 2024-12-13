@@ -111,10 +111,16 @@ export default function QuestionCard({ question }: { question: QuizQuestion }) {
                 </div>
 
                 {/* Question Prompt */}
-                {!editMode &&
-                    <p className="mt-3 fs-5">
-                        <strong>Question Prompt:</strong> {question.prompt}
-                    </p>}
+                {!editMode && (
+                    <div className="d-flex align-items-center mt-1 mb-2">
+                        <span className="fw-bold fs-5">Question Prompt:</span>
+                        {question.prompt !== undefined && (
+                            <p className="fs-5 mb-0 ms-2">
+                                <strong>{question.prompt.replace(/<[^>]+>/g, '')}</strong>
+                            </p>
+                        )}
+                    </div>
+                )}
 
                 {/* Question Editing Section */}
                 <div className="question-editor container">
