@@ -46,15 +46,18 @@ export default function QuestionCard({ question }: { question: QuizQuestion }) {
             return;
         }
 
-        const editedQuestion = { ...question, ...questionEdits }
+        const editedQuestion = { ...question, ...questionEdits, solution: solution }
+
         console.log(`New Question:\n${JSON.stringify(editedQuestion, null, 2)}`);
+
         await client.updateQuestion(question._id, editedQuestion);
         dispatch(editQuizQuestion(editedQuestion))
     };
 
     const cancelEdits = async () => {
         setEditMode(false);
-        setQuestionEdits({}); //reset edits
+        setQuestionEdits(null); //reset edits
+        setType(question.type); //reset question type
     }
 
     return (
@@ -115,13 +118,15 @@ export default function QuestionCard({ question }: { question: QuizQuestion }) {
 
                 {/* Question Editing Section */}
                 <div className="question-editor container">
+
                     {QuestionBasicsEditor({ editMode, type, setType, title, setTitle, prompt, setPrompt, points, setPoints, questionEdits, setQuestionEdits })}
 
                     {type === QuestionType.TrueFalse && <TrueFalseEditor editMode={editMode} question={currentQuestion} updateQuestion={updateQuestion} />}
 
                     {type === QuestionType.FillBlanks && <FillBlanksEditor editMode={editMode} solution={solution} setSolution={setSolution} />}
 
-                    {type === QuestionType.MultipleChoice && MultipleChoiceEditor(editMode, question, questionEdits, setQuestionEdits, answerChoices, answerChoiceSetter)}
+                    {type === QuestionType.MultipleChoice && MultipleChoiceEditor(editMode, questionEdits, setQuestionEdits, answerChoices, answerChoiceSetter, solution, setSolution)}
+
                 </div>
             </div>
         </div>
@@ -315,11 +320,13 @@ function QuestionBasicsEditor({
 
 function MultipleChoiceEditor(
     editMode: boolean,
-    q: QuizQuestion,
     questionEdits: any,
     setQuestionEdits: any,
     answerChoices: string[],
-    answerChoiceSetter: (choices: string[]) => void
+    answerChoiceSetter: (choices: string[]) => void,
+    solution: any,
+    setSolution: (newSolution: any) => void
+
 ) {
     const handleChoiceUpdate = (original: string, choiceUpdate: string) => {
         const i = answerChoices.findIndex(choice => choice === original);
@@ -337,25 +344,55 @@ function MultipleChoiceEditor(
     };
 
     return (
-        <div id="question-editor-multiple-choice" className="mt-3 ps-5 pb-5">
+        <div id="question-editor-multiple-choice" className="mt-3">
             {answerChoices !== undefined && answerChoices.length >= 0 &&
-                answerChoices.map((choice, index) => (
-                    <div key={index} className="d-flex mb-5 align-items-center">
-                        {/* todo: flush left for more space */}
-                        <span className="fw-bold">Possible Answer</span>
+                answerChoices.map((choice, index) => {
+                    let isAnswer;
+                    if (typeof solution === "string") {
+                        //correct type of solution for a multiple choice
+                        isAnswer = solution === choice;
+                    } else {
+                        isAnswer = false;
+                    }
 
-                        <input
-                            className="form-control"
-                            defaultValue={choice}
-                            onChange={(e) => handleChoiceUpdate(choice, e.target.value)}
-                            disabled={!editMode}
-                        />
-                        {editMode && <FaRegTrashAlt
-                            className="fs-2 me-2 ms-3 color-danger"
-                            onClick={() => handleDeleteChoice(index)}
-                        />}
-                    </div>
-                ))}
+                    return (
+                        <div key={index}
+                            className={`d-flex mb-3 align-items-center form-control ${isAnswer ? `border-success border-3` : `border-0`}`}
+                        >
+
+                            {isAnswer &&
+                                <button className="fw-bold btn py-2 pe-1 border-0 text-success">
+                                    Correct Answer
+                                </button>
+                            }
+                            {!isAnswer &&
+                                <button className="fw-bold btn py-2 pe-1 border-0 text-muted"
+                                    onClick={e => {
+                                        if (editMode) {
+                                            setSolution(choice)
+                                        }
+                                    }}>
+                                    Possible Answer
+                                </button>
+                            }
+
+                            <input
+                                className="form-control"
+                                defaultValue={choice}
+                                onChange={(e) => handleChoiceUpdate(choice, e.target.value)}
+                                disabled={!editMode}
+                            />
+                            {/* don't let them delete the correct answer */}
+                            {editMode && !isAnswer &&
+                                <FaRegTrashAlt
+                                    className="fs-2 pb-1 ms-4 text-danger"
+                                    onClick={() => handleDeleteChoice(index)}
+                                />}
+                        </div>
+                    );
+                }
+
+                )}
 
             {editMode &&
                 <button
@@ -451,28 +488,30 @@ function FillBlanksEditor({ editMode, solution, setSolution }: { editMode: boole
     };
 
     return (
-        <div id="question-editor-fill-blanks" className="mt-3 ps-5 pb-5">
-            {solution !== undefined && solution.map((value, index) => (
-                <div key={index} className="d-flex mb-5 align-items-center">
-                    <span className="fw-bold">Blank {index + 1}:</span>
+        <div id="question-editor-fill-blanks" className="mt-3">
+            {solution !== undefined && solution.length > 0 &&
+                solution.map((value, index) => (
+                    <div key={index} className="d-flex mb-2 align-items-center form-control border-0">
+                        <label htmlFor={`question-blank-${value}-${index}`} className="form-label fw-bold">Blank {index + 1}:</label>
 
-                    <input
-                        className="form-control mx-3"
-                        value={value}
-                        onChange={(e) => handleUpdateSolution(index, e.target.value)}
-                        disabled={!editMode}
-                    />
-                    {editMode && <FaRegTrashAlt
-                        className="fs-2 color-danger"
-                        onClick={() => handleRemoveBlank(index)}
-                    />}
-                </div>
-            ))}
+                        <input
+                            id={`question-blank-${value}-${index}`}
+                            className="form-control flex-grow-1 ms-4"
+                            value={value}
+                            onChange={(e) => handleUpdateSolution(index, e.target.value)}
+                            disabled={!editMode}
+                        />
+                        {editMode && <FaRegTrashAlt
+                            className="fs-2 text-danger ms-4 pb-1"
+                            onClick={() => handleRemoveBlank(index)}
+                        />}
+                    </div>
+                ))}
 
 
             {editMode &&
                 <button
-                    className="btn float-end fs-6 border-light-subtle btn-warning"
+                    className="btn float-end fs-6 mt-2 btn-warning"
                     onClick={handleAddBlank}
                 >
                     + Add Another Blank
