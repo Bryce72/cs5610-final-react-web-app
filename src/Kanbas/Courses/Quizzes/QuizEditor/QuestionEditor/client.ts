@@ -1,5 +1,5 @@
 import axios from "axios";
-export const REMOTE_SERVER = process.env.REACT_APP_REMOTE_SERVER;
+export const REMOTE_SERVER = process.env.REACT_APP_REMOTE_SERVER || "https://kanbas-node-server-app-738l.onrender.com";
 
 export const addQuestion = async (newQuestion: any, quizId: string) => {
     const url = `${REMOTE_SERVER}/api/quiz/${quizId}/questions`;
