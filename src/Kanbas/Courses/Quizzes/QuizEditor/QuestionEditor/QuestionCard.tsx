@@ -90,7 +90,7 @@ export default function QuestionCard({ question }: { question: QuizQuestion }) {
 
                 {/* Question Editing Section */}
                 <div className="question-editor container p-4 border rounded shadow-sm">
-                    {<QuestionBasicsEditor type={type} setType={setType} />}
+                    {QuestionBasicsEditor({ type, setType, title, setTitle, prompt, setPrompt, points, setPoints, questionEdits, setQuestionEdits })}
                     {type === QuestionType.TrueFalse && <TrueFalseEditor />}
                     {type === QuestionType.FillBlanks && <FillBlanksEditor />}
                     {type === QuestionType.MultipleChoice && MultipleChoiceEditor(question, questionEdits, setQuestionEdits, answerChoices, answerChoiceSetter)}
@@ -101,16 +101,35 @@ export default function QuestionCard({ question }: { question: QuizQuestion }) {
 }
 
 //this is the part of the question editor that is the same for all question types
-function QuestionBasicsEditor({ type, setType, }: {
+function QuestionBasicsEditor({
+    type,
+    setType,
+    title,
+    setTitle,
+    prompt,
+    setPrompt,
+    points,
+    setPoints,
+    questionEdits,
+    setQuestionEdits
+}: {
     type: QuestionType;
     setType: (type: QuestionType) => void;
+    title: string;
+    setTitle: (title: string) => void;
+    prompt: string;
+    setPrompt: (prompt: string) => void;
+    points: number;
+    setPoints: (points: number) => void;
+    questionEdits: any;
+    setQuestionEdits: (edits: any) => void;
 }) {
+
     const questionNames = new Map<string, QuestionType>([
         ["Multiple Choice", QuestionType.MultipleChoice],
         ["True/False", QuestionType.TrueFalse],
         ["Fill in the Blanks", QuestionType.FillBlanks]
     ]);
-
     const questionTypesDict = new Map<string, any>([
         [QuestionType.MultipleChoice, {
             name: "Multiple Choice",
@@ -125,7 +144,6 @@ function QuestionBasicsEditor({ type, setType, }: {
             instructions: "Enter your question text, then define all possible correct answers for the blank. Students will see the question followed by a small text box to type their answer."
         }]
     ]);
-
     const questionTypeNames = ["Multiple Choice", "True/False", "Fill in the Blanks"]
 
     return (
@@ -139,11 +157,15 @@ function QuestionBasicsEditor({ type, setType, }: {
                     </label>
                     <input
                         id="question-title"
-                        type="text"
-                        title="Question Title"
-                        placeholder="Enter question title"
                         className="form-control"
-                        onChange={e => { }}
+                        value={title}
+                        title="Question Title"
+                        type="text"
+                        placeholder="Enter question title"
+                        onChange={e => {
+                            setTitle(e.target.value);
+                            setQuestionEdits({ ...questionEdits, title: e.target.value })
+                        }}
                     />
                 </div>
 
@@ -164,6 +186,7 @@ function QuestionBasicsEditor({ type, setType, }: {
                                 return;
                             }
                             setType(newType);
+                            setQuestionEdits({ ...questionEdits, type: questionNames.get(e.target.value) });
                         }}
                     >
                         {questionTypeNames.map((qType, index) => (
@@ -181,10 +204,18 @@ function QuestionBasicsEditor({ type, setType, }: {
                     </label>
                     <input
                         id="question-points"
-                        type="number"
-                        title="Number of Points"
-                        placeholder="0"
                         className="form-control"
+                        type="number"
+                        placeholder="0"
+                        value={points}
+                        title="Number of Points"
+                        onChange={e => {
+                            const numPoints = parseInt(e.target.value);
+                            if (numPoints >= 0) {
+                                setPoints(numPoints);
+                                setQuestionEdits({ ...questionEdits, points: numPoints });
+                            }
+                        }}
                     />
                 </div>
             </div>
@@ -196,21 +227,29 @@ function QuestionBasicsEditor({ type, setType, }: {
                 </div>
             </div>
 
-            {/* Question Text */}
+            {/* Question Prompt */}
             <div className="mt-4">
                 <label htmlFor="question-text" className="form-label">
                     <h5>Question Text:</h5>
                 </label>
                 <ReactQuill
                     theme="snow"
-                    placeholder="Type question text here..."
                     style={{ height: "200px" }}
+                    placeholder="Type question text here..."
+                    value={prompt}
+                    onChange={content => {
+                        if (content !== null) {
+                            setPrompt(content);
+                            setQuestionEdits({ ...questionEdits, prompt: content });
+                        }
+                    }}
                 />
             </div> <br /> <br /> <br />
 
             {/* Answers Section */}
             <div>
-                <h5>Answers:</h5>
+                {/* todo: flush left */}
+                <h5>Choices:</h5>
                 {/* Answers input will go here */}
             </div>
         </div>
