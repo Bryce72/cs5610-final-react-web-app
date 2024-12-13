@@ -14,10 +14,18 @@ import * as client from "./client";
 export default function QuestionCard({ question }: { question: QuizQuestion }) {
     const dispatch = useDispatch();
 
-    const [questionEdits, setQuestionEdits] = useState<QuizQuestion>();
-    const [type, setType] = useState<QuestionType>(question.type || QuestionType.MultipleChoice);
     const [editMode, setEditMode] = useState<boolean>(false);
+
+    //state variable to collect all edits made to this question
+    const [questionEdits, setQuestionEdits] = useState<QuizQuestion>();
+
+    //state variables for each question attribute that can be edited
+    const [type, setType] = useState<QuestionType>(question.type || QuestionType.MultipleChoice);
     const [answerChoices, answerChoiceSetter] = useState<any[]>(question.choices);
+    const [title, setTitle] = useState<string>(question.title);
+    const [prompt, setPrompt] = useState<string>(question.prompt);
+    const [points, setPoints] = useState<number>(question.points);
+    const [solution, setSolution] = useState<any>(question.solution);
 
     const deleteQuestion = async () => {
         const questionId = question._id;
@@ -77,7 +85,7 @@ export default function QuestionCard({ question }: { question: QuizQuestion }) {
 
                 {/* Question Prompt */}
                 <p className="mt-3 text-muted">
-                    <strong>Question:</strong> {question.question}
+                    <strong>Question:</strong> {question.prompt}
                 </p>
 
                 {/* Question Editing Section */}
@@ -135,6 +143,7 @@ function QuestionBasicsEditor({ type, setType, }: {
                         title="Question Title"
                         placeholder="Enter question title"
                         className="form-control"
+                        onChange={e => { }}
                     />
                 </div>
 
@@ -208,7 +217,7 @@ function QuestionBasicsEditor({ type, setType, }: {
     );
 }
 
-function MultipleChoiceEditor(q: QuizQuestion, questionEdits: any, setQuestionEdits: any, answerChoices: any, answerChoiceSetter:any) {
+function MultipleChoiceEditor(q: QuizQuestion, questionEdits: any, setQuestionEdits: any, answerChoices: any, answerChoiceSetter: any) {
     const handleChoiceUpdate = (original: string, choiceUpdate: string) => {
         const i = answerChoices.findIndex(choice => choice === original);
         answerChoiceSetter(

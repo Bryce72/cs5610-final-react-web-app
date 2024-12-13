@@ -36,9 +36,10 @@ export default function QuestionEditor() {
 
     //testing: effect to log whenever our questions change
     useEffect(() => {
-        console.log(`Number of Questions = ${quizQuestions.length}`);
+        // console.log(`Number of Questions = ${quizQuestions.length}`);
     }, [quizQuestions]);
 
+    // FIXME: title doesn't show up immediately
     const createNewQuestion = async () => {
         const emptyQuestion = {
             quiz: quizId,

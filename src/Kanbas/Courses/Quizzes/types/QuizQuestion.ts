@@ -10,7 +10,7 @@ export interface QuizQuestion {
     title: string;
     type: QuestionType;
     points: number;
-    question: string;
+    prompt: string;
     choices: string[] | boolean[];
     solution: string | string[] | boolean;
 }
