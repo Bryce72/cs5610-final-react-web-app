@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import * as client from "./client";
 import Question from "./question";
 import {
@@ -48,6 +48,7 @@ interface RootState {
 export default function QuizPreview() {
   const { courseId, quizId } = useParams<{ courseId: string; quizId: string }>();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   // Selectors to get data from the Redux store
   const {
@@ -116,27 +117,29 @@ export default function QuizPreview() {
 
   // Handle quiz submission
   const handleSubmit = async () => {
+
     if (!currentUser?._id) {
       alert("User not authenticated. Please log in.");
       return;
     }
-
+  
     if (!quizId) {
       alert("Quiz ID is required but is missing.");
       return;
     }
-
+  
+    const quizAttempt = {
+      courseID: courseId,
+      answers: selectedAnswers,
+      score: currentPoints,
+      timestamp: new Date().toISOString(),
+    };
+  
     try {
-      const quizAttempt = {
-        courseID: courseId,
-        answers: selectedAnswers,
-        score: currentPoints,
-        timestamp: new Date().toISOString(),
-      };
-
       await client.createQuizAttempt(currentUser._id, quizId, quizAttempt);
       dispatch(resetQuiz());
       alert("Quiz submitted successfully!");
+      navigate("/quiz-complete"); // Navigate to the "Quiz Complete" page
     } catch (error) {
       console.error("Error submitting quiz attempt:", error);
       alert("Failed to submit the quiz. Please try again.");
