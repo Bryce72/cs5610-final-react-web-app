@@ -30,7 +30,18 @@ interface RootState {
     maxAttempts: number;
   };
   accountReducer: {
-    currentUser: { userID: string | null } | null;
+    currentUser: {
+      _id: string | null;
+      username: string;
+      firstName: string;
+      lastName: string;
+      email: string;
+      role: string;
+      dob: string | null;
+      section?: string;
+      lastActivity?: string;
+      totalActivity?: string;
+    } | null;
   };
 }
 
@@ -96,16 +107,16 @@ useEffect(() => {
 
   // Handle quiz submission
   const handleSubmit = async () => {
-    if (!currentUser?.userID) {
+    if (!currentUser?._id) {
       alert("User not authenticated. Please log in.");
       return;
     }
-
+  
     if (!quizId) {
       alert("Quiz ID is required but is missing.");
       return;
     }
-
+  
     try {
       const quizAttempt = {
         courseID: courseId,
@@ -113,8 +124,8 @@ useEffect(() => {
         score: currentPoints,
         timestamp: new Date().toISOString(),
       };
-
-      await client.createQuizAttempt(currentUser.userID, quizId, quizAttempt);
+  
+      await client.createQuizAttempt(currentUser._id, quizId, quizAttempt);
       dispatch(resetQuiz());
       alert("Quiz submitted successfully!");
     } catch (error) {
@@ -122,6 +133,7 @@ useEffect(() => {
       alert("Failed to submit the quiz. Please try again.");
     }
   };
+  
 
   // Render conditions
   if (loading) return <div className="p-4">Loading questions...</div>;
