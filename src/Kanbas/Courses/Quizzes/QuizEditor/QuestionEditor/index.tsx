@@ -5,7 +5,7 @@ import QuestionCard from "./QuestionCard";
 import { QuizQuestion } from "../../types/QuizQuestion";
 import React from "react";
 import * as client from './client';
-import { setQuizQuestions, addQuizQuestion, } from "./reducer";
+import { setQuizQuestions, addQuizQuestion, removeQuizQuestion, editQuizQuestion } from "./reducer";
 import { useParams } from "react-router-dom";
 
 export default function QuestionEditor() {
@@ -36,9 +36,10 @@ export default function QuestionEditor() {
 
     //testing: effect to log whenever our questions change
     useEffect(() => {
-        // console.log(`QuestionEditor\n${JSON.stringify(quizQuestions, null, 2)}`);
+        // console.log(`Number of Questions = ${quizQuestions.length}`);
     }, [quizQuestions]);
 
+    // FIXME: title doesn't show up immediately
     const createNewQuestion = async () => {
         const emptyQuestion = {
             quiz: quizId,
@@ -60,7 +61,6 @@ export default function QuestionEditor() {
                     ))
                 }
 
-                {/* TODO: onclick add a new empty question right above this button */}
                 <button id="question-editor-new-question"
                     className="btn btn-warning mx-2"
                     onClick={e => createNewQuestion()}
