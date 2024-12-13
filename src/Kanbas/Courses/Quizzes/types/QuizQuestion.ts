@@ -5,8 +5,8 @@ export enum QuestionType {
 }
 
 export interface QuizQuestion {
-    question_id: string; //PK
-    quiz_id: string; //FK
+    _id: string; //PK
+    quiz: string; //FK
     title: string;
     type: QuestionType;
     points: number;
