@@ -89,6 +89,9 @@ export default function QuizDetails() {
           {quiz.multi_attempts ? "Yes" : "No"}
         </p>
         <p>
+          <strong>View Responses:</strong> Always
+        </p>
+        <p>
           <strong>Show Correct Answers:</strong> {quiz.show_answer || "No"}
         </p>
         <p>
@@ -97,6 +100,12 @@ export default function QuizDetails() {
         <p>
           <strong>One Question at a Time:</strong>{" "}
           {quiz.questions_one_by_one ? "Yes" : "No"}
+        </p>
+        <p>
+          <strong>Require Respondus Lockdown Browser:</strong> No
+        </p>
+        <p>
+          <strong>Required to View Quiz Results:</strong> No
         </p>
         <p>
           <strong>Webcam Required:</strong>{" "}
