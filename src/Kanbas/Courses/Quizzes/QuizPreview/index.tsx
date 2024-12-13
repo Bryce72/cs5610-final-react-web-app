@@ -119,81 +119,12 @@ export default function QuizPreview() {
     fetchQuestions();
   }, [dispatch, quizId]);
 
-  const handleSubmit = async () => {
-    if (!currentUser || !currentUser._id) {
-      alert("User not authenticated. Please log in.");
-      return;
-    }
-
-    let quizAttempt: QuizAttempt = {
-      score: currentPoints,
-      answers: selectedAnswers,
-      timestamp: new Date().toISOString(),
-      courseID: "67437ca12e798610ab356bce", // Replace with dynamic value if needed
-    };
-
-    try {
-      // Check if the attempt exists
-      const checkResponse = await fetch(
-        `${backendURL}/api/users/${currentUser._id}/quizzes/${quizId}/attempt`,
-        {
-          method: "GET",
-          headers: {
-            Accept: "application/json",
-          },
-        }
-      );
-
-      if (checkResponse.ok) {
-        const existingAttempt = await checkResponse.json();
-        quizAttempt = { ...quizAttempt, attempt: existingAttempt.attempt + 1 };
-
-        const updateResponse = await fetch(
-          `${backendURL}/api/users/${currentUser._id}/quizzes/${quizId}/attempt`,
-          {
-            method: "PUT",
-            headers: {
-              "Content-Type": "application/json",
-              Accept: "application/json",
-            },
-            body: JSON.stringify(quizAttempt),
-          }
-        );
-
-        if (!updateResponse.ok) {
-          throw new Error(`Failed to update quiz attempt: ${updateResponse.statusText}`);
-        }
-        console.log("Quiz attempt updated successfully.");
-      } else if (checkResponse.status === 404) {
-        quizAttempt = { ...quizAttempt, attempt: 1 };
-
-        const createResponse = await fetch(
-          `${backendURL}/api/users/${currentUser._id}/quizzes/${quizId}/attempt`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Accept: "application/json",
-            },
-            body: JSON.stringify(quizAttempt),
-          }
-        );
-
-        if (!createResponse.ok) {
-          throw new Error(`Failed to create quiz attempt: ${createResponse.statusText}`);
-        }
-        console.log("Quiz attempt created successfully.");
-      } else {
-        throw new Error("Failed to fetch existing attempts.");
-      }
-
-      dispatch(resetQuiz());
-      navigate(`/Kanbas/Courses/Quizzes/${quizId}/quiz-complete`);
-    } catch (error) {
-      console.error("Error submitting quiz attempt:", error);
-      alert("Failed to submit the quiz. Please try again.");
-    }
+  const handleSubmit = () => {
+    console.log("Navigating to the courses page...");
+    navigate(`/Kanbas/Courses/`);
   };
+
+
 
   if (loading) return <div className="p-4">Loading questions...</div>;
   if (error) return <div className="p-4 text-danger">{error}</div>;
@@ -262,9 +193,8 @@ export default function QuizPreview() {
               {questions.map((_, index) => (
                 <button
                   key={index}
-                  className={`list-group-item list-group-item-action ${
-                    currentQuestionIndex === index ? "active" : ""
-                  }`}
+                  className={`list-group-item list-group-item-action ${currentQuestionIndex === index ? "active" : ""
+                    }`}
                   onClick={() => dispatch(setQuestionIndex(index))}
                 >
                   Question {index + 1}
@@ -355,12 +285,12 @@ export default function QuizPreview() {
 
 
 
-  
+
 
 //   return (
 //     <div className="wd-main-content-offset p-4">
 //       <h2 className="mb-4">Quiz Preview</h2>
-      
+
 //       {/* points dont update immediately, only updates when you got o next page */}
 //       <ProtectedRole role="FACULTY">
 //       {/* Points Display */}
@@ -387,9 +317,9 @@ export default function QuizPreview() {
 //                 choices={currentQuestion.choices}
 //                 points={currentQuestion.points}
 //                 onAnswer={(answer) => {
-//                   dispatch(selectAnswer({ 
-//                     questionIndex: currentQuestionIndex, 
-//                     answer 
+//                   dispatch(selectAnswer({
+//                     questionIndex: currentQuestionIndex,
+//                     answer
 //                   }));
 //                   setLastSaveTime(new Date().toLocaleString());
 //                 }}

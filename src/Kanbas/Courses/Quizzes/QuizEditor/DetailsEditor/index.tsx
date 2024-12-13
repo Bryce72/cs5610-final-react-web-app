@@ -3,7 +3,7 @@ import ReactQuill from "react-quill";
 import Select from "react-select/base";
 import { setQuizzes } from "../../reducer";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import * as client from "../../client";
 
 const formatDateForInput = (dateString: any) => {
@@ -16,6 +16,7 @@ export default function DetailsEditor() {
     const { cid } = useParams(); // Get the course ID from the URL
     const dispatch = useDispatch();
     const quizzes = useSelector((state: any) => state.quizzesReducer.quizzes);
+    const navigate = useNavigate();
 
     // get quiz
     const fetchQuizzes = async () => {
@@ -212,8 +213,8 @@ export default function DetailsEditor() {
 
             {/* Action Buttons */}
             <div className="d-flex justify-content-end mt-4">
-                <button className="btn btn-outline-secondary me-2">Cancel</button>
-                <button className="btn btn-danger">Save</button>
+                <button className="btn btn-outline-secondary me-2" onClick={e => navigate(-1)}>Cancel</button>
+                <button className="btn btn-danger" onClick={e => navigate(-1)}>Save</button>
             </div>
         </div>
     );
