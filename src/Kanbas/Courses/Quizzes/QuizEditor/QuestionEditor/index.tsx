@@ -5,13 +5,15 @@ import QuestionCard from "./QuestionCard";
 import { QuizQuestion } from "../../types/QuizQuestion";
 import React from "react";
 import * as client from './client';
-import { setQuizQuestions, addQuizQuestion, removeQuizQuestion, editQuizQuestion } from "./reducer";
+import { setQuizQuestions, addQuizQuestion, } from "./reducer";
 import { useParams } from "react-router-dom";
 
 export default function QuestionEditor() {
-
     const dispatch = useDispatch();
     const { quizId } = useParams<{ quizId: string }>();
+    if (quizId === undefined) {
+        throw new Error("QuestionEditor: required path param quizId is undefined");
+    }
 
     //REDUX for all questions in the current quiz
     const { quizQuestions } = useSelector((state: any) => state.quizQuestions);
@@ -34,22 +36,35 @@ export default function QuestionEditor() {
 
     //testing: effect to log whenever our questions change
     useEffect(() => {
-        console.log(`QuestionEditor\n${JSON.stringify(quizQuestions, null, 2)}`);
+        // console.log(`QuestionEditor\n${JSON.stringify(quizQuestions, null, 2)}`);
     }, [quizQuestions]);
+
+    const createNewQuestion = async () => {
+        const emptyQuestion = {
+            quiz: quizId,
+            title: "New Question",
+            type: "multiple-choice",
+            points: 0
+        };
+        const newQuestion = client.addQuestion(emptyQuestion, quizId);
+        dispatch(addQuizQuestion(newQuestion));
+    };
 
 
     return (
         <div id="question-editor" className="container mt-4">
             <div id="questions-overview" className="text-center">
                 {
-                    // FIXME: .map is not a function??
                     quizQuestions.map((q: QuizQuestion) => (
-                        <QuestionCard question={q} key={q.question_id} />
+                        <QuestionCard question={q} key={q._id} />
                     ))
                 }
 
                 {/* TODO: onclick add a new empty question right above this button */}
-                <button id="question-editor-new-question" className="btn btn-warning mx-2">
+                <button id="question-editor-new-question"
+                    className="btn btn-warning mx-2"
+                    onClick={e => createNewQuestion()}
+                >
                     + New Question
                 </button>
 
@@ -57,13 +72,12 @@ export default function QuestionEditor() {
 
             <br />
 
-            {/* very bottom of my page to save all changes to all the questions */}
+            {/* QUESTION:  does the cancel and save apply to the ENTIRE quiz or JUST the quiz questions or..? */}
             <div id="question-editor-controls" className="d-flex flex-row border-top mt-3">
                 <button id="question-editor-cancel" className="btn btn-outline-danger mx-2 my-3">
                     Cancel
                 </button>
 
-                {/* QUESTION:  does this save changes to questions only or does it save changes to the entire quiz?*/}
                 <button id="question-editor-save" className="btn btn-success mx-2 my-3">
                     Save
                 </button>

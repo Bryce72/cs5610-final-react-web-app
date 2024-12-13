@@ -1,16 +1,16 @@
 import axios from "axios";
 export const REMOTE_SERVER = process.env.REACT_APP_REMOTE_SERVER;
 
-export const addQuestion = async (newQuestion: any) => {
-    const url = `${REMOTE_SERVER}/api/quiz/questions`;
+export const addQuestion = async (newQuestion: any, quizId: string) => {
+    const url = `${REMOTE_SERVER}/api/quiz/${quizId}/questions`;
     console.log(`QUESTION CLIENT - addQuestion ${url}`);
-    const { data } = await axios.post(url, newQuestion);
-    return data;
+    const response = await axios.post(url, newQuestion);
+    return response.data;
 };
 
-export const removeQuestion = async (questionId: string) => {
+export const deleteQuestion = async (questionId: string) => {
     const url = `${REMOTE_SERVER}/api/quiz/questions/${questionId}`
-    console.log(`QUESTION CLIENT - removeQuestion ${url}`);
+    console.log(`QUESTION CLIENT - deleteQuestion ${url}`);
     const { data } = await axios.delete(url);
     return data;
 };
