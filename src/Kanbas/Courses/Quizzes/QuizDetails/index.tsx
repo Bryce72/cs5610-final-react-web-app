@@ -26,6 +26,19 @@ export default function QuizDetails() {
     dispatch(setQuizzes(quizzes));
   };
 
+  const togglePublish = async () => {
+    const quiz = quizzes && quizzes.length > 0 ? quizzes[0] : null;
+    if (!quiz) return;
+
+    const updatedQuiz = { ...quiz, published: !quiz.published };
+    try {
+      await client.updateQuiz(updatedQuiz);
+      dispatch(setQuizzes([updatedQuiz]));
+    } catch (err: any) {
+      setError(err.message);
+    }
+  };
+
   useEffect(() => {
     fetchQuizzes();
   }, []);
@@ -56,15 +69,44 @@ export default function QuizDetails() {
       <div className="d-flex justify-content-between align-items-center mb-4">
         <h1>{quiz.name || "Quiz Title"}</h1>
         <div className="action-buttons">
-          <button
-            id="wd-publish-btn"
-            className={`btn btn-lg ${
-              quiz.published ? "btn-success" : "btn-danger"
-            }`}
-          >
-            {quiz.published ? <FaPlus /> : <AiOutlineStop />}
-            {quiz.published ? " Published" : " Unpublished"}
-          </button>
+          <ProtectedRole role="FACULTY">
+            <button
+              id="wd-publish-btn"
+              className={`btn btn-lg ${
+                quiz.published ? "btn-success" : "btn-danger"
+              }`}
+              onClick={togglePublish}
+            >
+              {quiz.published ? (
+                <>
+                  <FaPlus /> Published
+                </>
+              ) : (
+                <>
+                  <AiOutlineStop /> Unpublished
+                </>
+              )}
+            </button>
+          </ProtectedRole>
+          <ProtectedRole role="ADMIN">
+            <button
+              id="wd-publish-btn"
+              className={`btn btn-lg ${
+                quiz.published ? "btn-success" : "btn-danger"
+              }`}
+              onClick={togglePublish}
+            >
+              {quiz.published ? (
+                <>
+                  <FaPlus /> Published
+                </>
+              ) : (
+                <>
+                  <AiOutlineStop /> Unpublished
+                </>
+              )}
+            </button>
+          </ProtectedRole>
         </div>
       </div>
       <hr />
