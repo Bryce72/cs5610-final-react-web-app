@@ -374,8 +374,22 @@ function FillBlanksEditor({ solution, setSolution }: { solution: string[]; setSo
         setSolution(updatedSolution);
     };
 
+    // onClick={() => {
+    //     console.log(`\tadding new choice to answer choices\n${JSON.stringify(answerChoices)}`);
+    //     if (answerChoices === undefined || answerChoices.length === 0) {
+    //         answerChoiceSetter([""]);
+    //     } else {
+    //         answerChoiceSetter([...answerChoices, ""]);
+    //     }
+    //     setQuestionEdits({ ...questionEdits, choices: answerChoices });
+    // }}
+
     const handleAddBlank = () => {
-        setSolution([...solution, ""]);
+        if (solution === undefined || solution.length === 0) {
+            setSolution([""]);
+        } else {
+            setSolution([...solution, ""]);
+        }
     };
 
     const handleRemoveBlank = (index: number) => {
