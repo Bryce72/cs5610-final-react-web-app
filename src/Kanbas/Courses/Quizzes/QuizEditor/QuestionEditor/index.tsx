@@ -36,11 +36,9 @@ export default function QuestionEditor() {
 
     //testing: effect to log whenever our questions change
     useEffect(() => {
-        // console.log(`QuestionEditor\n${JSON.stringify(quizQuestions, null, 2)}`);
+        console.log(`Number of Questions = ${quizQuestions.length}`);
     }, [quizQuestions]);
 
-
-    //FIXME: new question card doesn't have an _id????
     const createNewQuestion = async () => {
         const emptyQuestion = {
             quiz: quizId,
@@ -62,7 +60,6 @@ export default function QuestionEditor() {
                     ))
                 }
 
-                {/* TODO: onclick add a new empty question right above this button */}
                 <button id="question-editor-new-question"
                     className="btn btn-warning mx-2"
                     onClick={e => createNewQuestion()}

@@ -17,6 +17,7 @@ export default function QuestionCard({ question }: { question: QuizQuestion }) {
     const [questionEdits, setQuestionEdits] = useState<QuizQuestion>();
     const [type, setType] = useState<QuestionType>(question.type || QuestionType.MultipleChoice);
     const [editMode, setEditMode] = useState<boolean>(false);
+    const [answerChoices, answerChoiceSetter] = useState<any[]>(question.choices);
 
     const deleteQuestion = async () => {
         const questionId = question._id;
@@ -38,7 +39,7 @@ export default function QuestionCard({ question }: { question: QuizQuestion }) {
         console.log(`New Question:\n${JSON.stringify(editedQuestion, null, 2)}`);
         await client.updateQuestion(question._id, editedQuestion);
         // FIXME
-        // dispatch(editQuizQuestion(editedQuestion))
+        dispatch(editQuizQuestion(editedQuestion))
     };
 
     return (
@@ -84,7 +85,7 @@ export default function QuestionCard({ question }: { question: QuizQuestion }) {
                     {<QuestionBasicsEditor type={type} setType={setType} />}
                     {type === QuestionType.TrueFalse && <TrueFalseEditor />}
                     {type === QuestionType.FillBlanks && <FillBlanksEditor />}
-                    {type === QuestionType.MultipleChoice && MultipleChoiceEditor(question, questionEdits, setQuestionEdits)}
+                    {type === QuestionType.MultipleChoice && MultipleChoiceEditor(question, questionEdits, setQuestionEdits, answerChoices, answerChoiceSetter)}
                 </div>
             </div>
         </div>
@@ -207,9 +208,7 @@ function QuestionBasicsEditor({ type, setType, }: {
     );
 }
 
-function MultipleChoiceEditor(q: QuizQuestion, questionEdits: any, setQuestionEdits: any) {
-    const [answerChoices, answerChoiceSetter] = useState<any[]>(q.choices);
-
+function MultipleChoiceEditor(q: QuizQuestion, questionEdits: any, setQuestionEdits: any, answerChoices: any, answerChoiceSetter:any) {
     const handleChoiceUpdate = (original: string, choiceUpdate: string) => {
         const i = answerChoices.findIndex(choice => choice === original);
         answerChoiceSetter(
